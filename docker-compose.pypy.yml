@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  seidel-pypy:
+    build:
+      context: .
+      args:
+        - PYTHON_IMAGE=${PYPY_IMAGE_NAME}
+        - PYTHON_IMAGE_VERSION=${PYPY_IMAGE_VERSION}
+    image: lycantropos/seidel-pypy:0.0.0
+    volumes:
+      - ./seidel/:/opt/seidel/seidel/
+      - ./tests/:/opt/seidel/tests/
+      - ./README.md:/opt/seidel/README.md
+      - ./requirements.txt:/opt/seidel/requirements.txt
+      - ./requirements-tests.txt:/opt/seidel/requirements-tests.txt
+      - ./setup.py:/opt/seidel/setup.py
+      - ./pytest.ini:/opt/seidel/pytest.ini
+    entrypoint: pytest
