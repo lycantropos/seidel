@@ -1,8 +1,8 @@
 seidel
-=========
+======
 
 [![](https://travis-ci.com/lycantropos/seidel.svg?branch=master)](https://travis-ci.com/lycantropos/seidel "Travis CI")
-[![](https://dev.azure.com/lycantropos/seidel/_apis/build/status/lycantropos.seidel?branchName=master)](https://dev.azure.com/lycantropos/seidel/_build/latest?branchName=master "Azure Pipelines")
+[![](https://dev.azure.com/lycantropos/seidel/_apis/build/status/lycantropos.seidel?branchName=master)](https://dev.azure.com/lycantropos/seidel/_build/latest?definitionId=26&branchName=master "Azure Pipelines")
 [![](https://codecov.io/gh/lycantropos/seidel/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/seidel "Codecov")
 [![](https://img.shields.io/github/license/lycantropos/seidel.svg)](https://github.com/lycantropos/seidel/blob/master/LICENSE "License")
 [![](https://badge.fury.io/py/seidel.svg)](https://badge.fury.io/py/seidel "PyPI")
