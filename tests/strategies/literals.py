@@ -1,7 +1,6 @@
 from decimal import Decimal
 from fractions import Fraction
 from functools import partial
-from typing import Optional
 
 from hypothesis import strategies
 
@@ -13,14 +12,11 @@ from tests.utils import (MAX_FLOAT_DIGITS_COUNT,
 booleans = strategies.booleans()
 
 
-def to_floats(min_value: Optional[float] = MIN_VALUE,
-              max_value: Optional[float] = MAX_VALUE) -> Strategy[float]:
-    return (strategies.floats(min_value=min_value,
-                              max_value=max_value,
+def to_floats(min_value: float, max_value: float) -> Strategy[float]:
+    return (strategies.floats(min_value, max_value,
                               allow_nan=False,
                               allow_infinity=False)
-            .map(partial(to_digits_count,
-                         max_digits_count=MAX_FLOAT_DIGITS_COUNT)))
+            .map(to_digits_count))
 
 
 def to_digits_count(number: float,
@@ -46,7 +42,7 @@ def to_digits_count(number: float,
         decimal *= 10 ** (-exponent - significant_digits_count)
         whole_digits_count = 1
     decimal = round(decimal, max(max_digits_count - whole_digits_count, 0))
-    return type(number)(str(decimal))
+    return float(str(decimal))
 
 
 coordinates_strategies_factories = {
@@ -57,4 +53,4 @@ coordinates_strategies_factories = {
 coordinates_strategies = strategies.sampled_from(
         [factory(MIN_VALUE, MAX_VALUE)
          for factory in coordinates_strategies_factories.values()])
-floats = to_floats()
+floats = to_floats(MIN_VALUE, MAX_VALUE)
