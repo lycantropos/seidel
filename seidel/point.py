@@ -1,3 +1,5 @@
+from reprit.base import generate_repr
+
 from .hints import Coordinate
 
 
@@ -7,6 +9,8 @@ class Point:
     def __init__(self, x: Coordinate, y: Coordinate) -> None:
         self.x = x
         self.y = y
+
+    __repr__ = generate_repr(__init__)
 
     def __eq__(self, other: 'Point') -> bool:
         return (self.x == other.x and self.y == other.y
