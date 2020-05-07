@@ -1,5 +1,5 @@
-#ifndef MPL_TRI_H
-#define MPL_TRI_H
+#ifndef DECOMPOSITION_H
+#define DECOMPOSITION_H
 
 #include <iostream>
 #include <list>
