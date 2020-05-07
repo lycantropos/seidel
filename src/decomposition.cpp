@@ -288,9 +288,6 @@ void TrapezoidMap::initialize() {
   _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));
   _edges.push_back(Edge(&_points[npoints + 2], &_points[npoints + 3]));
 
-  // Add all edges in the triangulation that point to the right.  Do not
-  // explicitly include edges that point to the left as the neighboring
-  // triangle will supply that, unless there is no such neighbor.
   for (size_t index = 0; index < npoints; ++index) {
     Point* start = &_points[index];
     Point* end = &_points[(index + 1) % npoints];
