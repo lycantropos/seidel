@@ -21,6 +21,11 @@ def to_pairs(elements: Strategy[Domain]) -> Strategy[Tuple[Domain, Domain]]:
     return strategies.tuples(elements, elements)
 
 
+def to_triplets(elements: Strategy[Domain]
+                ) -> Strategy[Tuple[Domain, Domain, Domain]]:
+    return strategies.tuples(elements, elements, elements)
+
+
 def to_bound_with_ported_points_pair(x: float, y: float
                                      ) -> BoundPortedPointsPair:
     return BoundPoint(x, y), PortedPoint(x, y)
