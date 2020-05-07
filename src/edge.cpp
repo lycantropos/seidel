@@ -34,9 +34,4 @@ double Edge::get_y_at_x(const double& x) const {
   }
 }
 
-bool Edge::has_point(const Point* point) const {
-  assert(point != 0 && "Null point");
-  return (left == point || right == point);
-}
-
 bool Edge::operator==(const Edge& other) const { return this == &other; }

@@ -22,9 +22,6 @@ struct Edge {
    * x must be within the x-limits of this edge. */
   double get_y_at_x(const double& x) const;
 
-  // Return true if the specified point is either of the edge end points.
-  bool has_point(const Point* point) const;
-
   bool operator==(const Edge& other) const;
 
   friend std::ostream& operator<<(std::ostream& os, const Edge& edge) {
