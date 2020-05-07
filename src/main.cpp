@@ -18,6 +18,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
+      .def(py::self == py::self)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y);
 
