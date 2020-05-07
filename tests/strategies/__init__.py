@@ -1,1 +1,2 @@
-from .literals import floats
+from .literals import (coordinates_strategies,
+                       floats)
