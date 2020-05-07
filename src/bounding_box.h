@@ -5,7 +5,8 @@
 
 class BoundingBox {
  public:
-  BoundingBox();
+  BoundingBox(bool empty_ = true, const Point& lower_ = Point(),
+              const Point& upper_ = Point());
   void add(const Point& point);
   void expand(const Point& delta);
 

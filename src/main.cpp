@@ -36,17 +36,6 @@ PYBIND11_MODULE(MODULE_NAME, m) {
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
     )pbdoc";
 
-  py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
-      .def(py::init<>())
-      .def("__eq__",
-           [](const BoundingBox& self, const BoundingBox& other) {
-             return self.empty == other.empty && self.lower == other.lower &&
-                    self.upper == other.upper;
-           })
-      .def_readwrite("empty", &BoundingBox::empty)
-      .def_readwrite("lower", &BoundingBox::lower)
-      .def_readwrite("upper", &BoundingBox::upper);
-
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
       .def(py::pickle(
@@ -61,6 +50,19 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("__repr__", point_repr)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y);
+
+  py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
+      .def(py::init<bool, const Point&, const Point&>(),
+           py::arg("empty") = true, py::arg("lower") = Point(),
+           py::arg("upper") = Point())
+      .def("__eq__",
+           [](const BoundingBox& self, const BoundingBox& other) {
+             return self.empty == other.empty && self.lower == other.lower &&
+                    self.upper == other.upper;
+           })
+      .def_readwrite("empty", &BoundingBox::empty)
+      .def_readwrite("lower", &BoundingBox::lower)
+      .def_readwrite("upper", &BoundingBox::upper);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;
