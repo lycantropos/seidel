@@ -24,6 +24,8 @@ static std::ostringstream make_stream() {
   return stream;
 }
 
+static std::string bool_repr(bool value) { return py::str(py::bool_(value)); }
+
 static std::string point_repr(const Point& self) {
   auto stream = make_stream();
   stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << self.x << ", " << self.y
@@ -59,6 +61,14 @@ PYBIND11_MODULE(MODULE_NAME, m) {
            [](const BoundingBox& self, const BoundingBox& other) {
              return self.empty == other.empty && self.lower == other.lower &&
                     self.upper == other.upper;
+           })
+      .def("__repr__",
+           [](const BoundingBox& self) -> std::string {
+             auto stream = make_stream();
+             stream << C_STR(MODULE_NAME) "." BOUNDING_BOX_NAME "("
+                    << bool_repr(self.empty) << ", " << point_repr(self.lower)
+                    << ", " << point_repr(self.upper) << ")";
+             return stream.str();
            })
       .def_readwrite("empty", &BoundingBox::empty)
       .def_readwrite("lower", &BoundingBox::lower)
