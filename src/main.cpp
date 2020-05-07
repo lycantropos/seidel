@@ -2,6 +2,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <iomanip>
+#include <limits>
+#include <sstream>
+
 #include "decomposition.h"
 
 namespace py = pybind11;
@@ -11,6 +15,19 @@ namespace py = pybind11;
 #define C_STR(a) C_STR_HELPER(a)
 #define POINT_NAME "Point"
 
+static std::ostringstream make_stream() {
+  std::ostringstream stream;
+  stream.precision(std::numeric_limits<double>::digits10 + 2);
+  return stream;
+}
+
+static std::string point_repr(const Point& self) {
+  auto stream = make_stream();
+  stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << self.x << ", " << self.y
+         << ")";
+  return stream.str();
+}
+
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
@@ -19,6 +36,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
       .def(py::self == py::self)
+      .def("__repr__", point_repr)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y);
 
