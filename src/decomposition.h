@@ -9,18 +9,6 @@
 
 #include "point.h"
 
-// 2D bounding box, which may be empty.
-class BoundingBox {
- public:
-  BoundingBox();
-  void add(const Point& point);
-  void expand(const Point& delta);
-
-  // Consider these member variables read-only.
-  bool empty;
-  Point lower, upper;
-};
-
 /* An Edge connects two Points, left and right.  It is always true that
  * right->is_right_of(*left).  Stores indices of triangles below and above
  * the Edge which are used to map from trapezoid to triangle index.  Also
