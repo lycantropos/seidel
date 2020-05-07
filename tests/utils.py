@@ -1,6 +1,9 @@
 import pickle
 import sys
-from typing import (Tuple,
+from functools import partial
+from typing import (Callable,
+                    Iterable,
+                    Tuple,
                     TypeVar)
 
 from _seidel import (BoundingBox as BoundBoundingBox,
@@ -31,6 +34,16 @@ def implication(antecedent: bool, consequent: bool) -> bool:
 
 def pickle_round_trip(object_: Domain) -> Domain:
     return pickle.loads(pickle.dumps(object_))
+
+
+def pack(function: Callable[..., Range]
+         ) -> Callable[[Iterable[Domain]], Range]:
+    return partial(apply, function)
+
+
+def apply(function: Callable[..., Range],
+          args: Iterable[Domain]) -> Range:
+    return function(*args)
 
 
 def are_bound_ported_points_equal(bound: BoundPoint,
