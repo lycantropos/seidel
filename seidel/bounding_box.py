@@ -1,3 +1,5 @@
+from reprit.base import generate_repr
+
 from .point import Point
 
 
@@ -8,6 +10,8 @@ class BoundingBox:
         self.empty = empty
         self.lower = lower
         self.upper = upper
+
+    __repr__ = generate_repr(__init__)
 
     def __eq__(self, other: 'BoundingBox') -> bool:
         return ((self.empty is other.empty
