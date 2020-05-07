@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "bounding_box.h"
+#include "edge.h"
 #include "point.h"
 
 namespace py = pybind11;
@@ -16,6 +17,7 @@ namespace py = pybind11;
 #define C_STR_HELPER(a) #a
 #define C_STR(a) C_STR_HELPER(a)
 #define BOUNDING_BOX_NAME "BoundingBox"
+#define EDGE_NAME "Edge"
 #define POINT_NAME "Point"
 
 static std::ostringstream make_stream() {
@@ -52,6 +54,11 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("__repr__", point_repr)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y);
+
+  py::class_<Edge>(m, EDGE_NAME)
+      .def(py::init<const Point*, const Point*>())
+      .def_readwrite("left", &Edge::left)
+      .def_readwrite("right", &Edge::right);
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
       .def(py::init<bool, const Point&, const Point&>(),
