@@ -40,5 +40,3 @@ bool Edge::has_point(const Point* point) const {
 }
 
 bool Edge::operator==(const Edge& other) const { return this == &other; }
-
-void Edge::print_debug() const { std::cout << "Edge " << *this << std::endl; }

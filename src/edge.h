@@ -31,8 +31,6 @@ struct Edge {
     return os << *edge.left << "->" << *edge.right;
   }
 
-  void print_debug() const;
-
   const Point* left;         // Not owned.
   const Point* right;        // Not owned.
 };
