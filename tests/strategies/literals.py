@@ -17,15 +17,13 @@ def to_floats(*,
               min_value: Optional[float] = MIN_VALUE,
               max_value: Optional[float] = MAX_VALUE,
               allow_nan: bool = False,
-              allow_infinity: bool = False,
-              max_digits_count: int = MAX_FLOAT_DIGITS_COUNT
-              ) -> Strategy[float]:
+              allow_infinity: bool = False) -> Strategy[float]:
     return (strategies.floats(min_value=min_value,
                               max_value=max_value,
                               allow_nan=allow_nan,
                               allow_infinity=allow_infinity)
             .map(partial(to_digits_count,
-                         max_digits_count=max_digits_count)))
+                         max_digits_count=MAX_FLOAT_DIGITS_COUNT)))
 
 
 def to_digits_count(number: float,
@@ -54,10 +52,11 @@ def to_digits_count(number: float,
     return type(number)(str(decimal))
 
 
-scalars_strategies_factories = {float: to_floats,
-                                Fraction: partial(strategies.fractions,
-                                                  max_denominator=MAX_VALUE),
-                                int: strategies.integers}
-scalars_strategies = strategies.sampled_from(
-        [factory() for factory in scalars_strategies_factories.values()])
+coordinates_strategies_factories = {
+    float: to_floats,
+    Fraction: partial(strategies.fractions,
+                      max_denominator=MAX_VALUE),
+    int: strategies.integers}
+coordinates_strategies = strategies.sampled_from(
+        [factory() for factory in coordinates_strategies_factories.values()])
 floats = to_floats()
