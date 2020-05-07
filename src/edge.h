@@ -28,8 +28,8 @@ struct Edge {
     return os << *edge.left << "->" << *edge.right;
   }
 
-  const Point* left;         // Not owned.
-  const Point* right;        // Not owned.
+  const Point* left;   // Not owned.
+  const Point* right;  // Not owned.
 };
 
 typedef std::vector<Edge> Edges;
