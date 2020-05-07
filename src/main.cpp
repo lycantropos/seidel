@@ -63,6 +63,14 @@ PYBIND11_MODULE(MODULE_NAME, m) {
              return (*self.left) == (*other.left) &&
                     (*self.right) == (*other.right);
            })
+      .def("__repr__",
+           [](const Edge& self) -> std::string {
+             auto stream = make_stream();
+             stream << C_STR(MODULE_NAME) "." EDGE_NAME "("
+                    << point_repr(*self.left) << ", " << point_repr(*self.right)
+                    << ")";
+             return stream.str();
+           })
       .def_readwrite("left", &Edge::left)
       .def_readwrite("right", &Edge::right);
 
