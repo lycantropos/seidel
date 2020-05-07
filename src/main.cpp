@@ -58,6 +58,11 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<Edge>(m, EDGE_NAME)
       .def(py::init<const Point*, const Point*>())
+      .def("__eq__",
+           [](const Edge& self, const Edge& other) {
+             return (*self.left) == (*other.left) &&
+                    (*self.right) == (*other.right);
+           })
       .def_readwrite("left", &Edge::left)
       .def_readwrite("right", &Edge::right);
 
