@@ -1,9 +1,10 @@
-#include "bounding_box.h"
 #include "decomposition.h"
 
 #include <algorithm>
 #include <cassert>
 #include <set>
+
+#include "bounding_box.h"
 
 TrapezoidMap::TrapezoidMap(const std::vector<Point>& points)
     : _points(points), npoints(points.size()), _tree(nullptr) {

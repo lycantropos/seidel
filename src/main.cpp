@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "decomposition.h"
+#include "point.h"
 
 namespace py = pybind11;
 
