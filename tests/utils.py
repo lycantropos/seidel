@@ -1,13 +1,9 @@
 import pickle
 import sys
-from functools import partial
-from typing import (Callable,
-                    Iterable,
-                    Tuple,
+from typing import (Tuple,
                     TypeVar)
 
 from _seidel import Point as BoundPoint
-from hypothesis import strategies
 from hypothesis.strategies import SearchStrategy
 
 from seidel.point import Point as PortedPoint
@@ -32,20 +28,6 @@ def implication(antecedent: bool, consequent: bool) -> bool:
 
 def pickle_round_trip(object_: Domain) -> Domain:
     return pickle.loads(pickle.dumps(object_))
-
-
-def to_pairs(elements: Strategy[Domain]) -> Strategy[Tuple[Domain, Domain]]:
-    return strategies.tuples(elements, elements)
-
-
-def pack(function: Callable[..., Range]
-         ) -> Callable[[Iterable[Domain]], Range]:
-    return partial(apply, function)
-
-
-def apply(function: Callable[..., Range],
-          args: Iterable[Domain]) -> Range:
-    return function(*args)
 
 
 def are_bound_ported_points_equal(bound: BoundPoint,
