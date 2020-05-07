@@ -8,7 +8,7 @@ class Point:
         self.x = x
         self.y = y
 
-    def __eq__(self, other: 'Point') -> None:
+    def __eq__(self, other: 'Point') -> bool:
         return (self.x == other.x and self.y == other.y
                 if isinstance(other, Point)
                 else NotImplemented)
