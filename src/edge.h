@@ -35,8 +35,6 @@ struct Edge {
 
   const Point* left;         // Not owned.
   const Point* right;        // Not owned.
-  const Point* point_below;  // Used only for resolving ambiguous cases;
-  const Point* point_above;  //     is 0 if corresponding triangle is -1
 };
 
 typedef std::vector<Edge> Edges;
