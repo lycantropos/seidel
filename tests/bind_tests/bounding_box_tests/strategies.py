@@ -1,4 +1,10 @@
-from _seidel import BoundingBox
+from _seidel import (BoundingBox,
+                     Point)
 from hypothesis import strategies
 
-bounding_boxes = strategies.builds(BoundingBox)
+from tests.strategies import floats
+
+booleans = strategies.booleans()
+floats = floats
+points = strategies.builds(Point, floats, floats)
+bounding_boxes = strategies.builds(BoundingBox, booleans, points, points)

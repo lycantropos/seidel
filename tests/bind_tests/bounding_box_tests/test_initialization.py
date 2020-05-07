@@ -1,10 +1,14 @@
 from _seidel import (BoundingBox,
                      Point)
+from hypothesis import given
+
+from . import strategies
 
 
-def test_basic() -> None:
-    result = BoundingBox()
+@given(strategies.booleans, strategies.points, strategies.points)
+def test_basic(empty: bool, lower: Point, upper: Point) -> None:
+    result = BoundingBox(empty, lower, upper)
 
-    assert result.empty is True
-    assert result.lower == Point()
-    assert result.upper == Point()
+    assert result.empty is empty
+    assert result.lower == lower
+    assert result.upper == upper
