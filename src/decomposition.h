@@ -11,7 +11,6 @@
 struct Point {
   Point();
   Point(const double& x_, const double& y_);
-  double angle() const;  // Angle in radians with respect to x-axis.
   double cross_z(const Point& other) const;    // z-component of cross product.
   bool is_right_of(const Point& other) const;  // Compares x then y.
   bool operator==(const Point& other) const;

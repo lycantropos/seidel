@@ -8,8 +8,6 @@ Point::Point() {}
 
 Point::Point(const double& x_, const double& y_) : x(x_), y(y_) {}
 
-double Point::angle() const { return atan2(y, x); }
-
 double Point::cross_z(const Point& other) const {
   return x * other.y - y * other.x;
 }
