@@ -13,15 +13,12 @@ from tests.utils import (MAX_FLOAT_DIGITS_COUNT,
 booleans = strategies.booleans()
 
 
-def to_floats(*,
-              min_value: Optional[float] = MIN_VALUE,
-              max_value: Optional[float] = MAX_VALUE,
-              allow_nan: bool = False,
-              allow_infinity: bool = False) -> Strategy[float]:
+def to_floats(min_value: Optional[float] = MIN_VALUE,
+              max_value: Optional[float] = MAX_VALUE) -> Strategy[float]:
     return (strategies.floats(min_value=min_value,
                               max_value=max_value,
-                              allow_nan=allow_nan,
-                              allow_infinity=allow_infinity)
+                              allow_nan=False,
+                              allow_infinity=False)
             .map(partial(to_digits_count,
                          max_digits_count=MAX_FLOAT_DIGITS_COUNT)))
 
@@ -58,5 +55,6 @@ coordinates_strategies_factories = {
                       max_denominator=MAX_VALUE),
     int: strategies.integers}
 coordinates_strategies = strategies.sampled_from(
-        [factory() for factory in coordinates_strategies_factories.values()])
+        [factory(MIN_VALUE, MAX_VALUE)
+         for factory in coordinates_strategies_factories.values()])
 floats = to_floats()
