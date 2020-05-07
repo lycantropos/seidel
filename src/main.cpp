@@ -53,7 +53,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::self == py::self)
       .def("__repr__", point_repr)
       .def_readwrite("x", &Point::x)
-      .def_readwrite("y", &Point::y);
+      .def_readwrite("y", &Point::y)
+      .def("is_right_of", &Point::is_right_of, py::arg("other"));
 
   py::class_<Edge>(m, EDGE_NAME)
       .def(py::init<const Point*, const Point*>())
