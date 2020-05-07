@@ -4,9 +4,7 @@
 #include <cassert>
 #include <set>
 
-Point::Point() {}
-
-Point::Point(const double& x_, const double& y_) : x(x_), y(y_) {}
+Point::Point(double x_, double y_) : x(x_), y(y_) {}
 
 double Point::cross_z(const Point& other) const {
   return x * other.y - y * other.x;
