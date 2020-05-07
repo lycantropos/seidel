@@ -38,6 +38,11 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
       .def(py::init<>())
+      .def("__eq__",
+           [](const BoundingBox& self, const BoundingBox& other) {
+             return self.empty == other.empty && self.lower == other.lower &&
+                    self.upper == other.upper;
+           })
       .def_readwrite("empty", &BoundingBox::empty)
       .def_readwrite("lower", &BoundingBox::lower)
       .def_readwrite("upper", &BoundingBox::upper);
