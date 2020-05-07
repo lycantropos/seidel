@@ -7,6 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "bounding_box.h"
 #include "point.h"
 
 namespace py = pybind11;
@@ -14,6 +15,7 @@ namespace py = pybind11;
 #define MODULE_NAME _seidel
 #define C_STR_HELPER(a) #a
 #define C_STR(a) C_STR_HELPER(a)
+#define BOUNDING_BOX_NAME "BoundingBox"
 #define POINT_NAME "Point"
 
 static std::ostringstream make_stream() {
@@ -33,6 +35,12 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
     )pbdoc";
+
+  py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
+      .def(py::init<>())
+      .def_readwrite("empty", &BoundingBox::empty)
+      .def_readwrite("lower", &BoundingBox::lower)
+      .def_readwrite("upper", &BoundingBox::upper);
 
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
