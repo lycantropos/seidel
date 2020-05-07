@@ -16,3 +16,6 @@ class Point:
         return (self.x == other.x and self.y == other.y
                 if isinstance(other, Point)
                 else NotImplemented)
+
+    def is_right_of(self, other: 'Point') -> bool:
+        return (self.x, self.y) > (other.x, other.y)
