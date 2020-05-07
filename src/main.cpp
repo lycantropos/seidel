@@ -57,7 +57,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
 
   py::class_<Edge>(m, EDGE_NAME)
-      .def(py::init<const Point*, const Point*>())
+      .def(py::init<const Point*, const Point*>(), py::arg("left"),
+           py::arg("right"))
       .def("__eq__",
            [](const Edge& self, const Edge& other) {
              return (*self.left) == (*other.left) &&
