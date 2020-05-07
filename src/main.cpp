@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include <stdexcept>
 
 #include "decomposition.h"
 
@@ -35,6 +36,14 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
+      .def(py::pickle(
+          [](const Point& self) {  // __getstate__
+            return py::make_tuple(self.x, self.y);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
+            return Point(tuple[0].cast<double>(), tuple[1].cast<double>());
+          }))
       .def(py::self == py::self)
       .def("__repr__", point_repr)
       .def_readwrite("x", &Point::x)
