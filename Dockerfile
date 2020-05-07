@@ -18,3 +18,5 @@ COPY pytest.ini .
 COPY setup.py .
 COPY seidel seidel/
 COPY tests/ tests/
+
+RUN pip install -e .
