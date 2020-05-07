@@ -57,6 +57,15 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::init<bool, const Point&, const Point&>(),
            py::arg("empty") = true, py::arg("lower") = Point(),
            py::arg("upper") = Point())
+      .def(py::pickle(
+          [](const BoundingBox& self) {  // __getstate__
+            return py::make_tuple(self.empty, self.lower, self.upper);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
+            return BoundingBox(tuple[0].cast<bool>(), tuple[1].cast<Point>(),
+                               tuple[2].cast<Point>());
+          }))
       .def("__eq__",
            [](const BoundingBox& self, const BoundingBox& other) {
              return self.empty == other.empty && self.lower == other.lower &&
