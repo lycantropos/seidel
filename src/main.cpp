@@ -47,7 +47,7 @@ class TrapezoidProxy {
         right(right_),
         above(above_),
         below(below_),
-        _trapezoid(Trapezoid(&left, &right, below.edge(), above.edge())){};
+        _trapezoid(&left, &right, below.edge(), above.edge()){};
 
   bool operator==(const TrapezoidProxy& other) const {
     return left == other.left && right == other.right && above == other.above &&
