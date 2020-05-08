@@ -23,7 +23,7 @@ def coordinates_to_points_pairs_edges_pairs(coordinates: Strategy[Coordinate]
     return (strategies.tuples(
             coordinates_to_sorted_ported_points_pairs(coordinates),
             strategies.tuples(edges, edges))
-            .map(add))
+            .map(pack(add)))
 
 
 points_pairs_edges_pairs = (coordinates_strategies
