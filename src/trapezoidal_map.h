@@ -1,10 +1,6 @@
 #ifndef TRAPEZOIDAL_MAP_H
 #define TRAPEZOIDAL_MAP_H
 
-#include <iostream>
-#include <list>
-#include <map>
-#include <set>
 #include <vector>
 
 #include "edge.h"

@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <set>
 
 #include "bounding_box.h"
 
