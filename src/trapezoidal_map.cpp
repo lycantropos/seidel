@@ -1,10 +1,37 @@
-#include "decomposition.h"
+#include "trapezoidal_map.h"
 
 #include <algorithm>
 #include <cassert>
 #include <set>
 
 #include "bounding_box.h"
+
+/* Linear congruential random number generator.
+ * Edges in the triangulation are randomly shuffled
+ * before being added to the trapezoid map.
+ * Want the shuffling to be identical across different operating systems
+ * and the same regardless of previous random number use.
+ * Would prefer to use a STL or Boost random number generator,
+ * but support is not consistent across different operating systems
+ * so implementing own here.
+ *
+ * This is not particularly random, but is perfectly adequate for the use here.
+ * Coefficients taken from Numerical Recipes in C. */
+class RandomNumberGenerator {
+ public:
+  RandomNumberGenerator(unsigned long seed)
+      : _m(21870), _a(1291), _c(4621), _seed(seed % _m) {}
+
+  // Return random integer in the range 0 to max_value-1.
+  unsigned long operator()(unsigned long max_value) {
+    _seed = (_seed * _a + _c) % _m;
+    return (_seed * max_value) / _m;
+  }
+
+ private:
+  const unsigned long _m, _a, _c;
+  unsigned long _seed;
+};
 
 TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
     : _points(points), npoints(points.size()), _tree(nullptr) {
@@ -318,12 +345,4 @@ void TrapezoidalMap::initialize() {
 void TrapezoidalMap::print_tree() {
   assert(_tree != 0 && "Null Node tree");
   _tree->print();
-}
-
-RandomNumberGenerator::RandomNumberGenerator(unsigned long seed)
-    : _m(21870), _a(1291), _c(4621), _seed(seed % _m) {}
-
-unsigned long RandomNumberGenerator::operator()(unsigned long max_value) {
-  _seed = (_seed * _a + _c) % _m;
-  return (_seed * max_value) / _m;
 }

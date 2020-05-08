@@ -1,5 +1,5 @@
-#ifndef DECOMPOSITION_H
-#define DECOMPOSITION_H
+#ifndef TRAPEZOIDAL_MAP_H
+#define TRAPEZOIDAL_MAP_H
 
 #include <iostream>
 #include <list>
@@ -77,27 +77,6 @@ class TrapezoidalMap {
   Edges _edges;
   // Root node of the trapezoid map search tree, owned.
   Node* _tree;
-};
-
-/* Linear congruential random number generator.  Edges in the triangulation are
- * randomly shuffled before being added to the trapezoid map.  Want the
- * shuffling to be identical across different operating systems and the same
- * regardless of previous random number use.  Would prefer to use a STL or
- * Boost random number generator, but support is not consistent across
- * different operating systems so implementing own here.
- *
- * This is not particularly random, but is perfectly adequate for the use here.
- * Coefficients taken from Numerical Recipes in C. */
-class RandomNumberGenerator {
- public:
-  RandomNumberGenerator(unsigned long seed);
-
-  // Return random integer in the range 0 to max_value-1.
-  unsigned long operator()(unsigned long max_value);
-
- private:
-  const unsigned long _m, _a, _c;
-  unsigned long _seed;
 };
 
 #endif
