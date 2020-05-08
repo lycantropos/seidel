@@ -2,6 +2,7 @@ from typing import Tuple
 
 from hypothesis import strategies
 
+from seidel.edge import Edge
 from seidel.hints import Coordinate
 from tests.utils import (BoundBoundingBox,
                          BoundEdge,
@@ -13,7 +14,10 @@ from tests.utils import (BoundBoundingBox,
                          PortedBoundingBox,
                          PortedEdge,
                          PortedPoint,
-                         Strategy)
+                         Strategy,
+                         pack,
+                         point_to_coordinates,
+                         sort_points)
 
 
 def coordinates_to_ported_points(coordinates: Strategy[Coordinate]
@@ -54,3 +58,20 @@ def to_bound_with_ported_bounding_boxes_pair(empty: bool,
                               PortedPoint(upper_x, upper_y)),
             BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
                              BoundPoint(upper_x, upper_y)))
+
+
+def coordinates_to_ported_edges(coordinates: Strategy[Coordinate]
+                                ) -> Strategy[PortedEdge]:
+    return (coordinates_to_sorted_ported_points_pairs(coordinates)
+            .map(pack(Edge)))
+
+
+def coordinates_to_sorted_ported_points_pairs(
+        coordinates: Strategy[Coordinate]
+) -> Strategy[Tuple[PortedPoint, PortedPoint]]:
+    return (strategies.lists(coordinates_to_ported_points(coordinates),
+                             min_size=2,
+                             max_size=2,
+                             unique_by=point_to_coordinates)
+            .map(tuple)
+            .map(sort_points))
