@@ -18,7 +18,7 @@ Trapezoid::Trapezoid(const Point* left_, const Point* right_,
       trapezoid_node(nullptr) {
   assert(left != nullptr && "Null left point");
   assert(right != nullptr && "Null right point");
-  assert(right->is_right_of(*left) && "Incorrect point order");
+  assert(right->is_right_of(*left) && "Incorrect endpoints order");
 }
 
 void Trapezoid::assert_valid(bool tree_complete) const {
