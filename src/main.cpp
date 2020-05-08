@@ -157,6 +157,17 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     const EdgeProxy&>(),
            py::arg("left"), py::arg("right"), py::arg("above"),
            py::arg("below"))
+      .def(py::pickle(
+          [](const TrapezoidProxy& self) {  // __getstate__
+            return py::make_tuple(self.left, self.right, self.above,
+                                  self.below);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 4) throw std::runtime_error("Invalid state!");
+            return std::make_unique<TrapezoidProxy>(
+                tuple[0].cast<Point>(), tuple[1].cast<Point>(),
+                tuple[2].cast<EdgeProxy>(), tuple[3].cast<EdgeProxy>());
+          }))
       .def(py::self == py::self)
       .def("__repr__",
            [](const TrapezoidProxy& self) -> std::string {
