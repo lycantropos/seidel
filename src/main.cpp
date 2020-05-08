@@ -59,6 +59,14 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<Edge>(m, EDGE_NAME)
       .def(py::init<const Point*, const Point*>(), py::arg("left"),
            py::arg("right"))
+      .def(py::pickle(
+          [](const Edge& self) {  // __getstate__
+            return py::make_tuple(self.left, self.right);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
+            return Edge(tuple[0].cast<Point*>(), tuple[1].cast<Point*>());
+          }))
       .def("__eq__",
            [](const Edge& self, const Edge& other) {
              return (*self.left) == (*other.left) &&
