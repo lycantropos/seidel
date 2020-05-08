@@ -64,6 +64,11 @@ class TrapezoidProxy {
         below(below_),
         _trapezoid(Trapezoid(&left, &right, below.edge(), above.edge())){};
 
+  bool operator==(const TrapezoidProxy& other) const {
+    return left == other.left && right == other.right && above == other.above &&
+           below == other.below;
+  }
+
   Point left;
   Point right;
   EdgeProxy above;
@@ -152,6 +157,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     const EdgeProxy&>(),
            py::arg("left"), py::arg("right"), py::arg("above"),
            py::arg("below"))
+      .def(py::self == py::self)
       .def_readwrite("left", &TrapezoidProxy::left)
       .def_readwrite("right", &TrapezoidProxy::right)
       .def_readwrite("above", &TrapezoidProxy::above)
