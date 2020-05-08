@@ -1,5 +1,7 @@
 from typing import Tuple
 
+from hypothesis import strategies
+
 from seidel.edge import Edge
 from seidel.hints import Coordinate
 from seidel.point import Point
@@ -8,11 +10,11 @@ from tests.strategies import (coordinates_strategies,
                               to_pairs,
                               to_triplets)
 from tests.utils import (Strategy,
-                         pack)
+                         pack,
+                         point_to_coordinates)
 
 coordinates_pairs = coordinates_strategies.flatmap(to_pairs)
 points = coordinates_strategies.flatmap(coordinates_to_ported_points)
-points_strategies = coordinates_strategies.map(coordinates_to_ported_points)
 
 
 def sort_points(points_pair: Tuple[Point, Point]) -> Tuple[Point, Point]:
@@ -22,13 +24,22 @@ def sort_points(points_pair: Tuple[Point, Point]) -> Tuple[Point, Point]:
             else (second, first))
 
 
-sorted_points_pairs = points_strategies.flatmap(to_pairs).map(sort_points)
+def coordinates_to_sorted_points_pairs(coordinates: Strategy[Coordinate]
+                                       ) -> Strategy[Tuple[Point, Point]]:
+    return (strategies.lists(coordinates_to_ported_points(coordinates),
+                             min_size=2,
+                             max_size=2,
+                             unique_by=point_to_coordinates)
+            .map(tuple)
+            .map(sort_points))
+
+
+sorted_points_pairs = (coordinates_strategies
+                       .flatmap(coordinates_to_sorted_points_pairs))
 
 
 def coordinates_to_edges(coordinates: Strategy[Coordinate]) -> Strategy[Edge]:
-    return (to_pairs(coordinates_to_ported_points(coordinates))
-            .map(sort_points)
-            .map(pack(Edge)))
+    return coordinates_to_sorted_points_pairs(coordinates).map(pack(Edge))
 
 
 edges = coordinates_strategies.flatmap(coordinates_to_edges)

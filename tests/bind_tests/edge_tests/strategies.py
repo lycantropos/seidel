@@ -1,3 +1,4 @@
+from operator import ne
 from typing import Tuple
 
 from _seidel import (Edge,
@@ -19,5 +20,5 @@ def sort_points(points_pair: Tuple[Point, Point]) -> Tuple[Point, Point]:
             else (second, first))
 
 
-sorted_points = to_pairs(points).map(sort_points)
+sorted_points = to_pairs(points).filter(pack(ne)).map(sort_points)
 edges = sorted_points.map(pack(Edge))

@@ -4,13 +4,15 @@ from functools import partial
 from typing import (Callable,
                     Iterable,
                     Tuple,
-                    TypeVar)
+                    TypeVar,
+                    Union)
 
 from _seidel import (BoundingBox as BoundBoundingBox,
                      Point as BoundPoint)
 from hypothesis.strategies import SearchStrategy
 
 from seidel.bounding_box import BoundingBox as PortedBoundingBox
+from seidel.hints import Coordinate
 from seidel.point import Point as PortedPoint
 
 Domain = TypeVar('Domain')
@@ -56,3 +58,8 @@ def are_bound_ported_bounding_boxes_equal(bound: BoundBoundingBox,
     return (bound.empty is ported.empty
             and are_bound_ported_points_equal(bound.lower, ported.lower)
             and are_bound_ported_points_equal(bound.upper, ported.upper))
+
+
+def point_to_coordinates(point: Union[BoundPoint, PortedPoint]
+                         ) -> Tuple[Coordinate, Coordinate]:
+    return point.x, point.y
