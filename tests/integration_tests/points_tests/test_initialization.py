@@ -1,13 +1,13 @@
-from _seidel import Point as Bound
 from hypothesis import given
 
-from seidel.point import Point as Ported
-from tests.utils import are_bound_ported_points_equal
+from tests.utils import (BoundPoint,
+                         PortedPoint,
+                         are_bound_ported_points_equal)
 from . import strategies
 
 
 @given(strategies.floats, strategies.floats)
 def test_basic(x: float, y: float) -> None:
-    bound, ported = Bound(x, y), Ported(x, y)
+    bound, ported = BoundPoint(x, y), PortedPoint(x, y)
 
     assert are_bound_ported_points_equal(bound, ported)

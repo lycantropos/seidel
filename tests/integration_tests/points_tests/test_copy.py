@@ -1,23 +1,21 @@
 import copy
-from typing import Tuple
 
-from _seidel import Point as Bound
 from hypothesis import given
 
-from seidel.point import Point as Ported
-from tests.utils import are_bound_ported_points_equal
+from tests.utils import (BoundPortedPointsPair,
+                         are_bound_ported_points_equal)
 from . import strategies
 
 
 @given(strategies.points_pairs)
-def test_shallow(points_pair: Tuple[Bound, Ported]) -> None:
+def test_shallow(points_pair: BoundPortedPointsPair) -> None:
     bound, ported = points_pair
 
     assert are_bound_ported_points_equal(copy.copy(bound), copy.copy(ported))
 
 
 @given(strategies.points_pairs)
-def test_deep(points_pair: Tuple[Bound, Ported]) -> None:
+def test_deep(points_pair: BoundPortedPointsPair) -> None:
     bound, ported = points_pair
 
     assert are_bound_ported_points_equal(copy.deepcopy(bound),

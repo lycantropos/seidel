@@ -1,16 +1,13 @@
-from typing import Tuple
-
-from _seidel import Point as Bound
 from hypothesis import given
 
-from seidel.point import Point as Ported
-from tests.utils import (are_bound_ported_points_equal,
+from tests.utils import (BoundPortedPointsPair,
+                         are_bound_ported_points_equal,
                          pickle_round_trip)
 from . import strategies
 
 
 @given(strategies.points_pairs)
-def test_round_trip(points_pair: Tuple[Bound, Ported]) -> None:
+def test_round_trip(points_pair: BoundPortedPointsPair) -> None:
     bound, ported = points_pair
 
     assert are_bound_ported_points_equal(pickle_round_trip(bound),
