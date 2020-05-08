@@ -10,6 +10,7 @@
 #include "bounding_box.h"
 #include "edge.h"
 #include "point.h"
+#include "trapezoid.h"
 
 namespace py = pybind11;
 
@@ -19,6 +20,7 @@ namespace py = pybind11;
 #define BOUNDING_BOX_NAME "BoundingBox"
 #define EDGE_NAME "Edge"
 #define POINT_NAME "Point"
+#define TRAPEZOID_NAME "Trapezoid"
 
 static std::ostringstream make_stream() {
   std::ostringstream stream;
@@ -42,8 +44,29 @@ class EdgeProxy {
 
   Point left, right;
 
+  const Edge& edge() { return _edge; }
+
  private:
   Edge _edge;
+};
+
+class TrapezoidProxy {
+ public:
+  TrapezoidProxy(const Point& left_, const Point& right_,
+                 const EdgeProxy& above_, const EdgeProxy& below_)
+      : left(left_),
+        right(right_),
+        above(above_),
+        below(below_),
+        _trapezoid(Trapezoid(&left, &right, below.edge(), above.edge())){};
+
+  Point left;
+  Point right;
+  EdgeProxy above;
+  EdgeProxy below;
+
+ private:
+  Trapezoid _trapezoid;
 };
 
 PYBIND11_MODULE(MODULE_NAME, m) {
@@ -66,32 +89,6 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y)
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
-
-  py::class_<EdgeProxy>(m, EDGE_NAME)
-      .def(py::init<const Point&, const Point&>(), py::arg("left"),
-           py::arg("right"))
-      .def(py::pickle(
-          [](const EdgeProxy& self) {  // __getstate__
-            return py::make_tuple(self.left, self.right);
-          },
-          [](py::tuple tuple) {  // __setstate__
-            if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
-            return EdgeProxy(tuple[0].cast<Point>(), tuple[1].cast<Point>());
-          }))
-      .def("__eq__",
-           [](const EdgeProxy& self, const EdgeProxy& other) {
-             return self.left == other.left && self.right == other.right;
-           })
-      .def("__repr__",
-           [](const EdgeProxy& self) -> std::string {
-             auto stream = make_stream();
-             stream << C_STR(MODULE_NAME) "." EDGE_NAME "("
-                    << point_repr(self.left) << ", " << point_repr(self.right)
-                    << ")";
-             return stream.str();
-           })
-      .def_readwrite("left", &EdgeProxy::left)
-      .def_readwrite("right", &EdgeProxy::right);
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
       .def(py::init<bool, const Point&, const Point&>(),
@@ -122,6 +119,42 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readwrite("empty", &BoundingBox::empty)
       .def_readwrite("lower", &BoundingBox::lower)
       .def_readwrite("upper", &BoundingBox::upper);
+
+  py::class_<EdgeProxy>(m, EDGE_NAME)
+      .def(py::init<const Point&, const Point&>(), py::arg("left"),
+           py::arg("right"))
+      .def(py::pickle(
+          [](const EdgeProxy& self) {  // __getstate__
+            return py::make_tuple(self.left, self.right);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
+            return EdgeProxy(tuple[0].cast<Point>(), tuple[1].cast<Point>());
+          }))
+      .def("__eq__",
+           [](const EdgeProxy& self, const EdgeProxy& other) {
+             return self.left == other.left && self.right == other.right;
+           })
+      .def("__repr__",
+           [](const EdgeProxy& self) -> std::string {
+             auto stream = make_stream();
+             stream << C_STR(MODULE_NAME) "." EDGE_NAME "("
+                    << point_repr(self.left) << ", " << point_repr(self.right)
+                    << ")";
+             return stream.str();
+           })
+      .def_readwrite("left", &EdgeProxy::left)
+      .def_readwrite("right", &EdgeProxy::right);
+
+  py::class_<TrapezoidProxy>(m, TRAPEZOID_NAME)
+      .def(py::init<const Point&, const Point&, const EdgeProxy&,
+                    const EdgeProxy&>(),
+           py::arg("left"), py::arg("right"), py::arg("above"),
+           py::arg("below"))
+      .def_readwrite("left", &TrapezoidProxy::left)
+      .def_readwrite("right", &TrapezoidProxy::right)
+      .def_readwrite("above", &TrapezoidProxy::above)
+      .def_readwrite("below", &TrapezoidProxy::below);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;
