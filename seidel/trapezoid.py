@@ -12,6 +12,7 @@ class Trapezoid:
                  right: Point,
                  above: Edge,
                  below: Edge) -> None:
+        assert right.is_right_of(left), 'Incorrect endpoints order'
         self.left = left
         self.right = right
         self.above = above
