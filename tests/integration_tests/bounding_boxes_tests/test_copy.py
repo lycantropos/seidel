@@ -1,16 +1,14 @@
 import copy
-from typing import Tuple
 
-from _seidel import BoundingBox as Bound
 from hypothesis import given
 
-from seidel.bounding_box import BoundingBox as Ported
-from tests.utils import are_bound_ported_bounding_boxes_equal
+from tests.utils import (BoundPortedBoundingBoxesPair,
+                         are_bound_ported_bounding_boxes_equal)
 from . import strategies
 
 
 @given(strategies.bounding_boxes_pairs)
-def test_shallow(bounding_boxes_pair: Tuple[Bound, Ported]) -> None:
+def test_shallow(bounding_boxes_pair: BoundPortedBoundingBoxesPair) -> None:
     bound, ported = bounding_boxes_pair
 
     assert are_bound_ported_bounding_boxes_equal(copy.copy(bound),
@@ -18,7 +16,7 @@ def test_shallow(bounding_boxes_pair: Tuple[Bound, Ported]) -> None:
 
 
 @given(strategies.bounding_boxes_pairs)
-def test_deep(bounding_boxes_pair: Tuple[Bound, Ported]) -> None:
+def test_deep(bounding_boxes_pair: BoundPortedBoundingBoxesPair) -> None:
     bound, ported = bounding_boxes_pair
 
     assert are_bound_ported_bounding_boxes_equal(copy.deepcopy(bound),

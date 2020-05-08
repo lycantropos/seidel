@@ -1,10 +1,10 @@
-from _seidel import (BoundingBox as Bound,
-                     Point as BoundPoint)
 from hypothesis import given
 
-from seidel.bounding_box import BoundingBox as Ported
-from seidel.point import Point as PortedPoint
-from tests.utils import are_bound_ported_bounding_boxes_equal
+from tests.utils import (BoundBoundingBox,
+                         BoundPoint,
+                         PortedBoundingBox,
+                         PortedPoint,
+                         are_bound_ported_bounding_boxes_equal)
 from . import strategies
 
 
@@ -16,9 +16,9 @@ def test_basic(empty: bool,
                upper_x: float,
                upper_y: float
                ) -> None:
-    bound, ported = (Bound(empty, BoundPoint(lower_x, lower_y),
-                           BoundPoint(upper_x, upper_y)),
-                     Ported(empty, PortedPoint(lower_x, lower_y),
-                            PortedPoint(upper_x, upper_y)))
+    bound, ported = (BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
+                                      BoundPoint(upper_x, upper_y)),
+                     PortedBoundingBox(empty, PortedPoint(lower_x, lower_y),
+                                       PortedPoint(upper_x, upper_y)))
 
     assert are_bound_ported_bounding_boxes_equal(bound, ported)
