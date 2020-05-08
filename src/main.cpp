@@ -46,6 +46,10 @@ class EdgeProxy {
 
   const Edge& edge() { return _edge; }
 
+  bool operator==(const EdgeProxy& other) const {
+    return left == other.left && right == other.right;
+  }
+
  private:
   Edge _edge;
 };
@@ -131,10 +135,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
             if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
             return EdgeProxy(tuple[0].cast<Point>(), tuple[1].cast<Point>());
           }))
-      .def("__eq__",
-           [](const EdgeProxy& self, const EdgeProxy& other) {
-             return self.left == other.left && self.right == other.right;
-           })
+      .def(py::self == py::self)
       .def("__repr__",
            [](const EdgeProxy& self) -> std::string {
              auto stream = make_stream();
