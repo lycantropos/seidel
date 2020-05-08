@@ -11,3 +11,8 @@ class Edge:
         self.right = right
 
     __repr__ = generate_repr(__init__)
+
+    def __eq__(self, other: 'Edge') -> bool:
+        return (self.left == other.left and self.right == other.right
+                if isinstance(other, Edge)
+                else NotImplemented)
