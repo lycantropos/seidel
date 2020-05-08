@@ -22,21 +22,6 @@ namespace py = pybind11;
 #define POINT_NAME "Point"
 #define TRAPEZOID_NAME "Trapezoid"
 
-static std::ostringstream make_stream() {
-  std::ostringstream stream;
-  stream.precision(std::numeric_limits<double>::digits10 + 2);
-  return stream;
-}
-
-static std::string bool_repr(bool value) { return py::str(py::bool_(value)); }
-
-static std::string point_repr(const Point& self) {
-  auto stream = make_stream();
-  stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << self.x << ", " << self.y
-         << ")";
-  return stream.str();
-}
-
 class EdgeProxy {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
@@ -77,6 +62,21 @@ class TrapezoidProxy {
  private:
   Trapezoid _trapezoid;
 };
+
+static std::ostringstream make_stream() {
+  std::ostringstream stream;
+  stream.precision(std::numeric_limits<double>::digits10 + 2);
+  return stream;
+}
+
+static std::string bool_repr(bool value) { return py::str(py::bool_(value)); }
+
+static std::string point_repr(const Point& self) {
+  auto stream = make_stream();
+  stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << self.x << ", " << self.y
+         << ")";
+  return stream.str();
+}
 
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
