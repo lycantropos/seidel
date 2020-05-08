@@ -1,3 +1,4 @@
+from operator import add
 from typing import Tuple
 
 from hypothesis import strategies
@@ -8,18 +9,21 @@ from seidel.point import Point
 from seidel.trapezoid import Trapezoid
 from tests.strategies import (coordinates_strategies,
                               coordinates_to_ported_edges,
-                              coordinates_to_ported_points,
+                              coordinates_to_sorted_ported_points_pairs,
                               to_pairs,
                               to_triplets)
-from tests.utils import Strategy, pack
+from tests.utils import (Strategy,
+                         pack)
 
 
 def coordinates_to_points_pairs_edges_pairs(coordinates: Strategy[Coordinate]
                                             ) -> Strategy[Tuple[Point, Point,
                                                                 Edge, Edge]]:
-    points = coordinates_to_ported_points(coordinates)
     edges = coordinates_to_ported_edges(coordinates)
-    return strategies.tuples(points, points, edges, edges)
+    return (strategies.tuples(
+            coordinates_to_sorted_ported_points_pairs(coordinates),
+            strategies.tuples(edges, edges))
+            .map(add))
 
 
 points_pairs_edges_pairs = (coordinates_strategies

@@ -1,4 +1,5 @@
-from operator import ne
+from operator import (add,
+                      ne)
 
 from _seidel import (Edge,
                      Point,
@@ -12,5 +13,8 @@ from tests.utils import (pack,
 
 floats = floats
 points = strategies.builds(Point, floats, floats)
-edges = to_pairs(points).filter(pack(ne)).map(sort_points).map(pack(Edge))
-trapezoids = strategies.builds(Trapezoid, points, points, edges, edges)
+sorted_points_pairs = to_pairs(points).filter(pack(ne)).map(sort_points)
+edges = sorted_points_pairs.map(pack(Edge))
+trapezoids = (strategies.tuples(sorted_points_pairs, to_pairs(edges))
+              .map(add)
+              .map(pack(Trapezoid)))
