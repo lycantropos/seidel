@@ -11,17 +11,11 @@ from tests.strategies import (coordinates_strategies,
                               to_triplets)
 from tests.utils import (Strategy,
                          pack,
-                         point_to_coordinates)
+                         point_to_coordinates,
+                         sort_points)
 
 coordinates_pairs = coordinates_strategies.flatmap(to_pairs)
 points = coordinates_strategies.flatmap(coordinates_to_ported_points)
-
-
-def sort_points(points_pair: Tuple[Point, Point]) -> Tuple[Point, Point]:
-    first, second = points_pair
-    return (points_pair
-            if second.is_right_of(first)
-            else (second, first))
 
 
 def coordinates_to_sorted_points_pairs(coordinates: Strategy[Coordinate]

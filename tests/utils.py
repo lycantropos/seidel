@@ -26,6 +26,7 @@ BoundEdge = BoundEdge
 PortedBoundingBox = PortedBoundingBox
 PortedEdge = PortedEdge
 PortedPoint = PortedPoint
+AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
@@ -77,3 +78,11 @@ def are_bound_ported_points_equal(bound: BoundPoint,
 def point_to_coordinates(point: Union[BoundPoint, PortedPoint]
                          ) -> Tuple[Coordinate, Coordinate]:
     return point.x, point.y
+
+
+def sort_points(points_pair: Tuple[AnyPoint, AnyPoint]
+                ) -> Tuple[AnyPoint, AnyPoint]:
+    first, second = points_pair
+    return (points_pair
+            if second.is_right_of(first)
+            else (second, first))
