@@ -11,11 +11,11 @@ Trapezoid::Trapezoid(const Point* left_, const Point* right_,
       right(right_),
       below(below_),
       above(above_),
-      lower_left(0),
-      lower_right(0),
-      upper_left(0),
-      upper_right(0),
-      trapezoid_node(0) {
+      lower_left(nullptr),
+      lower_right(nullptr),
+      upper_left(nullptr),
+      upper_right(nullptr),
+      trapezoid_node(nullptr) {
   assert(left != 0 && "Null left point");
   assert(right != 0 && "Null right point");
   assert(right->is_right_of(*left) && "Incorrect point order");
