@@ -38,10 +38,8 @@ struct Trapezoid {
   void set_upper_left(Trapezoid* upper_left_);
   void set_upper_right(Trapezoid* upper_right_);
 
-  /* Copy constructor and assignment operator defined but not implemented
-   * to prevent objects being copied. */
-  Trapezoid(const Trapezoid& other);
-  Trapezoid& operator=(const Trapezoid& other);
+  Trapezoid(const Trapezoid& other) = delete;
+  Trapezoid& operator=(const Trapezoid& other) = delete;
 
   const Point* left;   // Not owned.
   const Point* right;  // Not owned.
