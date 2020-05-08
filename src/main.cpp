@@ -35,12 +35,23 @@ static std::string point_repr(const Point& self) {
   return stream.str();
 }
 
+class BoundEdge {
+ public:
+  BoundEdge(const Point& left_, const Point& right_)
+      : left(left_), right(right_), _edge(Edge(&left, &right)){};
+
+  Point left, right;
+
+ private:
+  Edge _edge;
+};
+
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
     )pbdoc";
 
-  py::class_<Point, std::unique_ptr<Point, py::nodelete>>(m, POINT_NAME)
+  py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
       .def(py::pickle(
           [](const Point& self) {  // __getstate__
@@ -56,32 +67,31 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readwrite("y", &Point::y)
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
 
-  py::class_<Edge>(m, EDGE_NAME)
-      .def(py::init<const Point*, const Point*>(), py::arg("left"),
+  py::class_<BoundEdge>(m, EDGE_NAME)
+      .def(py::init<const Point&, const Point&>(), py::arg("left"),
            py::arg("right"))
       .def(py::pickle(
-          [](const Edge& self) {  // __getstate__
+          [](const BoundEdge& self) {  // __getstate__
             return py::make_tuple(self.left, self.right);
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
-            return Edge(tuple[0].cast<Point*>(), tuple[1].cast<Point*>());
+            return BoundEdge(tuple[0].cast<Point>(), tuple[1].cast<Point>());
           }))
       .def("__eq__",
-           [](const Edge& self, const Edge& other) {
-             return (*self.left) == (*other.left) &&
-                    (*self.right) == (*other.right);
+           [](const BoundEdge& self, const BoundEdge& other) {
+             return self.left == other.left && self.right == other.right;
            })
       .def("__repr__",
-           [](const Edge& self) -> std::string {
+           [](const BoundEdge& self) -> std::string {
              auto stream = make_stream();
              stream << C_STR(MODULE_NAME) "." EDGE_NAME "("
-                    << point_repr(*self.left) << ", " << point_repr(*self.right)
+                    << point_repr(self.left) << ", " << point_repr(self.right)
                     << ")";
              return stream.str();
            })
-      .def_readwrite("left", &Edge::left)
-      .def_readwrite("right", &Edge::right);
+      .def_readwrite("left", &BoundEdge::left)
+      .def_readwrite("right", &BoundEdge::right);
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
       .def(py::init<bool, const Point&, const Point&>(),
