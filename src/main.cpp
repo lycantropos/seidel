@@ -158,6 +158,15 @@ PYBIND11_MODULE(MODULE_NAME, m) {
            py::arg("left"), py::arg("right"), py::arg("above"),
            py::arg("below"))
       .def(py::self == py::self)
+      .def("__repr__",
+           [](const TrapezoidProxy& self) -> std::string {
+             auto stream = make_stream();
+             stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "("
+                    << point_repr(self.left) << ", " << point_repr(self.right)
+                    << ", " << edge_repr(self.above) << ", "
+                    << edge_repr(self.below) << ")";
+             return stream.str();
+           })
       .def_readwrite("left", &TrapezoidProxy::left)
       .def_readwrite("right", &TrapezoidProxy::right)
       .def_readwrite("above", &TrapezoidProxy::above)
