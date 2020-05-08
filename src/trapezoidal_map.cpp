@@ -88,10 +88,10 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
     // Old trapezoid is replaced by up to 4 new trapezoids: left is to the
     // left of the start point p, below/above are below/above the edge
     // inserted, and right is to the right of the end point q.
-    Trapezoid* left = 0;
-    Trapezoid* below = 0;
-    Trapezoid* above = 0;
-    Trapezoid* right = 0;
+    Trapezoid* left = nullptr;
+    Trapezoid* below = nullptr;
+    Trapezoid* above = nullptr;
+    Trapezoid* right = nullptr;
 
     // There are 4 different cases here depending on whether the old
     // trapezoid in question is the start and/or end trapezoid of those
@@ -274,8 +274,8 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
   // checks to deal with simple colinear (i.e. invalid) triangles.
   trapezoids.clear();
   Trapezoid* trapezoid = _tree->search(edge);
-  if (trapezoid == 0) {
-    assert(trapezoid != 0 && "search(edge) returns null trapezoid");
+  if (trapezoid == nullptr) {
+    assert(trapezoid != nullptr && "search(edge) returns null trapezoid");
     return false;
   }
 
@@ -292,7 +292,7 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
     else if (orient == +1)
       trapezoid = trapezoid->upper_right;
 
-    if (trapezoid == 0) {
+    if (trapezoid == nullptr) {
       assert(0 && "Expected trapezoid neighbor");
       return false;
     }
@@ -342,6 +342,6 @@ void TrapezoidalMap::initialize() {
 }
 
 void TrapezoidalMap::print_tree() {
-  assert(_tree != 0 && "Null Node tree");
+  assert(_tree != nullptr && "Null Node tree");
   _tree->print();
 }

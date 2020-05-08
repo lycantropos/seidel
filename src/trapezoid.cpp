@@ -16,45 +16,45 @@ Trapezoid::Trapezoid(const Point* left_, const Point* right_,
       upper_left(nullptr),
       upper_right(nullptr),
       trapezoid_node(nullptr) {
-  assert(left != 0 && "Null left point");
-  assert(right != 0 && "Null right point");
+  assert(left != nullptr && "Null left point");
+  assert(right != nullptr && "Null right point");
   assert(right->is_right_of(*left) && "Incorrect point order");
 }
 
 void Trapezoid::assert_valid(bool tree_complete) const {
 #ifndef NDEBUG
-  assert(left != 0 && "Null left point");
-  assert(right != 0 && "Null right point");
+  assert(left != nullptr && "Null left point");
+  assert(right != nullptr && "Null right point");
 
-  if (lower_left != 0) {
+  if (lower_left != nullptr) {
     assert(lower_left->below == below && lower_left->lower_right == this &&
            "Incorrect lower_left trapezoid");
     assert(get_lower_left_point() == lower_left->get_lower_right_point() &&
            "Incorrect lower left point");
   }
 
-  if (lower_right != 0) {
+  if (lower_right != nullptr) {
     assert(lower_right->below == below && lower_right->lower_left == this &&
            "Incorrect lower_right trapezoid");
     assert(get_lower_right_point() == lower_right->get_lower_left_point() &&
            "Incorrect lower right point");
   }
 
-  if (upper_left != 0) {
+  if (upper_left != nullptr) {
     assert(upper_left->above == above && upper_left->upper_right == this &&
            "Incorrect upper_left trapezoid");
     assert(get_upper_left_point() == upper_left->get_upper_right_point() &&
            "Incorrect upper left point");
   }
 
-  if (upper_right != 0) {
+  if (upper_right != nullptr) {
     assert(upper_right->above == above && upper_right->upper_left == this &&
            "Incorrect upper_right trapezoid");
     assert(get_upper_right_point() == upper_right->get_upper_left_point() &&
            "Incorrect upper right point");
   }
 
-  assert(trapezoid_node != 0 && "Null trapezoid_node");
+  assert(trapezoid_node != nullptr && "Null trapezoid_node");
 #endif
 }
 
@@ -91,20 +91,20 @@ void Trapezoid::print_debug() const {
 
 void Trapezoid::set_lower_left(Trapezoid* lower_left_) {
   lower_left = lower_left_;
-  if (lower_left != 0) lower_left->lower_right = this;
+  if (lower_left != nullptr) lower_left->lower_right = this;
 }
 
 void Trapezoid::set_lower_right(Trapezoid* lower_right_) {
   lower_right = lower_right_;
-  if (lower_right != 0) lower_right->lower_left = this;
+  if (lower_right != nullptr) lower_right->lower_left = this;
 }
 
 void Trapezoid::set_upper_left(Trapezoid* upper_left_) {
   upper_left = upper_left_;
-  if (upper_left != 0) upper_left->upper_right = this;
+  if (upper_left != nullptr) upper_left->upper_right = this;
 }
 
 void Trapezoid::set_upper_right(Trapezoid* upper_right_) {
   upper_right = upper_right_;
-  if (upper_right != 0) upper_right->upper_left = this;
+  if (upper_right != nullptr) upper_right->upper_left = this;
 }

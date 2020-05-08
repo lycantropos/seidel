@@ -7,9 +7,9 @@
 #include "trapezoid.h"
 
 Node::Node(const Point* point, Node* left, Node* right) : _type(Type_XNode) {
-  assert(point != 0 && "Invalid point");
-  assert(left != 0 && "Invalid left node");
-  assert(right != 0 && "Invalid right node");
+  assert(point != nullptr && "Invalid point");
+  assert(left != nullptr && "Invalid left node");
+  assert(right != nullptr && "Invalid right node");
   _union.xnode.point = point;
   _union.xnode.left = left;
   _union.xnode.right = right;
@@ -18,9 +18,9 @@ Node::Node(const Point* point, Node* left, Node* right) : _type(Type_XNode) {
 }
 
 Node::Node(const Edge* edge, Node* below, Node* above) : _type(Type_YNode) {
-  assert(edge != 0 && "Invalid edge");
-  assert(below != 0 && "Invalid below node");
-  assert(above != 0 && "Invalid above node");
+  assert(edge != nullptr && "Invalid edge");
+  assert(below != nullptr && "Invalid below node");
+  assert(above != nullptr && "Invalid above node");
   _union.ynode.edge = edge;
   _union.ynode.below = below;
   _union.ynode.above = above;
@@ -29,7 +29,7 @@ Node::Node(const Edge* edge, Node* below, Node* above) : _type(Type_YNode) {
 }
 
 Node::Node(Trapezoid* trapezoid) : _type(Type_TrapezoidNode) {
-  assert(trapezoid != 0 && "Null Trapezoid");
+  assert(trapezoid != nullptr && "Null Trapezoid");
   _union.trapezoid = trapezoid;
   trapezoid->trapezoid_node = this;
 }
@@ -51,7 +51,7 @@ Node::~Node() {
 }
 
 void Node::add_parent(Node* parent) {
-  assert(parent != 0 && "Null parent");
+  assert(parent != nullptr && "Null parent");
   assert(parent != this && "Cannot be parent of self");
   assert(!has_parent(parent) && "Parent already in collection");
   _parents.push_back(parent);
@@ -70,23 +70,23 @@ void Node::assert_valid(bool tree_complete) const {
   // Check children, and recurse.
   switch (_type) {
     case Type_XNode:
-      assert(_union.xnode.left != 0 && "Null left child");
+      assert(_union.xnode.left != nullptr && "Null left child");
       assert(_union.xnode.left->has_parent(this) && "Incorrect parent");
-      assert(_union.xnode.right != 0 && "Null right child");
+      assert(_union.xnode.right != nullptr && "Null right child");
       assert(_union.xnode.right->has_parent(this) && "Incorrect parent");
       _union.xnode.left->assert_valid(tree_complete);
       _union.xnode.right->assert_valid(tree_complete);
       break;
     case Type_YNode:
-      assert(_union.ynode.below != 0 && "Null below child");
+      assert(_union.ynode.below != nullptr && "Null below child");
       assert(_union.ynode.below->has_parent(this) && "Incorrect parent");
-      assert(_union.ynode.above != 0 && "Null above child");
+      assert(_union.ynode.above != nullptr && "Null above child");
       assert(_union.ynode.above->has_parent(this) && "Incorrect parent");
       _union.ynode.below->assert_valid(tree_complete);
       _union.ynode.above->assert_valid(tree_complete);
       break;
     case Type_TrapezoidNode:
-      assert(_union.trapezoid != 0 && "Null trapezoid");
+      assert(_union.trapezoid != nullptr && "Null trapezoid");
       assert(_union.trapezoid->trapezoid_node == this &&
              "Incorrect trapezoid node");
       _union.trapezoid->assert_valid(tree_complete);
@@ -121,7 +121,7 @@ void Node::get_stats(int depth, NodeStats& stats) const {
 }
 
 bool Node::has_child(const Node* child) const {
-  assert(child != 0 && "Null child node");
+  assert(child != nullptr && "Null child node");
   switch (_type) {
     case Type_XNode:
       return (_union.xnode.left == child || _union.xnode.right == child);
@@ -163,7 +163,7 @@ void Node::print(int depth /* = 0 */) const {
 }
 
 bool Node::remove_parent(Node* parent) {
-  assert(parent != 0 && "Null parent");
+  assert(parent != nullptr && "Null parent");
   assert(parent != this && "Cannot be parent of self");
   Parents::iterator it = std::find(_parents.begin(), _parents.end(), parent);
   assert(it != _parents.end() && "Parent not in collection");
@@ -177,7 +177,7 @@ void Node::replace_child(Node* old_child, Node* new_child) {
       assert(
           (_union.xnode.left == old_child || _union.xnode.right == old_child) &&
           "Not a child Node");
-      assert(new_child != 0 && "Null child node");
+      assert(new_child != nullptr && "Null child node");
       if (_union.xnode.left == old_child)
         _union.xnode.left = new_child;
       else
@@ -187,7 +187,7 @@ void Node::replace_child(Node* old_child, Node* new_child) {
       assert((_union.ynode.below == old_child ||
               _union.ynode.above == old_child) &&
              "Not a child node");
-      assert(new_child != 0 && "Null child node");
+      assert(new_child != nullptr && "Null child node");
       if (_union.ynode.below == old_child)
         _union.ynode.below = new_child;
       else
@@ -202,7 +202,7 @@ void Node::replace_child(Node* old_child, Node* new_child) {
 }
 
 void Node::replace_with(Node* new_node) {
-  assert(new_node != 0 && "Null replacement node");
+  assert(new_node != nullptr && "Null replacement node");
   // Replace child of each parent with new_node.  As each has parent has its
   // child replaced it is removed from the _parents collection.
   while (!_parents.empty()) _parents.front()->replace_child(this, new_node);

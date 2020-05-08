@@ -4,8 +4,8 @@
 
 Edge::Edge(const Point* left_, const Point* right_)
     : left(left_), right(right_) {
-  assert(left != 0 && "Null left endpoint");
-  assert(right != 0 && "Null right endpoint");
+  assert(left != nullptr && "Null left endpoint");
+  assert(right != nullptr && "Null right endpoint");
   assert(right->is_right_of(*left) && "Incorrect endpoints order");
 }
 
