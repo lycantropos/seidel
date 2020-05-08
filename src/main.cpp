@@ -35,9 +35,9 @@ static std::string point_repr(const Point& self) {
   return stream.str();
 }
 
-class BoundEdge {
+class EdgeProxy {
  public:
-  BoundEdge(const Point& left_, const Point& right_)
+  EdgeProxy(const Point& left_, const Point& right_)
       : left(left_), right(right_), _edge(Edge(&left, &right)){};
 
   Point left, right;
@@ -67,31 +67,31 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readwrite("y", &Point::y)
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
 
-  py::class_<BoundEdge>(m, EDGE_NAME)
+  py::class_<EdgeProxy>(m, EDGE_NAME)
       .def(py::init<const Point&, const Point&>(), py::arg("left"),
            py::arg("right"))
       .def(py::pickle(
-          [](const BoundEdge& self) {  // __getstate__
+          [](const EdgeProxy& self) {  // __getstate__
             return py::make_tuple(self.left, self.right);
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 2) throw std::runtime_error("Invalid state!");
-            return BoundEdge(tuple[0].cast<Point>(), tuple[1].cast<Point>());
+            return EdgeProxy(tuple[0].cast<Point>(), tuple[1].cast<Point>());
           }))
       .def("__eq__",
-           [](const BoundEdge& self, const BoundEdge& other) {
+           [](const EdgeProxy& self, const EdgeProxy& other) {
              return self.left == other.left && self.right == other.right;
            })
       .def("__repr__",
-           [](const BoundEdge& self) -> std::string {
+           [](const EdgeProxy& self) -> std::string {
              auto stream = make_stream();
              stream << C_STR(MODULE_NAME) "." EDGE_NAME "("
                     << point_repr(self.left) << ", " << point_repr(self.right)
                     << ")";
              return stream.str();
            })
-      .def_readwrite("left", &BoundEdge::left)
-      .def_readwrite("right", &BoundEdge::right);
+      .def_readwrite("left", &EdgeProxy::left)
+      .def_readwrite("right", &EdgeProxy::right);
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
       .def(py::init<bool, const Point&, const Point&>(),
