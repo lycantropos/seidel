@@ -40,14 +40,14 @@
  * No explicit testing of the validity of the triangulation is performed
  * as this is a computationally more complex task than the trifinding itself.
  */
-class TrapezoidMap {
+class TrapezoidalMap {
  public:
   /* Constructor.  A separate call to initialize() is required to initialize
    * the object before use.
    */
-  TrapezoidMap(const std::vector<Point>&);
+  TrapezoidalMap(const std::vector<Point>&);
 
-  ~TrapezoidMap();
+  ~TrapezoidalMap();
 
   NodeStats get_tree_stats();
 

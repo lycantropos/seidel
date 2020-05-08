@@ -6,7 +6,7 @@
 
 #include "bounding_box.h"
 
-TrapezoidMap::TrapezoidMap(const std::vector<Point>& points)
+TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
     : _points(points), npoints(points.size()), _tree(nullptr) {
   clear();
   // Set up points array, which contains all of the points in the
@@ -35,9 +35,9 @@ TrapezoidMap::TrapezoidMap(const std::vector<Point>& points)
   _points.push_back(Point(bbox.upper));                  // NE point.
 }
 
-TrapezoidMap::~TrapezoidMap() { clear(); }
+TrapezoidalMap::~TrapezoidalMap() { clear(); }
 
-bool TrapezoidMap::add_edge_to_tree(const Edge& edge) {
+bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
   std::vector<Trapezoid*> trapezoids;
   if (!find_trapezoids_intersecting_edge(edge, trapezoids)) return false;
   assert(!trapezoids.empty() && "No trapezoids intersect edge");
@@ -233,7 +233,7 @@ bool TrapezoidMap::add_edge_to_tree(const Edge& edge) {
   return true;
 }
 
-void TrapezoidMap::clear() {
+void TrapezoidalMap::clear() {
   _points.clear();
 
   _edges.clear();
@@ -242,7 +242,7 @@ void TrapezoidMap::clear() {
   _tree = nullptr;
 }
 
-bool TrapezoidMap::find_trapezoids_intersecting_edge(
+bool TrapezoidalMap::find_trapezoids_intersecting_edge(
     const Edge& edge, std::vector<Trapezoid*>& trapezoids) {
   // This is the FollowSegment algorithm of de Berg et al, with some extra
   // checks to deal with simple colinear (i.e. invalid) triangles.
@@ -276,13 +276,13 @@ bool TrapezoidMap::find_trapezoids_intersecting_edge(
   return true;
 }
 
-NodeStats TrapezoidMap::get_tree_stats() {
+NodeStats TrapezoidalMap::get_tree_stats() {
   NodeStats stats;
   _tree->get_stats(0, stats);
   return stats;
 }
 
-void TrapezoidMap::initialize() {
+void TrapezoidalMap::initialize() {
   // Set up edges array.
   // First the bottom and top edges of the enclosing rectangle.
   _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));
@@ -315,7 +315,7 @@ void TrapezoidMap::initialize() {
   }
 }
 
-void TrapezoidMap::print_tree() {
+void TrapezoidalMap::print_tree() {
   assert(_tree != 0 && "Null Node tree");
   _tree->print();
 }

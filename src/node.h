@@ -9,7 +9,7 @@
 
 class Node;  // Forward declaration.
 
-// Helper structure used by TrapezoidMap::get_tree_stats.
+// Helper structure used by TrapezoidalMap::get_tree_stats.
 struct NodeStats {
   NodeStats()
       : node_count(0),
