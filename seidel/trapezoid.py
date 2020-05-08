@@ -1,3 +1,5 @@
+from reprit.base import generate_repr
+
 from .edge import Edge
 from .point import Point
 
@@ -14,6 +16,8 @@ class Trapezoid:
         self.right = right
         self.above = above
         self.below = below
+
+    __repr__ = generate_repr(__init__)
 
     def __eq__(self, other: 'Trapezoid') -> bool:
         return ((self.left == other.left and self.right == other.right
