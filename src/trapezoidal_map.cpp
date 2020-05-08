@@ -39,9 +39,9 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
   // triangulation plus the 4 corners of the enclosing rectangle.
   BoundingBox bbox;
   for (auto& xy : _points) {
-    // Avoid problems with -0.0 values different from 0.0
-    if (xy.x == -0.0) xy.x = 0.0;
-    if (xy.y == -0.0) xy.y = 0.0;
+    // Avoid problems with -0. values different from 0.
+    if (xy.x == -0.) xy.x = 0.;
+    if (xy.y == -0.) xy.y = 0.;
     bbox.add(xy);
   }
 
@@ -49,10 +49,10 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
   // rectangle made slightly larger in case corner points are already in the
   // triangulation.
   if (bbox.empty) {
-    bbox.add(Point(0.0, 0.0));
-    bbox.add(Point(1.0, 1.0));
+    bbox.add(Point(0., 0.));
+    bbox.add(Point(1., 1.));
   } else {
-    const double small = 0.1;  // Any value > 0.0
+    const double small = 0.1;  // Any value > 0.
     bbox.expand((bbox.upper - bbox.lower) * small);
   }
   _points.push_back(Point(bbox.lower));                  // SW point.

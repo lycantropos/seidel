@@ -16,7 +16,7 @@ struct NodeStats {
         trapezoid_count(0),
         max_parent_count(0),
         max_depth(0),
-        sum_trapezoid_depth(0.0) {}
+        sum_trapezoid_depth(0.) {}
 
   long node_count, trapezoid_count, max_parent_count, max_depth;
   double sum_trapezoid_depth;

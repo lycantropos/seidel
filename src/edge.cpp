@@ -11,7 +11,7 @@ Edge::Edge(const Point* left_, const Point* right_)
 
 int Edge::get_point_orientation(const Point& xy) const {
   double cross_z = (xy - *left).cross_z(*right - *left);
-  return (cross_z > 0.0) ? +1 : ((cross_z < 0.0) ? -1 : 0);
+  return (cross_z > 0.) ? +1 : ((cross_z < 0.) ? -1 : 0);
 }
 
 double Edge::get_slope() const {
@@ -29,7 +29,7 @@ double Edge::get_y_at_x(const double& x) const {
     // Equation of line: left + lambda*(right - left) = xy.
     // i.e. left.x + lambda(right.x - left.x) = x and similar for y.
     double lambda = (x - left->x) / (right->x - left->x);
-    assert(lambda >= 0 && lambda <= 1.0 && "Lambda out of bounds");
+    assert(lambda >= 0. && lambda <= 1. && "Lambda out of bounds");
     return left->y + lambda * (right->y - left->y);
   }
 }
