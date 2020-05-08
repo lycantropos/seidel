@@ -4,11 +4,14 @@ from hypothesis import strategies
 
 from seidel.hints import Coordinate
 from tests.utils import (BoundBoundingBox,
+                         BoundEdge,
                          BoundPoint,
                          BoundPortedBoundingBoxesPair,
+                         BoundPortedEdgesPair,
                          BoundPortedPointsPair,
                          Domain,
                          PortedBoundingBox,
+                         PortedEdge,
                          PortedPoint,
                          Strategy)
 
@@ -25,6 +28,15 @@ def to_pairs(elements: Strategy[Domain]) -> Strategy[Tuple[Domain, Domain]]:
 def to_triplets(elements: Strategy[Domain]
                 ) -> Strategy[Tuple[Domain, Domain, Domain]]:
     return strategies.tuples(elements, elements, elements)
+
+
+def to_bound_with_ported_edges_pair(left_points: BoundPortedPointsPair,
+                                    right_points: BoundPortedPointsPair
+                                    ) -> BoundPortedEdgesPair:
+    left_bound, left_ported = left_points
+    right_bound, right_ported = right_points
+    return (BoundEdge(left_bound, right_bound),
+            PortedEdge(left_ported, right_ported))
 
 
 def to_bound_with_ported_points_pair(x: float, y: float
