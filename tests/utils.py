@@ -18,6 +18,10 @@ from seidel.point import Point as PortedPoint
 Domain = TypeVar('Domain')
 Range = TypeVar('Range')
 Strategy = SearchStrategy
+BoundBoundingBox = BoundBoundingBox
+BoundPoint = BoundPoint
+PortedPoint = PortedPoint
+PortedBoundingBox = PortedBoundingBox
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 

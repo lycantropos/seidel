@@ -1,15 +1,16 @@
 from typing import Tuple
 
-from _seidel import (BoundingBox as BoundBoundingBox,
-                     Point as BoundPoint)
 from hypothesis import strategies
 
-from seidel.bounding_box import BoundingBox as PortedBoundingBox
 from seidel.hints import Coordinate
-from seidel.point import Point as PortedPoint
-from tests.utils import (BoundPortedBoundingBoxesPair,
+from tests.utils import (BoundBoundingBox,
+                         BoundPoint,
+                         BoundPortedBoundingBoxesPair,
                          BoundPortedPointsPair,
-                         Domain, Strategy)
+                         Domain,
+                         PortedBoundingBox,
+                         PortedPoint,
+                         Strategy)
 
 
 def coordinates_to_ported_points(coordinates: Strategy[Coordinate]
