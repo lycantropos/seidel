@@ -4,9 +4,9 @@
 
 Edge::Edge(const Point* left_, const Point* right_)
     : left(left_), right(right_) {
-  assert(left != 0 && "Null left point");
-  assert(right != 0 && "Null right point");
-  assert(right->is_right_of(*left) && "Incorrect point order");
+  assert(left != 0 && "Null left endpoint");
+  assert(right != 0 && "Null right endpoint");
+  assert(right->is_right_of(*left) && "Incorrect endpoints order");
 }
 
 int Edge::get_point_orientation(const Point& xy) const {
