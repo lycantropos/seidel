@@ -260,8 +260,6 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
 }
 
 void TrapezoidalMap::clear() {
-  _points.clear();
-
   _edges.clear();
 
   delete _tree;
