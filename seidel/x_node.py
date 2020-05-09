@@ -13,3 +13,10 @@ class XNode(Node):
         self.right = right
 
     __repr__ = generate_repr(__init__)
+
+    def __eq__(self, other: 'XNode') -> bool:
+        return ((self.point == other.point
+                 and self.left is other.left
+                 and self.right is other.right)
+                if isinstance(other, XNode)
+                else NotImplemented)
