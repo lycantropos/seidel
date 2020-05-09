@@ -4,28 +4,31 @@ from functools import partial
 from typing import (Callable,
                     Iterable,
                     Tuple,
-                    TypeVar,
-                    Union)
+                    TypeVar)
 
 from _seidel import (BoundingBox as BoundBoundingBox,
                      Edge as BoundEdge,
-                     Point as BoundPoint)
+                     Point as BoundPoint,
+                     Trapezoid as BoundTrapezoid)
 from hypothesis.strategies import SearchStrategy
 
 from seidel.bounding_box import BoundingBox as PortedBoundingBox
 from seidel.edge import Edge as PortedEdge
 from seidel.hints import Coordinate
 from seidel.point import Point as PortedPoint
+from seidel.trapezoid import Trapezoid as PortedTrapezoid
 
 Domain = TypeVar('Domain')
 Range = TypeVar('Range')
 Strategy = SearchStrategy
 BoundBoundingBox = BoundBoundingBox
-BoundPoint = BoundPoint
 BoundEdge = BoundEdge
+BoundPoint = BoundPoint
+BoundTrapezoid = BoundTrapezoid
 PortedBoundingBox = PortedBoundingBox
 PortedEdge = PortedEdge
 PortedPoint = PortedPoint
+PortedTrapezoid = PortedTrapezoid
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
@@ -73,6 +76,14 @@ def are_bound_ported_edges_equal(bound: BoundEdge, ported: PortedEdge) -> bool:
 def are_bound_ported_points_equal(bound: BoundPoint,
                                   ported: PortedPoint) -> bool:
     return bound.x == ported.x and bound.y == ported.y
+
+
+def are_bound_ported_trapezoids_equal(bound: BoundTrapezoid,
+                                      ported: PortedTrapezoid) -> bool:
+    return (are_bound_ported_points_equal(bound.left, ported.left)
+            and are_bound_ported_points_equal(bound.right, ported.right)
+            and are_bound_ported_edges_equal(bound.above, ported.above)
+            and are_bound_ported_edges_equal(bound.below, ported.below))
 
 
 def point_to_coordinates(point: AnyPoint) -> Tuple[Coordinate, Coordinate]:
