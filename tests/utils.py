@@ -75,8 +75,7 @@ def are_bound_ported_points_equal(bound: BoundPoint,
     return bound.x == ported.x and bound.y == ported.y
 
 
-def point_to_coordinates(point: Union[BoundPoint, PortedPoint]
-                         ) -> Tuple[Coordinate, Coordinate]:
+def point_to_coordinates(point: AnyPoint) -> Tuple[Coordinate, Coordinate]:
     return point.x, point.y
 
 
