@@ -11,7 +11,6 @@ from tests.strategies import (floats,
 from tests.utils import (pack,
                          sort_points)
 
-floats = floats
 points = strategies.builds(Point, floats, floats)
 sorted_points_pairs = to_pairs(points).filter(pack(ne)).map(sort_points)
 edges = sorted_points_pairs.map(pack(Edge))

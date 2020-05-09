@@ -5,6 +5,5 @@ from hypothesis import strategies
 from tests.strategies import floats
 
 booleans = strategies.booleans()
-floats = floats
 points = strategies.builds(Point, floats, floats)
 bounding_boxes = strategies.builds(BoundingBox, booleans, points, points)
