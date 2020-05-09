@@ -9,6 +9,7 @@ from seidel.x_node import XNode
 from tests.strategies import (coordinates_strategies,
                               coordinates_to_ported_leaves,
                               coordinates_to_ported_points,
+                              recursive,
                               to_pairs,
                               to_triplets)
 from tests.utils import (Strategy,
@@ -21,8 +22,7 @@ def coordinates_to_nodes(coordinates: Strategy[Coordinate]) -> Strategy[Node]:
     def expand(nodes: Strategy[Node]) -> Strategy[Node]:
         return strategies.builds(XNode, points, nodes, nodes)
 
-    return strategies.recursive(coordinates_to_ported_leaves(coordinates),
-                                expand)
+    return recursive(coordinates_to_ported_leaves(coordinates), expand)
 
 
 def coordinates_to_points_with_nodes_pairs(coordinates: Strategy[Coordinate]

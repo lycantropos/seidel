@@ -10,6 +10,7 @@ from _seidel import (Edge,
 from hypothesis import strategies
 
 from tests.strategies import (floats,
+                              recursive,
                               to_pairs)
 from tests.utils import (Strategy,
                          pack,
@@ -29,5 +30,5 @@ def to_x_nodes(nodes: Strategy[Node]) -> Strategy[XNode]:
     return strategies.builds(XNode, points, nodes, nodes)
 
 
-nodes = strategies.recursive(leaves, to_x_nodes)
+nodes = recursive(leaves, to_x_nodes)
 x_nodes = to_x_nodes(nodes)

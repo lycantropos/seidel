@@ -1,3 +1,4 @@
+from functools import partial
 from operator import add
 from typing import Tuple
 
@@ -114,6 +115,10 @@ def to_bound_with_ported_trapezoids_pair(left_points: BoundPortedPointsPair,
                            bound_below),
             PortedTrapezoid(ported_left, ported_right, ported_above,
                             ported_below))
+
+
+recursive = partial(strategies.recursive,
+                    max_leaves=10)
 
 
 def to_pairs(elements: Strategy[Domain]) -> Strategy[Tuple[Domain, Domain]]:
