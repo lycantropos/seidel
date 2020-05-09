@@ -83,52 +83,6 @@ class TrapezoidProxy {
   std::unique_ptr<Trapezoid> _trapezoid;
 };
 
-class NodeProxy {
- public:
-  virtual Node* node() = 0;
-};
-
-class XNode : public NodeProxy {
- public:
-  XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
-      : point(point_),
-        left(left_),
-        right(right_),
-        _node(&point, left->node(), right->node()) {}
-
-  bool operator==(const XNode& other) const {
-    return point == other.point && left == other.left && right == other.right;
-  }
-
-  Node* node() override {
-    return new Node(&point, left->node(), right->node());
-  }
-
-  Point point;
-  NodeProxy* left;
-  NodeProxy* right;
-
- private:
-  Node _node;
-};
-
-class Leaf : public NodeProxy {
- public:
-  Leaf(const TrapezoidProxy& trapezoid_)
-      : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
-
-  bool operator==(const Leaf& other) const {
-    return trapezoid == other.trapezoid;
-  }
-
-  Node* node() override { return new Node(trapezoid.trapezoid()); }
-
-  TrapezoidProxy trapezoid;
-
- private:
-  Node _node;
-};
-
 static std::ostringstream make_stream() {
   std::ostringstream stream;
   stream.precision(std::numeric_limits<double>::digits10 + 2);
@@ -158,6 +112,65 @@ static std::string trapezoid_repr(const TrapezoidProxy& self) {
          << ", " << edge_repr(self.below) << ")";
   return stream.str();
 }
+
+class NodeProxy {
+ public:
+  virtual Node* node() = 0;
+  virtual void print(std::ostream& stream) const = 0;
+};
+
+class XNode : public NodeProxy {
+ public:
+  XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
+      : point(point_),
+        left(left_),
+        right(right_),
+        _node(&point, left->node(), right->node()) {}
+
+  bool operator==(const XNode& other) const {
+    return point == other.point && left == other.left && right == other.right;
+  }
+
+  Node* node() override {
+    return new Node(&point, left->node(), right->node());
+  }
+
+  void print(std::ostream& stream) const override {
+    stream << C_STR(MODULE_NAME) "." X_NODE_NAME "(" << point_repr(point) << ", ";
+    left->print(stream);
+    stream << ", ";
+    right->print(stream);
+    stream << ")";
+  }
+
+  Point point;
+  NodeProxy* left;
+  NodeProxy* right;
+
+ private:
+  Node _node;
+};
+
+class Leaf : public NodeProxy {
+ public:
+  Leaf(const TrapezoidProxy& trapezoid_)
+      : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
+
+  bool operator==(const Leaf& other) const {
+    return trapezoid == other.trapezoid;
+  }
+
+  Node* node() override { return new Node(trapezoid.trapezoid()); }
+
+  void print(std::ostream& stream) const override {
+    stream << C_STR(MODULE_NAME) "." LEAF_NAME "(" << trapezoid_repr(trapezoid) << ")";
+  }
+
+  TrapezoidProxy trapezoid;
+
+ private:
+  Node _node;
+};
 
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
@@ -262,6 +275,11 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def(py::self == py::self)
+      .def("__repr__", [](const Leaf& self) {
+         auto stream = make_stream();
+         self.print(stream);
+         return stream.str();
+      })
       .def_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
