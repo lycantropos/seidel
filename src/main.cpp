@@ -276,6 +276,13 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
+      .def(py::pickle(
+          [](const Leaf& self) {  // __getstate__
+            return self.trapezoid;
+          },
+          [](const TrapezoidProxy& trapezoid) {  // __setstate__
+            return std::make_unique<Leaf>(trapezoid);
+          }))
       .def(py::self == py::self)
       .def("__repr__",
            [](const Leaf& self) {
