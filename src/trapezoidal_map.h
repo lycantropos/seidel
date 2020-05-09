@@ -49,9 +49,6 @@ class TrapezoidalMap {
    * for example, the triangulation is changed by setting the mask. */
   void initialize();
 
-  // Print the search tree as text to stdout; useful for debug purposes.
-  void print_tree();
-
  private:
   // Add the specified Edge to the search tree, returning true if successful.
   bool add_edge_to_tree(const Edge& edge);

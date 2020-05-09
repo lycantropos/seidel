@@ -332,8 +332,3 @@ void TrapezoidalMap::initialize() {
     _tree->assert_valid(index == nedges - 1);
   }
 }
-
-void TrapezoidalMap::print_tree() {
-  assert(_tree != nullptr && "Null Node tree");
-  _tree->print();
-}
