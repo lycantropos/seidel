@@ -9,6 +9,7 @@
 
 #include "bounding_box.h"
 #include "edge.h"
+#include "node.h"
 #include "point.h"
 #include "trapezoid.h"
 
@@ -19,6 +20,7 @@ namespace py = pybind11;
 #define C_STR(a) C_STR_HELPER(a)
 #define BOUNDING_BOX_NAME "BoundingBox"
 #define EDGE_NAME "Edge"
+#define LEAF_NAME "Leaf"
 #define POINT_NAME "Point"
 #define TRAPEZOID_NAME "Trapezoid"
 
@@ -78,6 +80,17 @@ class TrapezoidProxy {
 
  private:
   std::unique_ptr<Trapezoid> _trapezoid;
+};
+
+class Leaf {
+ public:
+  Leaf(const TrapezoidProxy& trapezoid_)
+      : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
+
+  TrapezoidProxy trapezoid;
+
+ private:
+  Node _node;
 };
 
 static std::ostringstream make_stream() {
@@ -199,6 +212,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readonly("right", &TrapezoidProxy::right)
       .def_readonly("above", &TrapezoidProxy::above)
       .def_readonly("below", &TrapezoidProxy::below);
+
+  py::class_<Leaf>(m, LEAF_NAME)
+      .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
+      .def_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;
