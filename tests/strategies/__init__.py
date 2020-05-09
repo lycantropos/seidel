@@ -1,5 +1,7 @@
 from .factories import (coordinates_to_ported_edges,
                         coordinates_to_ported_points,
+                        coordinates_to_ported_points_pairs_edges_pairs,
+                        coordinates_to_ported_trapezoids,
                         coordinates_to_sorted_ported_points_pairs,
                         to_bound_with_ported_bounding_boxes_pair,
                         to_bound_with_ported_edges_pair,

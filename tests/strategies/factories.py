@@ -1,9 +1,11 @@
+from operator import add
 from typing import Tuple
 
 from hypothesis import strategies
 
 from seidel.edge import Edge
 from seidel.hints import Coordinate
+from seidel.trapezoid import Trapezoid
 from tests.utils import (BoundBoundingBox,
                          BoundEdge,
                          BoundPoint,
@@ -93,3 +95,19 @@ def coordinates_to_sorted_ported_points_pairs(
                              unique_by=point_to_coordinates)
             .map(tuple)
             .map(sort_points))
+
+
+def coordinates_to_ported_points_pairs_edges_pairs(
+        coordinates: Strategy[Coordinate]
+) -> Strategy[Tuple[PortedPoint, PortedPoint, PortedEdge, PortedEdge]]:
+    edges = coordinates_to_ported_edges(coordinates)
+    return (strategies.tuples(
+            coordinates_to_sorted_ported_points_pairs(coordinates),
+            strategies.tuples(edges, edges))
+            .map(pack(add)))
+
+
+def coordinates_to_ported_trapezoids(coordinates: Strategy[Coordinate]
+                                     ) -> Strategy[PortedTrapezoid]:
+    return (coordinates_to_ported_points_pairs_edges_pairs(coordinates)
+            .map(pack(Trapezoid)))
