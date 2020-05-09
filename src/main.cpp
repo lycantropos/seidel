@@ -63,6 +63,7 @@ class TrapezoidProxy {
     below = other.below;
     _trapezoid =
         std::make_unique<Trapezoid>(&left, &right, below.edge(), above.edge());
+    return *this;
   }
 
   bool operator==(const TrapezoidProxy& other) const {
