@@ -47,11 +47,28 @@ class TrapezoidProxy {
         right(right_),
         above(above_),
         below(below_),
-        _trapezoid(&left, &right, below.edge(), above.edge()){};
+        _trapezoid(std::make_unique<Trapezoid>(&left, &right, below.edge(),
+                                               above.edge())){};
+
+  TrapezoidProxy(const TrapezoidProxy& other)
+      : TrapezoidProxy(other.left, other.right, other.above, other.below){};
+
+  TrapezoidProxy& operator=(const TrapezoidProxy& other) {
+    left = other.left;
+    right = other.right;
+    above = other.above;
+    below = other.below;
+    _trapezoid =
+        std::make_unique<Trapezoid>(&left, &right, below.edge(), above.edge());
+  };
 
   bool operator==(const TrapezoidProxy& other) const {
     return left == other.left && right == other.right && above == other.above &&
            below == other.below;
+  }
+
+  Trapezoid* trapezoid() {
+    return new Trapezoid(&left, &right, below.edge(), above.edge());
   }
 
   Point left;
@@ -60,7 +77,7 @@ class TrapezoidProxy {
   EdgeProxy below;
 
  private:
-  Trapezoid _trapezoid;
+  std::unique_ptr<Trapezoid> _trapezoid;
 };
 
 static std::ostringstream make_stream() {
