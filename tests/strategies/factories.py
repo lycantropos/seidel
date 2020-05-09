@@ -177,7 +177,7 @@ def to_bound_with_ported_x_nodes_pair(points: BoundPortedPointsPair,
 
 
 recursive = partial(strategies.recursive,
-                    max_leaves=10)
+                    max_leaves=5)
 
 
 def to_pairs(elements: Strategy[Domain]) -> Strategy[Tuple[Domain, Domain]]:
