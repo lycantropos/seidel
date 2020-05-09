@@ -96,6 +96,10 @@ class XNode : public NodeProxy {
         right(right_),
         _node(&point, left->node(), right->node()) {}
 
+  bool operator==(const XNode& other) const {
+    return point == other.point && left == other.left && right == other.right;
+  }
+
   Node* node() override {
     return new Node(&point, left->node(), right->node());
   }
@@ -250,6 +254,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<XNode, NodeProxy>(m, X_NODE_NAME)
       .def(py::init<const Point&, NodeProxy*, NodeProxy*>(), py::arg("point"),
            py::arg("left").none(false), py::arg("right").none(false))
+      .def(py::self == py::self)
       .def_readonly("point", &XNode::point)
       .def_readonly("left", &XNode::left)
       .def_readonly("right", &XNode::right);
