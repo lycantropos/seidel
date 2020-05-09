@@ -270,8 +270,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<NodeProxy, std::shared_ptr<NodeProxy>>(m, "Node");
 
   py::class_<XNode, NodeProxy, std::shared_ptr<XNode>>(m, X_NODE_NAME)
-      .def(py::init<const Point&, std::shared_ptr<NodeProxy>, std::shared_ptr<NodeProxy>>(), py::arg("point"),
-           py::arg("left").none(false), py::arg("right").none(false))
+      .def(py::init<const Point&, std::shared_ptr<NodeProxy>,
+                    std::shared_ptr<NodeProxy>>(),
+           py::arg("point"), py::arg("left").none(false),
+           py::arg("right").none(false))
       .def(py::self == py::self)
       .def("__repr__",
            [](const XNode& self) {
