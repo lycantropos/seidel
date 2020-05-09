@@ -1,3 +1,5 @@
+from reprit.base import generate_repr
+
 from .node import Node
 from .point import Point
 
@@ -9,3 +11,5 @@ class XNode(Node):
         self.point = point
         self.left = left
         self.right = right
+
+    __repr__ = generate_repr(__init__)
