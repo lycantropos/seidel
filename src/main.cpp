@@ -149,8 +149,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
           }))
       .def(py::self == py::self)
       .def("__repr__", edge_repr)
-      .def_readwrite("left", &EdgeProxy::left)
-      .def_readwrite("right", &EdgeProxy::right);
+      .def_readonly("left", &EdgeProxy::left)
+      .def_readonly("right", &EdgeProxy::right);
 
   py::class_<TrapezoidProxy>(m, TRAPEZOID_NAME)
       .def(py::init<const Point&, const Point&, const EdgeProxy&,
