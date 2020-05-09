@@ -28,7 +28,7 @@ namespace py = pybind11;
 class EdgeProxy {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
-      : left(left_), right(right_), _edge(Edge(&left, &right)){};
+      : left(left_), right(right_), _edge(Edge(&left, &right)) {}
 
   bool operator==(const EdgeProxy& other) const {
     return left == other.left && right == other.right;
@@ -51,10 +51,10 @@ class TrapezoidProxy {
         above(above_),
         below(below_),
         _trapezoid(std::make_unique<Trapezoid>(&left, &right, below.edge(),
-                                               above.edge())){};
+                                               above.edge())) {}
 
   TrapezoidProxy(const TrapezoidProxy& other)
-      : TrapezoidProxy(other.left, other.right, other.above, other.below){};
+      : TrapezoidProxy(other.left, other.right, other.above, other.below) {}
 
   TrapezoidProxy& operator=(const TrapezoidProxy& other) {
     left = other.left;
@@ -63,7 +63,7 @@ class TrapezoidProxy {
     below = other.below;
     _trapezoid =
         std::make_unique<Trapezoid>(&left, &right, below.edge(), above.edge());
-  };
+  }
 
   bool operator==(const TrapezoidProxy& other) const {
     return left == other.left && right == other.right && above == other.above &&
