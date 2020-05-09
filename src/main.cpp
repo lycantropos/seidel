@@ -113,6 +113,10 @@ class Leaf : public NodeProxy {
   Leaf(const TrapezoidProxy& trapezoid_)
       : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
 
+  bool operator==(const Leaf& other) const {
+    return trapezoid == other.trapezoid;
+  }
+
   Node* node() override { return new Node(trapezoid.trapezoid()); }
 
   TrapezoidProxy trapezoid;
@@ -252,6 +256,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
+      .def(py::self == py::self)
       .def_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
