@@ -327,6 +327,12 @@ PYBIND11_MODULE(MODULE_NAME, m) {
            py::arg("edge"), py::arg("above").none(false),
            py::arg("below").none(false))
       .def(py::self == py::self)
+      .def("__repr__",
+           [](const YNode& self) {
+             auto stream = make_stream();
+             self.print(stream);
+             return stream.str();
+           })
       .def_readonly("edge", &YNode::edge)
       .def_readonly("above", &YNode::above)
       .def_readonly("below", &YNode::below);
