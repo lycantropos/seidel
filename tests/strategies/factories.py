@@ -3,9 +3,7 @@ from typing import Tuple
 
 from hypothesis import strategies
 
-from seidel.edge import Edge
 from seidel.hints import Coordinate
-from seidel.trapezoid import Trapezoid
 from tests.utils import (BoundBoundingBox,
                          BoundEdge,
                          BoundLeaf,
@@ -28,21 +26,26 @@ from tests.utils import (BoundBoundingBox,
                          sort_points)
 
 
+def coordinates_to_ported_edges(coordinates: Strategy[Coordinate]
+                                ) -> Strategy[PortedEdge]:
+    return (coordinates_to_sorted_ported_points_pairs(coordinates)
+            .map(pack(PortedEdge)))
+
+
+def coordinates_to_ported_leaves(coordinates: Strategy[Coordinate]
+                                 ) -> Strategy[PortedLeaf]:
+    return coordinates_to_ported_trapezoids(coordinates).map(PortedLeaf)
+
+
 def coordinates_to_ported_points(coordinates: Strategy[Coordinate]
                                  ) -> Strategy[PortedPoint]:
     return strategies.builds(PortedPoint, coordinates, coordinates)
 
 
-def coordinates_to_ported_edges(coordinates: Strategy[Coordinate]
-                                ) -> Strategy[PortedEdge]:
-    return (coordinates_to_sorted_ported_points_pairs(coordinates)
-            .map(pack(Edge)))
-
-
 def coordinates_to_ported_trapezoids(coordinates: Strategy[Coordinate]
                                      ) -> Strategy[PortedTrapezoid]:
     return (coordinates_to_ported_points_pairs_edges_pairs(coordinates)
-            .map(pack(Trapezoid)))
+            .map(pack(PortedTrapezoid)))
 
 
 def coordinates_to_ported_points_pairs_edges_pairs(

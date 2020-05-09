@@ -11,7 +11,9 @@ from hypothesis import strategies
 
 from tests.strategies import (floats,
                               to_pairs)
-from tests.utils import (Strategy, pack, sort_points)
+from tests.utils import (Strategy,
+                         pack,
+                         sort_points)
 
 floats = floats
 points = strategies.builds(Point, floats, floats)
@@ -23,13 +25,9 @@ trapezoids = (strategies.tuples(sorted_points_pairs, to_pairs(edges))
 leaves = trapezoids.map(Leaf)
 
 
-def extend(nodes: Strategy[Node]) -> Strategy[Node]:
-    return nodes | to_x_nodes(nodes)
-
-
 def to_x_nodes(nodes: Strategy[Node]) -> Strategy[XNode]:
     return strategies.builds(XNode, points, nodes, nodes)
 
 
-nodes = strategies.recursive(leaves, extend)
+nodes = strategies.recursive(leaves, to_x_nodes)
 x_nodes = to_x_nodes(nodes)
