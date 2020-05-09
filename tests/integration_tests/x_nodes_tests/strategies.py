@@ -38,3 +38,4 @@ def to_x_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
 
 
 nodes_pairs = recursive(leaves_pairs, to_x_nodes_pairs)
+x_nodes_pairs = to_x_nodes_pairs(nodes_pairs)
