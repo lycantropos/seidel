@@ -123,7 +123,8 @@ class NodeProxy {
 
 class XNode : public NodeProxy {
  public:
-  XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
+  XNode(const Point& point_, std::shared_ptr<NodeProxy> left_,
+        std::shared_ptr<NodeProxy> right_)
       : point(point_),
         left(left_),
         right(right_),
@@ -147,8 +148,8 @@ class XNode : public NodeProxy {
   }
 
   Point point;
-  NodeProxy* left;
-  NodeProxy* right;
+  std::shared_ptr<NodeProxy> left;
+  std::shared_ptr<NodeProxy> right;
 
  private:
   Node _node;
@@ -266,17 +267,17 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readonly("above", &TrapezoidProxy::above)
       .def_readonly("below", &TrapezoidProxy::below);
 
-  py::class_<NodeProxy>(m, "Node");
+  py::class_<NodeProxy, std::shared_ptr<NodeProxy>>(m, "Node");
 
-  py::class_<XNode, NodeProxy>(m, X_NODE_NAME)
-      .def(py::init<const Point&, NodeProxy*, NodeProxy*>(), py::arg("point"),
+  py::class_<XNode, NodeProxy, std::shared_ptr<XNode>>(m, X_NODE_NAME)
+      .def(py::init<const Point&, std::shared_ptr<NodeProxy>, std::shared_ptr<NodeProxy>>(), py::arg("point"),
            py::arg("left").none(false), py::arg("right").none(false))
       .def(py::self == py::self)
       .def_readonly("point", &XNode::point)
       .def_readonly("left", &XNode::left)
       .def_readonly("right", &XNode::right);
 
-  py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
+  py::class_<Leaf, NodeProxy, std::shared_ptr<Leaf>>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def(py::pickle(
           [](const Leaf& self) {  // __getstate__
