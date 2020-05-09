@@ -29,7 +29,7 @@ class EdgeProxy {
 
   Point left, right;
 
-  const Edge& edge() { return _edge; }
+  const Edge& edge() const { return _edge; }
 
   bool operator==(const EdgeProxy& other) const {
     return left == other.left && right == other.right;
