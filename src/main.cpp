@@ -24,6 +24,7 @@ namespace py = pybind11;
 #define POINT_NAME "Point"
 #define TRAPEZOID_NAME "Trapezoid"
 #define X_NODE_NAME "XNode"
+#define Y_NODE_NAME "YNode"
 
 class EdgeProxy {
  public:
@@ -150,6 +151,41 @@ class XNode : public NodeProxy {
   Point point;
   std::shared_ptr<NodeProxy> left;
   std::shared_ptr<NodeProxy> right;
+
+ private:
+  Node _node;
+};
+
+
+class YNode : public NodeProxy {
+ public:
+  YNode(const EdgeProxy& edge_, std::shared_ptr<NodeProxy> above_,
+        std::shared_ptr<NodeProxy> below_)
+      : edge(edge_),
+        above(above_),
+        below(below_),
+        _node(&edge.edge(), below->node(), above->node()) {}
+
+  bool operator==(const YNode& other) const {
+    return edge == other.edge && above == other.above && below == other.below;
+  }
+
+  Node* node() override {
+    return new Node(&edge.edge(), below->node(), above->node());
+  }
+
+  void print(std::ostream& stream) const override {
+    stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "(" << edge_repr(edge)
+           << ", ";
+    above->print(stream);
+    stream << ", ";
+    below->print(stream);
+    stream << ")";
+  }
+
+  EdgeProxy edge;
+  std::shared_ptr<NodeProxy> above;
+  std::shared_ptr<NodeProxy> below;
 
  private:
   Node _node;
@@ -284,6 +320,15 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readonly("point", &XNode::point)
       .def_readonly("left", &XNode::left)
       .def_readonly("right", &XNode::right);
+
+  py::class_<YNode, NodeProxy, std::shared_ptr<YNode>>(m, Y_NODE_NAME)
+      .def(py::init<const EdgeProxy&, std::shared_ptr<NodeProxy>,
+                    std::shared_ptr<NodeProxy>>(),
+           py::arg("edge"), py::arg("above").none(false),
+           py::arg("below").none(false))
+      .def_readonly("edge", &YNode::edge)
+      .def_readonly("above", &YNode::above)
+      .def_readonly("below", &YNode::below);
 
   py::class_<Leaf, NodeProxy, std::shared_ptr<Leaf>>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
