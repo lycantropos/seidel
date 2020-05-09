@@ -95,31 +95,6 @@ void Node::assert_valid(bool tree_complete) const {
 #endif
 }
 
-void Node::get_stats(int depth, NodeStats& stats) const {
-  stats.node_count++;
-  if (depth > stats.max_depth) stats.max_depth = depth;
-  bool new_node = stats.unique_nodes.insert(this).second;
-  if (new_node)
-    stats.max_parent_count =
-        std::max(stats.max_parent_count, static_cast<long>(_parents.size()));
-
-  switch (_type) {
-    case Type_XNode:
-      _union.xnode.left->get_stats(depth + 1, stats);
-      _union.xnode.right->get_stats(depth + 1, stats);
-      break;
-    case Type_YNode:
-      _union.ynode.below->get_stats(depth + 1, stats);
-      _union.ynode.above->get_stats(depth + 1, stats);
-      break;
-    default:  // Type_TrapezoidNode:
-      stats.unique_trapezoid_nodes.insert(this);
-      stats.trapezoid_count++;
-      stats.sum_trapezoid_depth += depth;
-      break;
-  }
-}
-
 bool Node::has_child(const Node* child) const {
   assert(child != nullptr && "Null child node");
   switch (_type) {

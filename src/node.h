@@ -7,22 +7,6 @@
 #include "edge.h"
 #include "point.h"
 
-class Node;  // Forward declaration.
-
-// Helper structure used by TrapezoidalMap::get_tree_stats.
-struct NodeStats {
-  NodeStats()
-      : node_count(0),
-        trapezoid_count(0),
-        max_parent_count(0),
-        max_depth(0),
-        sum_trapezoid_depth(0.) {}
-
-  long node_count, trapezoid_count, max_parent_count, max_depth;
-  double sum_trapezoid_depth;
-  std::set<const Node*> unique_nodes, unique_trapezoid_nodes;
-};
-
 struct Trapezoid;  // Forward declaration.
 
 /* Node of the trapezoid map search tree.  There are 3 possible types:
@@ -48,9 +32,6 @@ class Node {
   /* Recurse through the search tree and assert that everything is valid.
    * Reduces to a no-op if NDEBUG is defined. */
   void assert_valid(bool tree_complete) const;
-
-  // Recurse through the tree to return statistics about it.
-  void get_stats(int depth, NodeStats& stats) const;
 
   bool has_child(const Node* child) const;
   bool has_no_parents() const;

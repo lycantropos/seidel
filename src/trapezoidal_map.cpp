@@ -300,12 +300,6 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
   return true;
 }
 
-NodeStats TrapezoidalMap::get_tree_stats() {
-  NodeStats stats;
-  _tree->get_stats(0, stats);
-  return stats;
-}
-
 void TrapezoidalMap::initialize() {
   // Set up edges array.
   // First the bottom and top edges of the enclosing rectangle.

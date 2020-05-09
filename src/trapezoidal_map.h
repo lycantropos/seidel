@@ -45,8 +45,6 @@ class TrapezoidalMap {
 
   ~TrapezoidalMap();
 
-  NodeStats get_tree_stats();
-
   /* Initialize this object before use.  May be called multiple times, if,
    * for example, the triangulation is changed by setting the mask. */
   void initialize();
