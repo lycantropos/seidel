@@ -59,7 +59,7 @@ class TrapezoidalMap {
   bool find_trapezoids_intersecting_edge(const Edge& edge,
                                          std::vector<Trapezoid*>& trapezoids);
 
-  size_t npoints;
+  std::size_t npoints;
   // All points plus corners of enclosing rectangle.
   std::vector<Point> _points;
   // All edges plus bottom and top edges of enclosing rectangle.

@@ -82,8 +82,8 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
   // Iterate through trapezoids intersecting edge from left to right.
   // Replace each old trapezoid with 2+ new trapezoids, and replace its
   // corresponding nodes in the search tree with new nodes.
-  size_t ntraps = trapezoids.size();
-  for (size_t i = 0; i < ntraps; ++i) {
+  std::size_t ntraps = trapezoids.size();
+  for (std::size_t i = 0; i < ntraps; ++i) {
     Trapezoid* old = trapezoids[i];  // old trapezoid to replace.
     bool start_trap = (i == 0);
     bool end_trap = (i == ntraps - 1);
@@ -304,7 +304,7 @@ void TrapezoidalMap::build() {
   _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));
   _edges.push_back(Edge(&_points[npoints + 2], &_points[npoints + 3]));
 
-  for (size_t index = 0; index < npoints; ++index) {
+  for (std::size_t index = 0; index < npoints; ++index) {
     Point* start = &_points[index];
     Point* end = &_points[(index + 1) % npoints];
     if (end->is_right_of(*start))
@@ -323,8 +323,8 @@ void TrapezoidalMap::build() {
   std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
 
   // Add edges, one at a time, to tree.
-  size_t nedges = _edges.size();
-  for (size_t index = 2; index < nedges; ++index) {
+  std::size_t nedges = _edges.size();
+  for (std::size_t index = 2; index < nedges; ++index) {
     if (!add_edge_to_tree(_edges[index]))
       throw std::runtime_error("Triangulation is invalid");
     _tree->assert_valid(index == nedges - 1);
