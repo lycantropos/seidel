@@ -116,6 +116,7 @@ static std::string trapezoid_repr(const TrapezoidProxy& self) {
 
 class NodeProxy {
  public:
+  virtual ~NodeProxy() {}
   virtual Node* node() = 0;
   virtual void print(std::ostream& stream) const = 0;
 };
