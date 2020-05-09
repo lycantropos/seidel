@@ -32,3 +32,4 @@ def to_x_nodes(nodes: Strategy[Node]) -> Strategy[XNode]:
 
 
 nodes = strategies.recursive(leaves, extend)
+x_nodes = to_x_nodes(nodes)
