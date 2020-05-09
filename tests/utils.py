@@ -86,3 +86,19 @@ def sort_points(points_pair: Tuple[AnyPoint, AnyPoint]
     return (points_pair
             if second.is_right_of(first)
             else (second, first))
+
+
+def are_endpoints_non_degenerate(endpoints: Tuple[BoundPortedPointsPair,
+                                                  BoundPortedPointsPair]
+                                 ) -> bool:
+    (first_bound, _), (second_bound, _) = endpoints
+    return first_bound != second_bound
+
+
+def sort_endpoints(endpoints: Tuple[BoundPortedPointsPair,
+                                    BoundPortedPointsPair]
+                   ) -> Tuple[BoundPortedPointsPair, BoundPortedPointsPair]:
+    (first_bound, _), (second_bound, _) = endpoints
+    return (endpoints
+            if second_bound.is_right_of(first_bound)
+            else endpoints[::-1])
