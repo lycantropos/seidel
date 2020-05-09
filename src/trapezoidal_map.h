@@ -53,9 +53,6 @@ class TrapezoidalMap {
   // Add the specified Edge to the search tree, returning true if successful.
   bool add_edge_to_tree(const Edge& edge);
 
-  // Clear all memory allocated by this object.
-  void clear();
-
   /* Determine the trapezoids that the specified Edge intersects, returning
    * true if successful. */
   bool find_trapezoids_intersecting_edge(const Edge& edge,
