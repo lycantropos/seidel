@@ -136,7 +136,8 @@ class XNode : public NodeProxy {
   }
 
   void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." X_NODE_NAME "(" << point_repr(point) << ", ";
+    stream << C_STR(MODULE_NAME) "." X_NODE_NAME "(" << point_repr(point)
+           << ", ";
     left->print(stream);
     stream << ", ";
     right->print(stream);
@@ -163,7 +164,8 @@ class Leaf : public NodeProxy {
   Node* node() override { return new Node(trapezoid.trapezoid()); }
 
   void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." LEAF_NAME "(" << trapezoid_repr(trapezoid) << ")";
+    stream << C_STR(MODULE_NAME) "." LEAF_NAME "(" << trapezoid_repr(trapezoid)
+           << ")";
   }
 
   TrapezoidProxy trapezoid;
@@ -275,11 +277,12 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def(py::self == py::self)
-      .def("__repr__", [](const Leaf& self) {
-         auto stream = make_stream();
-         self.print(stream);
-         return stream.str();
-      })
+      .def("__repr__",
+           [](const Leaf& self) {
+             auto stream = make_stream();
+             self.print(stream);
+             return stream.str();
+           })
       .def_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
