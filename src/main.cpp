@@ -151,6 +151,14 @@ static std::string edge_repr(const EdgeProxy& self) {
   return stream.str();
 }
 
+static std::string trapezoid_repr(const TrapezoidProxy& self) {
+  auto stream = make_stream();
+  stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "(" << point_repr(self.left)
+         << ", " << point_repr(self.right) << ", " << edge_repr(self.above)
+         << ", " << edge_repr(self.below) << ")";
+  return stream.str();
+}
+
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
@@ -235,15 +243,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                 tuple[2].cast<EdgeProxy>(), tuple[3].cast<EdgeProxy>());
           }))
       .def(py::self == py::self)
-      .def("__repr__",
-           [](const TrapezoidProxy& self) -> std::string {
-             auto stream = make_stream();
-             stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "("
-                    << point_repr(self.left) << ", " << point_repr(self.right)
-                    << ", " << edge_repr(self.above) << ", "
-                    << edge_repr(self.below) << ")";
-             return stream.str();
-           })
+      .def("__repr__", trapezoid_repr)
       .def_readonly("left", &TrapezoidProxy::left)
       .def_readonly("right", &TrapezoidProxy::right)
       .def_readonly("above", &TrapezoidProxy::above)
