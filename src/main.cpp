@@ -178,10 +178,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     << edge_repr(self.below) << ")";
              return stream.str();
            })
-      .def_readwrite("left", &TrapezoidProxy::left)
-      .def_readwrite("right", &TrapezoidProxy::right)
-      .def_readwrite("above", &TrapezoidProxy::above)
-      .def_readwrite("below", &TrapezoidProxy::below);
+      .def_readonly("left", &TrapezoidProxy::left)
+      .def_readonly("right", &TrapezoidProxy::right)
+      .def_readonly("above", &TrapezoidProxy::above)
+      .def_readonly("below", &TrapezoidProxy::below);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;
