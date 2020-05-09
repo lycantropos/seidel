@@ -9,3 +9,10 @@ class YNode(Node):
         self.edge = edge
         self.above = above
         self.below = below
+
+    def __eq__(self, other: 'YNode') -> bool:
+        return ((self.edge == other.edge
+                 and self.above is other.above
+                 and self.below is other.below)
+                if isinstance(other, YNode)
+                else NotImplemented)
