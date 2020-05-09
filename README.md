@@ -7,36 +7,23 @@ seidel
 [![](https://img.shields.io/github/license/lycantropos/seidel.svg)](https://github.com/lycantropos/seidel/blob/master/LICENSE "License")
 [![](https://badge.fury.io/py/seidel.svg)](https://badge.fury.io/py/seidel "PyPI")
 
-In what follows
-- `python` is an alias for `python3.5` or any later
-version (`python3.6` and so on),
-- `pypy` is an alias for `pypy3.5` or any later
-version (`pypy3.6` and so on).
+In what follows `python` is an alias for `python3.5` or any later
+version (`python3.6` and so on).
 
 Installation
 ------------
 
 Install the latest `pip` & `setuptools` packages versions:
-- with `CPython`
-  ```bash
-  python -m pip install --upgrade pip setuptools
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --upgrade pip setuptools
-  ```
+```bash
+python -m pip install --upgrade pip setuptools
+```
 
 ### User
 
 Download and install the latest stable version from `PyPI` repository:
-- with `CPython`
-  ```bash
-  python -m pip install --upgrade seidel
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --upgrade seidel
-  ```
+```bash
+python -m pip install --upgrade seidel
+```
 
 ### Developer
 
@@ -47,24 +34,14 @@ cd seidel
 ```
 
 Install dependencies:
-- with `CPython`
-  ```bash
-  python -m pip install --force-reinstall -r requirements.txt
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --force-reinstall -r requirements.txt
-  ```
+```bash
+python -m pip install --force-reinstall -r requirements.txt
+```
 
 Install:
-- with `CPython`
-  ```bash
-  python setup.py install
-  ```
-- with `PyPy`
-  ```bash
-  pypy setup.py install
-  ```
+```bash
+python setup.py install
+```
 
 Development
 -----------
@@ -113,14 +90,9 @@ This will set version to `major.minor.patch`.
 ### Running tests
 
 Install dependencies:
-- with `CPython`
-  ```bash
-  python -m pip install --force-reinstall -r requirements-tests.txt
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --force-reinstall -r requirements-tests.txt
-  ```
+```bash
+python -m pip install --force-reinstall -r requirements-tests.txt
+```
 
 Plain
 ```bash
@@ -128,40 +100,16 @@ pytest
 ```
 
 Inside `Docker` container:
-- with `CPython`
-  ```bash
-  docker-compose --file docker-compose.cpython.yml up
-  ```
-- with `PyPy`
-  ```bash
-  docker-compose --file docker-compose.pypy.yml up
-  ```
+```bash
+docker-compose --file docker-compose.cpython.yml up
+```
 
 `Bash` script (e.g. can be used in `Git` hooks):
-- with `CPython`
-  ```bash
-  ./run-tests.sh
-  ```
-  or
-  ```bash
-  ./run-tests.sh cpython
-  ```
-
-- with `PyPy`
-  ```bash
-  ./run-tests.sh pypy
-  ```
+```bash
+./run-tests.sh
+```
 
 `PowerShell` script (e.g. can be used in `Git` hooks):
-- with `CPython`
-  ```powershell
-  .\run-tests.ps1
-  ```
-  or
-  ```powershell
-  .\run-tests.ps1 cpython
-  ```
-- with `PyPy`
-  ```powershell
-  .\run-tests.ps1 pypy
-  ```
+```powershell
+.\run-tests.ps1
+```
