@@ -114,29 +114,6 @@ bool Node::has_parent(const Node* parent) const {
           _parents.end());
 }
 
-void Node::print(int depth /* = 0 */) const {
-  for (int i = 0; i < depth; ++i) std::cout << "  ";
-  switch (_type) {
-    case Type_XNode:
-      std::cout << "XNode " << *_union.xnode.point << std::endl;
-      _union.xnode.left->print(depth + 1);
-      _union.xnode.right->print(depth + 1);
-      break;
-    case Type_YNode:
-      std::cout << "YNode " << *_union.ynode.edge << std::endl;
-      _union.ynode.below->print(depth + 1);
-      _union.ynode.above->print(depth + 1);
-      break;
-    case Type_TrapezoidNode:
-      std::cout << "Trapezoid ll=" << _union.trapezoid->get_lower_left_point()
-                << " lr=" << _union.trapezoid->get_lower_right_point()
-                << " ul=" << _union.trapezoid->get_upper_left_point()
-                << " ur=" << _union.trapezoid->get_upper_right_point()
-                << std::endl;
-      break;
-  }
-}
-
 bool Node::remove_parent(Node* parent) {
   assert(parent != nullptr && "Null parent");
   assert(parent != this && "Cannot be parent of self");

@@ -37,10 +37,6 @@ class Node {
   bool has_no_parents() const;
   bool has_parent(const Node* parent) const;
 
-  /* Recurse through the tree and print a textual representation to
-   * stdout.  Argument depth used to indent for readability. */
-  void print(int depth = 0) const;
-
   /* Remove a parent from this Node.  Return true if no parents remain
    * so that this Node can be deleted. */
   bool remove_parent(Node* parent);
