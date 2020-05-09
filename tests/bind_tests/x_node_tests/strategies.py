@@ -6,7 +6,8 @@ from _seidel import (Edge,
                      Node,
                      Point,
                      Trapezoid,
-                     XNode)
+                     XNode,
+                     YNode)
 from hypothesis import strategies
 
 from tests.strategies import (floats,
@@ -25,9 +26,17 @@ trapezoids = (strategies.tuples(sorted_points_pairs, to_pairs(edges))
 leaves = trapezoids.map(Leaf)
 
 
-def to_x_nodes(nodes: Strategy[Node]) -> Strategy[XNode]:
+def to_nodes(nodes: Strategy[Node]) -> Strategy[Node]:
+    return to_x_nodes(nodes) | to_y_nodes(nodes)
+
+
+def to_x_nodes(nodes: Strategy[Node]) -> Strategy[YNode]:
     return strategies.builds(XNode, points, nodes, nodes)
 
 
-nodes = recursive(leaves, to_x_nodes)
+def to_y_nodes(nodes: Strategy[Node]) -> Strategy[YNode]:
+    return strategies.builds(YNode, edges, nodes, nodes)
+
+
+nodes = recursive(leaves, to_nodes)
 x_nodes = to_x_nodes(nodes)

@@ -30,7 +30,7 @@ def to_nodes(nodes: Strategy[Node]) -> Strategy[Node]:
     return to_x_nodes(nodes) | to_y_nodes(nodes)
 
 
-def to_x_nodes(nodes: Strategy[Node]) -> Strategy[YNode]:
+def to_x_nodes(nodes: Strategy[Node]) -> Strategy[XNode]:
     return strategies.builds(XNode, points, nodes, nodes)
 
 
