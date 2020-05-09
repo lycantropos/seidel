@@ -33,6 +33,7 @@ AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
+BoundPortedTrapezoidsPair = Tuple[BoundTrapezoid, PortedTrapezoid]
 
 MAX_FLOAT_DIGITS_COUNT = sys.float_info.dig // 2
 MAX_VALUE = 10 ** 6

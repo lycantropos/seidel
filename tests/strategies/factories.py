@@ -10,10 +10,13 @@ from tests.utils import (BoundBoundingBox,
                          BoundPortedBoundingBoxesPair,
                          BoundPortedEdgesPair,
                          BoundPortedPointsPair,
+                         BoundPortedTrapezoidsPair,
+                         BoundTrapezoid,
                          Domain,
                          PortedBoundingBox,
                          PortedEdge,
                          PortedPoint,
+                         PortedTrapezoid,
                          Strategy,
                          pack,
                          point_to_coordinates,
@@ -37,10 +40,10 @@ def to_triplets(elements: Strategy[Domain]
 def to_bound_with_ported_edges_pair(left_points: BoundPortedPointsPair,
                                     right_points: BoundPortedPointsPair
                                     ) -> BoundPortedEdgesPair:
-    left_bound, left_ported = left_points
-    right_bound, right_ported = right_points
-    return (BoundEdge(left_bound, right_bound),
-            PortedEdge(left_ported, right_ported))
+    bound_left, ported_left = left_points
+    bound_right, ported_right = right_points
+    return (BoundEdge(bound_left, bound_right),
+            PortedEdge(ported_left, ported_right))
 
 
 def to_bound_with_ported_points_pair(x: float, y: float
@@ -58,6 +61,21 @@ def to_bound_with_ported_bounding_boxes_pair(empty: bool,
                               PortedPoint(upper_x, upper_y)),
             BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
                              BoundPoint(upper_x, upper_y)))
+
+
+def to_bound_with_ported_trapezoids_pair(left_points: BoundPortedPointsPair,
+                                         right_points: BoundPortedPointsPair,
+                                         above_edges: BoundPortedEdgesPair,
+                                         below_edges: BoundPortedEdgesPair
+                                         ) -> BoundPortedTrapezoidsPair:
+    bound_left, ported_left = left_points
+    bound_right, ported_right = right_points
+    bound_above, ported_above = above_edges
+    bound_below, ported_below = below_edges
+    return (BoundTrapezoid(bound_left, bound_right, bound_above,
+                           bound_below),
+            PortedTrapezoid(ported_left, ported_right, ported_above,
+                            ported_below))
 
 
 def coordinates_to_ported_edges(coordinates: Strategy[Coordinate]
