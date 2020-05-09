@@ -1,6 +1,7 @@
 #ifndef TRAPEZOIDAL_MAP_H
 #define TRAPEZOIDAL_MAP_H
 
+#include <cstddef>
 #include <vector>
 
 #include "edge.h"
