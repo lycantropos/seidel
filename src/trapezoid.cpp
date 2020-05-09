@@ -78,17 +78,6 @@ Point Trapezoid::get_upper_right_point() const {
   return Point(x, above.get_y_at_x(x));
 }
 
-void Trapezoid::print_debug() const {
-  std::cout << "Trapezoid " << this << " left=" << *left << " right=" << *right
-            << " below=" << below << " above=" << above << " ll=" << lower_left
-            << " lr=" << lower_right << " ul=" << upper_left
-            << " ur=" << upper_right << " node=" << trapezoid_node
-            << " llp=" << get_lower_left_point()
-            << " lrp=" << get_lower_right_point()
-            << " ulp=" << get_upper_left_point()
-            << " urp=" << get_upper_right_point() << std::endl;
-}
-
 void Trapezoid::set_lower_left(Trapezoid* lower_left_) {
   lower_left = lower_left_;
   if (lower_left != nullptr) lower_left->lower_right = this;

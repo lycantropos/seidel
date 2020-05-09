@@ -28,8 +28,6 @@ struct Trapezoid {
   Point get_upper_left_point() const;
   Point get_upper_right_point() const;
 
-  void print_debug() const;
-
   /* Set one of the 4 neighbor trapezoids and the corresponding reverse
    * Trapezoid of the new neighbor (if it is not 0), so that they are
    * consistent. */
