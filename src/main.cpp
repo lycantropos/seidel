@@ -69,7 +69,7 @@ class TrapezoidProxy {
            below == other.below;
   }
 
-  Trapezoid* trapezoid() {
+  Trapezoid* trapezoid() const {
     return new Trapezoid(&left, &right, below.edge(), above.edge());
   }
 
