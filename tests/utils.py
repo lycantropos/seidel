@@ -104,9 +104,12 @@ def are_bound_ported_nodes_equal(bound: BoundNode,
     if isinstance(bound, BoundLeaf):
         assert isinstance(ported, PortedLeaf)
         return are_bound_ported_leaves_equal(bound, ported)
-    else:
+    elif isinstance(bound, BoundXNode):
         assert isinstance(ported, PortedXNode)
         return are_bound_ported_x_nodes_equal(bound, ported)
+    else:
+        assert isinstance(ported, PortedYNode)
+        return are_bound_ported_y_nodes_equal(bound, ported)
 
 
 def are_bound_ported_points_equal(bound: BoundPoint,
@@ -127,6 +130,13 @@ def are_bound_ported_x_nodes_equal(bound: BoundXNode,
     return (are_bound_ported_points_equal(bound.point, ported.point)
             and are_bound_ported_nodes_equal(bound.left, ported.left)
             and are_bound_ported_nodes_equal(bound.right, ported.right))
+
+
+def are_bound_ported_y_nodes_equal(bound: BoundYNode,
+                                   ported: PortedYNode) -> bool:
+    return (are_bound_ported_edges_equal(bound.edge, ported.edge)
+            and are_bound_ported_nodes_equal(bound.above, ported.above)
+            and are_bound_ported_nodes_equal(bound.below, ported.below))
 
 
 def point_to_coordinates(point: AnyPoint) -> Tuple[Coordinate, Coordinate]:
