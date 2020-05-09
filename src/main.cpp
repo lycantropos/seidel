@@ -326,6 +326,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     std::shared_ptr<NodeProxy>>(),
            py::arg("edge"), py::arg("above").none(false),
            py::arg("below").none(false))
+      .def(py::self == py::self)
       .def_readonly("edge", &YNode::edge)
       .def_readonly("above", &YNode::above)
       .def_readonly("below", &YNode::below);
