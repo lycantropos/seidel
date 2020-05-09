@@ -8,15 +8,18 @@ from seidel.hints import Coordinate
 from seidel.trapezoid import Trapezoid
 from tests.utils import (BoundBoundingBox,
                          BoundEdge,
+                         BoundLeaf,
                          BoundPoint,
                          BoundPortedBoundingBoxesPair,
                          BoundPortedEdgesPair,
+                         BoundPortedLeavesPair,
                          BoundPortedPointsPair,
                          BoundPortedTrapezoidsPair,
                          BoundTrapezoid,
                          Domain,
                          PortedBoundingBox,
                          PortedEdge,
+                         PortedLeaf,
                          PortedPoint,
                          PortedTrapezoid,
                          Strategy,
@@ -82,6 +85,12 @@ def to_bound_with_ported_edges_pair(left_points: BoundPortedPointsPair,
     bound_right, ported_right = right_points
     return (BoundEdge(bound_left, bound_right),
             PortedEdge(ported_left, ported_right))
+
+
+def to_bound_with_ported_leaves_pair(bound_trapezoid: BoundTrapezoid,
+                                     ported_trapezoid: PortedTrapezoid
+                                     ) -> BoundPortedLeavesPair:
+    return BoundLeaf(bound_trapezoid), PortedLeaf(ported_trapezoid)
 
 
 def to_bound_with_ported_points_pair(x: float, y: float

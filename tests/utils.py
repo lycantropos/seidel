@@ -8,6 +8,7 @@ from typing import (Callable,
 
 from _seidel import (BoundingBox as BoundBoundingBox,
                      Edge as BoundEdge,
+                     Leaf as BoundLeaf,
                      Point as BoundPoint,
                      Trapezoid as BoundTrapezoid)
 from hypothesis.strategies import SearchStrategy
@@ -15,6 +16,7 @@ from hypothesis.strategies import SearchStrategy
 from seidel.bounding_box import BoundingBox as PortedBoundingBox
 from seidel.edge import Edge as PortedEdge
 from seidel.hints import Coordinate
+from seidel.leaf import Leaf as PortedLeaf
 from seidel.point import Point as PortedPoint
 from seidel.trapezoid import Trapezoid as PortedTrapezoid
 
@@ -23,15 +25,18 @@ Range = TypeVar('Range')
 Strategy = SearchStrategy
 BoundBoundingBox = BoundBoundingBox
 BoundEdge = BoundEdge
+BoundLeaf = BoundLeaf
 BoundPoint = BoundPoint
 BoundTrapezoid = BoundTrapezoid
 PortedBoundingBox = PortedBoundingBox
 PortedEdge = PortedEdge
+PortedLeaf = PortedLeaf
 PortedPoint = PortedPoint
 PortedTrapezoid = PortedTrapezoid
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
+BoundPortedLeavesPair = Tuple[BoundLeaf, PortedLeaf]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
 BoundPortedTrapezoidsPair = Tuple[BoundTrapezoid, PortedTrapezoid]
 
@@ -72,6 +77,11 @@ def are_bound_ported_bounding_boxes_equal(bound: BoundBoundingBox,
 def are_bound_ported_edges_equal(bound: BoundEdge, ported: PortedEdge) -> bool:
     return (are_bound_ported_points_equal(bound.left, ported.left)
             and are_bound_ported_points_equal(bound.right, ported.right))
+
+
+def are_bound_ported_leaves_equal(bound: BoundLeaf,
+                                  ported: PortedLeaf) -> bool:
+    return are_bound_ported_trapezoids_equal(bound.trapezoid, ported.trapezoid)
 
 
 def are_bound_ported_points_equal(bound: BoundPoint,
