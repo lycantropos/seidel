@@ -273,6 +273,12 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::init<const Point&, std::shared_ptr<NodeProxy>, std::shared_ptr<NodeProxy>>(), py::arg("point"),
            py::arg("left").none(false), py::arg("right").none(false))
       .def(py::self == py::self)
+      .def("__repr__",
+           [](const XNode& self) {
+             auto stream = make_stream();
+             self.print(stream);
+             return stream.str();
+           })
       .def_readonly("point", &XNode::point)
       .def_readonly("left", &XNode::left)
       .def_readonly("right", &XNode::right);
