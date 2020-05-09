@@ -2,6 +2,7 @@ from operator import (add,
                       ne)
 
 from _seidel import (Edge,
+                     Leaf,
                      Point,
                      Trapezoid)
 from hypothesis import strategies
@@ -18,3 +19,4 @@ edges = sorted_points_pairs.map(pack(Edge))
 trapezoids = (strategies.tuples(sorted_points_pairs, to_pairs(edges))
               .map(pack(add))
               .map(pack(Trapezoid)))
+leaves = trapezoids.map(Leaf)
