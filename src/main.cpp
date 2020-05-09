@@ -59,6 +59,11 @@ class TrapezoidProxy {
   TrapezoidProxy(const TrapezoidProxy& other)
       : TrapezoidProxy(other.left, other.right, other.above, other.below) {}
 
+  TrapezoidProxy(const Trapezoid& trapezoid)
+      : TrapezoidProxy(*trapezoid.left, *trapezoid.right,
+                       EdgeProxy(trapezoid.above), EdgeProxy(trapezoid.below)) {
+  }
+
   TrapezoidProxy& operator=(const TrapezoidProxy& other) {
     left = other.left;
     right = other.right;
