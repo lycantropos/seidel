@@ -2,19 +2,16 @@
 
 set -e
 
-IMPLEMENTATION=${1:-cpython}
-COMPOSE_FILE_NAME=docker-compose.${IMPLEMENTATION}.yml
-
-docker-compose --file ${COMPOSE_FILE_NAME} up --build --exit-code-from seidel-${IMPLEMENTATION}
+docker-compose up --build --exit-code-from seidel
 
 STATUS=$?
 
-docker-compose --file ${COMPOSE_FILE_NAME} down --remove-orphans
+docker-compose down --remove-orphans
 
 if [[ "$STATUS" -eq "0" ]]; then
-	echo "${IMPLEMENTATION} tests passed";
+	echo "tests passed";
 else
-	echo "${IMPLEMENTATION} tests failed to pass"
+	echo "tests failed to pass"
 fi
 
 exit ${STATUS}

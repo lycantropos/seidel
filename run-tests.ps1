@@ -1,20 +1,16 @@
-param ([String]$implementation = "cpython")
-
-$compose_file = "docker-compose.${implementation}.yml"
-
-docker-compose --file $compose_file up --build --exit-code-from seidel-${implementation}
+docker-compose up --build --exit-code-from seidel
 
 $STATUS = $LastExitCode
 
-docker-compose --file $compose_file down --remove-orphans
+docker-compose down --remove-orphans
 
 if ($STATUS -eq 0)
 {
-    echo "${implementation} tests passed"
+    echo "tests passed"
 }
 else
 {
-    echo "${implementation} tests failed to pass"
+    echo "tests failed to pass"
 }
 
 exit $STATUS
