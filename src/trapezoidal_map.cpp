@@ -297,7 +297,7 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
   return true;
 }
 
-void TrapezoidalMap::initialize() {
+void TrapezoidalMap::build() {
   // Set up edges array.
   // First the bottom and top edges of the enclosing rectangle.
   _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));

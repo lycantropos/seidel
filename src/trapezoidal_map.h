@@ -47,7 +47,7 @@ class TrapezoidalMap {
 
   /* Initialize this object before use.  May be called multiple times, if,
    * for example, the triangulation is changed by setting the mask. */
-  void initialize();
+  void build();
 
  private:
   // Add the specified Edge to the search tree, returning true if successful.
