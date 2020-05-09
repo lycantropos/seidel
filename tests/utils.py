@@ -12,7 +12,8 @@ from _seidel import (BoundingBox as BoundBoundingBox,
                      Node as BoundNode,
                      Point as BoundPoint,
                      Trapezoid as BoundTrapezoid,
-                     XNode as BoundXNode)
+                     XNode as BoundXNode,
+                     YNode as BoundYNode)
 from hypothesis.strategies import SearchStrategy
 
 from seidel.bounding_box import BoundingBox as PortedBoundingBox
@@ -23,6 +24,7 @@ from seidel.node import Node as PortedNode
 from seidel.point import Point as PortedPoint
 from seidel.trapezoid import Trapezoid as PortedTrapezoid
 from seidel.x_node import XNode as PortedXNode
+from seidel.y_node import YNode as PortedYNode
 
 Domain = TypeVar('Domain')
 Range = TypeVar('Range')
@@ -34,6 +36,7 @@ BoundNode = BoundNode
 BoundPoint = BoundPoint
 BoundTrapezoid = BoundTrapezoid
 BoundXNode = BoundXNode
+BoundYNode = BoundYNode
 PortedBoundingBox = PortedBoundingBox
 PortedEdge = PortedEdge
 PortedLeaf = PortedLeaf
@@ -41,6 +44,7 @@ PortedNode = PortedNode
 PortedPoint = PortedPoint
 PortedTrapezoid = PortedTrapezoid
 PortedXNode = PortedXNode
+PortedYNode = PortedYNode
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
@@ -49,6 +53,7 @@ BoundPortedNodesPair = Tuple[BoundNode, PortedNode]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
 BoundPortedTrapezoidsPair = Tuple[BoundTrapezoid, PortedTrapezoid]
 BoundPortedXNodesPair = Tuple[BoundXNode, PortedXNode]
+BoundPortedYNodesPair = Tuple[BoundYNode, PortedYNode]
 
 MAX_FLOAT_DIGITS_COUNT = sys.float_info.dig // 2
 MAX_VALUE = 10 ** 6

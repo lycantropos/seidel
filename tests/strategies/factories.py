@@ -22,9 +22,11 @@ from tests.utils import (BoundBoundingBox,
                          PortedBoundingBox,
                          PortedEdge,
                          PortedLeaf,
+                         PortedNode,
                          PortedPoint,
                          PortedTrapezoid,
                          PortedXNode,
+                         PortedYNode,
                          Strategy,
                          pack,
                          point_to_coordinates,
@@ -42,6 +44,18 @@ def coordinates_to_ported_leaves(coordinates: Strategy[Coordinate]
     return coordinates_to_ported_trapezoids(coordinates).map(PortedLeaf)
 
 
+def coordinates_to_ported_nodes(coordinates: Strategy[Coordinate]
+                                ) -> Strategy[PortedNode]:
+    edges = coordinates_to_ported_edges(coordinates)
+    points = coordinates_to_ported_points(coordinates)
+
+    def expand(nodes: Strategy[PortedNode]) -> Strategy[PortedNode]:
+        return (strategies.builds(PortedXNode, points, nodes, nodes)
+                | strategies.builds(PortedYNode, edges, nodes, nodes))
+
+    return recursive(coordinates_to_ported_leaves(coordinates), expand)
+
+
 def coordinates_to_ported_points(coordinates: Strategy[Coordinate]
                                  ) -> Strategy[PortedPoint]:
     return strategies.builds(PortedPoint, coordinates, coordinates)
@@ -51,6 +65,18 @@ def coordinates_to_ported_trapezoids(coordinates: Strategy[Coordinate]
                                      ) -> Strategy[PortedTrapezoid]:
     return (coordinates_to_ported_points_pairs_edges_pairs(coordinates)
             .map(pack(PortedTrapezoid)))
+
+
+def coordinates_to_ported_x_nodes(coordinates: Strategy[Coordinate]
+                                  ) -> Strategy[PortedXNode]:
+    return (coordinates_to_ported_points_with_nodes_pairs(coordinates)
+            .map(pack(PortedXNode)))
+
+
+def coordinates_to_ported_y_nodes(coordinates: Strategy[Coordinate]
+                                  ) -> Strategy[PortedYNode]:
+    return (coordinates_to_ported_edges_with_nodes_pairs(coordinates)
+            .map(pack(PortedYNode)))
 
 
 def coordinates_to_ported_points_pairs_edges_pairs(
@@ -72,6 +98,24 @@ def coordinates_to_sorted_ported_points_pairs(
                              unique_by=point_to_coordinates)
             .map(tuple)
             .map(sort_points))
+
+
+def coordinates_to_ported_edges_with_nodes_pairs(
+        coordinates: Strategy[Coordinate]) -> Strategy[Tuple[PortedEdge,
+                                                             PortedNode,
+                                                             PortedNode]]:
+    nodes = coordinates_to_ported_nodes(coordinates)
+    return strategies.tuples(coordinates_to_ported_edges(coordinates),
+                             nodes, nodes)
+
+
+def coordinates_to_ported_points_with_nodes_pairs(
+        coordinates: Strategy[Coordinate]) -> Strategy[Tuple[PortedPoint,
+                                                             PortedNode,
+                                                             PortedNode]]:
+    nodes = coordinates_to_ported_nodes(coordinates)
+    return strategies.tuples(coordinates_to_ported_points(coordinates),
+                             nodes, nodes)
 
 
 def to_bound_with_ported_bounding_boxes_pair(empty: bool,
