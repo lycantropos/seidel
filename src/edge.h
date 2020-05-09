@@ -1,7 +1,6 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <iostream>
 #include <vector>
 
 #include "point.h"
@@ -23,10 +22,6 @@ struct Edge {
   double get_y_at_x(const double& x) const;
 
   bool operator==(const Edge& other) const;
-
-  friend std::ostream& operator<<(std::ostream& os, const Edge& edge) {
-    return os << *edge.left << "->" << *edge.right;
-  }
 
   const Point* left;   // Not owned.
   const Point* right;  // Not owned.
