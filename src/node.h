@@ -78,10 +78,8 @@ class Node {
    * can only happen if the triangulation is invalid. */
   Trapezoid* search(const Edge& edge);
 
-  /* Copy constructor and assignment operator defined but not implemented
-   * to prevent objects being copied. */
-  Node(const Node& other);
-  Node& operator=(const Node& other);
+  Node(const Node& other) = delete;
+  Node& operator=(const Node& other) = delete;
 
  private:
   typedef enum { Type_XNode, Type_YNode, Type_TrapezoidNode } Type;
