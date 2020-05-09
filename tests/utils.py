@@ -9,16 +9,20 @@ from typing import (Callable,
 from _seidel import (BoundingBox as BoundBoundingBox,
                      Edge as BoundEdge,
                      Leaf as BoundLeaf,
+                     Node as BoundNode,
                      Point as BoundPoint,
-                     Trapezoid as BoundTrapezoid)
+                     Trapezoid as BoundTrapezoid,
+                     XNode as BoundXNode)
 from hypothesis.strategies import SearchStrategy
 
 from seidel.bounding_box import BoundingBox as PortedBoundingBox
 from seidel.edge import Edge as PortedEdge
 from seidel.hints import Coordinate
 from seidel.leaf import Leaf as PortedLeaf
+from seidel.node import Node as PortedNode
 from seidel.point import Point as PortedPoint
 from seidel.trapezoid import Trapezoid as PortedTrapezoid
+from seidel.x_node import XNode as PortedXNode
 
 Domain = TypeVar('Domain')
 Range = TypeVar('Range')
@@ -26,19 +30,25 @@ Strategy = SearchStrategy
 BoundBoundingBox = BoundBoundingBox
 BoundEdge = BoundEdge
 BoundLeaf = BoundLeaf
+BoundNode = BoundNode
 BoundPoint = BoundPoint
 BoundTrapezoid = BoundTrapezoid
+BoundXNode = BoundXNode
 PortedBoundingBox = PortedBoundingBox
 PortedEdge = PortedEdge
 PortedLeaf = PortedLeaf
+PortedNode = PortedNode
 PortedPoint = PortedPoint
 PortedTrapezoid = PortedTrapezoid
+PortedXNode = PortedXNode
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
 BoundPortedLeavesPair = Tuple[BoundLeaf, PortedLeaf]
+BoundPortedNodesPair = Tuple[BoundNode, PortedNode]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
 BoundPortedTrapezoidsPair = Tuple[BoundTrapezoid, PortedTrapezoid]
+BoundPortedXNodesPair = Tuple[BoundXNode, PortedXNode]
 
 MAX_FLOAT_DIGITS_COUNT = sys.float_info.dig // 2
 MAX_VALUE = 10 ** 6
@@ -84,6 +94,16 @@ def are_bound_ported_leaves_equal(bound: BoundLeaf,
     return are_bound_ported_trapezoids_equal(bound.trapezoid, ported.trapezoid)
 
 
+def are_bound_ported_nodes_equal(bound: BoundNode,
+                                 ported: PortedNode) -> bool:
+    if isinstance(bound, BoundLeaf):
+        assert isinstance(ported, PortedLeaf)
+        return are_bound_ported_leaves_equal(bound, ported)
+    else:
+        assert isinstance(ported, PortedXNode)
+        return are_bound_ported_x_nodes_equal(bound, ported)
+
+
 def are_bound_ported_points_equal(bound: BoundPoint,
                                   ported: PortedPoint) -> bool:
     return bound.x == ported.x and bound.y == ported.y
@@ -95,6 +115,13 @@ def are_bound_ported_trapezoids_equal(bound: BoundTrapezoid,
             and are_bound_ported_points_equal(bound.right, ported.right)
             and are_bound_ported_edges_equal(bound.above, ported.above)
             and are_bound_ported_edges_equal(bound.below, ported.below))
+
+
+def are_bound_ported_x_nodes_equal(bound: BoundXNode,
+                                   ported: PortedXNode) -> bool:
+    return (are_bound_ported_points_equal(bound.point, ported.point)
+            and are_bound_ported_nodes_equal(bound.left, ported.left)
+            and are_bound_ported_nodes_equal(bound.right, ported.right))
 
 
 def point_to_coordinates(point: AnyPoint) -> Tuple[Coordinate, Coordinate]:

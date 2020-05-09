@@ -10,6 +10,7 @@ from .factories import (coordinates_to_ported_edges,
                         to_bound_with_ported_leaves_pair,
                         to_bound_with_ported_points_pair,
                         to_bound_with_ported_trapezoids_pair,
+                        to_bound_with_ported_x_nodes_pair,
                         to_pairs,
                         to_triplets)
 from .literals import (coordinates_strategies,
