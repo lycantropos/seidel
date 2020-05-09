@@ -16,8 +16,10 @@ from tests.utils import (BoundBoundingBox,
                          BoundPortedPointsPair,
                          BoundPortedTrapezoidsPair,
                          BoundPortedXNodesPair,
+                         BoundPortedYNodesPair,
                          BoundTrapezoid,
                          BoundXNode,
+                         BoundYNode,
                          Domain,
                          PortedBoundingBox,
                          PortedEdge,
@@ -174,6 +176,17 @@ def to_bound_with_ported_x_nodes_pair(points: BoundPortedPointsPair,
     bound_right, ported_right = right_nodes
     return (BoundXNode(bound_point, bound_left, bound_right),
             PortedXNode(ported_point, ported_left, ported_right))
+
+
+def to_bound_with_ported_y_nodes_pair(edges: BoundPortedEdgesPair,
+                                      left_nodes: BoundPortedNodesPair,
+                                      right_nodes: BoundPortedNodesPair
+                                      ) -> BoundPortedYNodesPair:
+    bound_edge, ported_edge = edges
+    bound_left, ported_left = left_nodes
+    bound_right, ported_right = right_nodes
+    return (BoundYNode(bound_edge, bound_left, bound_right),
+            PortedYNode(ported_edge, ported_left, ported_right))
 
 
 recursive = partial(strategies.recursive,

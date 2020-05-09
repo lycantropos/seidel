@@ -9,9 +9,11 @@ from tests.strategies import (floats,
                               to_bound_with_ported_points_pair,
                               to_bound_with_ported_trapezoids_pair,
                               to_bound_with_ported_x_nodes_pair,
+                              to_bound_with_ported_y_nodes_pair,
                               to_pairs)
 from tests.utils import (BoundPortedNodesPair,
                          BoundPortedXNodesPair,
+                         BoundPortedYNodesPair,
                          Strategy,
                          are_endpoints_non_degenerate,
                          pack,
@@ -31,11 +33,22 @@ trapezoids_pairs = (strategies.tuples(sorted_points_pairs_pairs,
 leaves_pairs = trapezoids_pairs.map(pack(to_bound_with_ported_leaves_pair))
 
 
+def to_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
+                   ) -> Strategy[BoundPortedXNodesPair]:
+    return to_x_nodes_pairs(nodes_pairs) | to_y_nodes_pairs(nodes_pairs)
+
+
 def to_x_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
                      ) -> Strategy[BoundPortedXNodesPair]:
     return strategies.builds(to_bound_with_ported_x_nodes_pair,
                              points_pairs, nodes_pairs, nodes_pairs)
 
 
-nodes_pairs = recursive(leaves_pairs, to_x_nodes_pairs)
+def to_y_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
+                     ) -> Strategy[BoundPortedYNodesPair]:
+    return strategies.builds(to_bound_with_ported_y_nodes_pair,
+                             edges_pairs, nodes_pairs, nodes_pairs)
+
+
+nodes_pairs = recursive(leaves_pairs, to_nodes_pairs)
 x_nodes_pairs = to_x_nodes_pairs(nodes_pairs)
