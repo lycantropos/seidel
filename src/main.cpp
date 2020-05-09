@@ -156,7 +156,6 @@ class XNode : public NodeProxy {
   Node _node;
 };
 
-
 class YNode : public NodeProxy {
  public:
   YNode(const EdgeProxy& edge_, std::shared_ptr<NodeProxy> above_,
@@ -175,8 +174,7 @@ class YNode : public NodeProxy {
   }
 
   void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "(" << edge_repr(edge)
-           << ", ";
+    stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "(" << edge_repr(edge) << ", ";
     above->print(stream);
     stream << ", ";
     below->print(stream);
