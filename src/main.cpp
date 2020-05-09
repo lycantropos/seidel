@@ -23,6 +23,7 @@ namespace py = pybind11;
 #define LEAF_NAME "Leaf"
 #define POINT_NAME "Point"
 #define TRAPEZOID_NAME "Trapezoid"
+#define X_NODE_NAME "XNode"
 
 class EdgeProxy {
  public:
@@ -82,10 +83,37 @@ class TrapezoidProxy {
   std::unique_ptr<Trapezoid> _trapezoid;
 };
 
-class Leaf {
+class NodeProxy {
+ public:
+  virtual Node* node() = 0;
+};
+
+class XNode : public NodeProxy {
+ public:
+  XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
+      : point(point_),
+        left(left_),
+        right(right_),
+        _node(&point, left->node(), right->node()) {}
+
+  Node* node() override {
+    return new Node(&point, left->node(), right->node());
+  }
+
+  Point point;
+  NodeProxy* left;
+  NodeProxy* right;
+
+ private:
+  Node _node;
+};
+
+class Leaf : public NodeProxy {
  public:
   Leaf(const TrapezoidProxy& trapezoid_)
       : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
+
+  Node* node() override { return new Node(trapezoid.trapezoid()); }
 
   TrapezoidProxy trapezoid;
 
@@ -213,7 +241,16 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readonly("above", &TrapezoidProxy::above)
       .def_readonly("below", &TrapezoidProxy::below);
 
-  py::class_<Leaf>(m, LEAF_NAME)
+  py::class_<NodeProxy>(m, "Node");
+
+  py::class_<XNode, NodeProxy>(m, X_NODE_NAME)
+      .def(py::init<const Point&, NodeProxy*, NodeProxy*>(), py::arg("point"),
+           py::arg("left").none(false), py::arg("right").none(false))
+      .def_readonly("point", &XNode::point)
+      .def_readonly("left", &XNode::left)
+      .def_readonly("right", &XNode::right);
+
+  py::class_<Leaf, NodeProxy>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def_readonly("trapezoid", &Leaf::trapezoid);
 
