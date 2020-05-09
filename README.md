@@ -101,7 +101,7 @@ pytest
 
 Inside `Docker` container:
 ```bash
-docker-compose --file docker-compose.cpython.yml up
+docker-compose up
 ```
 
 `Bash` script (e.g. can be used in `Git` hooks):
