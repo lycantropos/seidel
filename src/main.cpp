@@ -364,6 +364,17 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     std::shared_ptr<NodeProxy>>(),
            py::arg("point"), py::arg("left").none(false),
            py::arg("right").none(false))
+      .def(py::pickle(
+          [](const XNode& self) {  // __getstate__
+            return py::make_tuple(self.point, self.left, self.right);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
+            return std::make_unique<XNode>(
+                tuple[0].cast<const Point&>(),
+                tuple[1].cast<std::shared_ptr<NodeProxy>>(),
+                tuple[2].cast<std::shared_ptr<NodeProxy>>());
+          }))
       .def(py::self == py::self)
       .def("__repr__",
            [](const XNode& self) {
