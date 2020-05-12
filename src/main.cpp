@@ -26,6 +26,11 @@ namespace py = pybind11;
 #define X_NODE_NAME "XNode"
 #define Y_NODE_NAME "YNode"
 
+static bool are_edges_equal(const Edge& first, const Edge& second) {
+  return ((*first.left) == (*second.left)) &&
+         ((*first.right) == (*second.right));
+}
+
 class EdgeProxy {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
@@ -43,7 +48,7 @@ class EdgeProxy {
   }
 
   bool operator==(const EdgeProxy& other) const {
-    return left == other.left && right == other.right;
+    return are_edges_equal(_edge, other._edge);
   }
 
   const Edge& edge() const { return _edge; }
