@@ -31,6 +31,14 @@ static bool are_edges_equal(const Edge& first, const Edge& second) {
          ((*first.right) == (*second.right));
 }
 
+static bool are_trapezoids_equal(const Trapezoid& first,
+                                 const Trapezoid& second) {
+  return ((*first.left) == (*second.left)) &&
+         ((*first.right) == (*second.right)) &&
+         are_edges_equal(first.above, second.above) &&
+         are_edges_equal(first.below, second.below);
+}
+
 class EdgeProxy {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
@@ -89,8 +97,7 @@ class TrapezoidProxy {
   }
 
   bool operator==(const TrapezoidProxy& other) const {
-    return left == other.left && right == other.right && above == other.above &&
-           below == other.below;
+    return are_trapezoids_equal(*_trapezoid, *other._trapezoid);
   }
 
   Trapezoid* trapezoid() const {
