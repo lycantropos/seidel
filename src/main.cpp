@@ -171,7 +171,7 @@ class NodeProxy {
   virtual Node& node() = 0;
   virtual const Node& node() const = 0;
 
-  virtual bool operator==(const NodeProxy& other) const {
+  bool operator==(const NodeProxy& other) const {
     return are_nodes_equal(node(), other.node());
   }
 
