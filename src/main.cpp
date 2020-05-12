@@ -31,7 +31,16 @@ class EdgeProxy {
   EdgeProxy(const Point& left_, const Point& right_)
       : left(left_), right(right_), _edge(Edge(&left, &right)) {}
 
+  EdgeProxy(const EdgeProxy& edge) : EdgeProxy(edge.left, edge.right) {}
+
   EdgeProxy(const Edge& edge) : EdgeProxy(*edge.left, *edge.right) {}
+
+  EdgeProxy& operator=(const EdgeProxy& edge) {
+    left = edge.left;
+    right = edge.right;
+    _edge = Edge(&left, &right);
+    return *this;
+  }
 
   bool operator==(const EdgeProxy& other) const {
     return left == other.left && right == other.right;
