@@ -16,7 +16,7 @@ class XNode(Node):
 
     def __eq__(self, other: 'XNode') -> bool:
         return ((self.point == other.point
-                 and self.left is other.left
-                 and self.right is other.right)
+                 and self.left == other.left
+                 and self.right == other.right)
                 if isinstance(other, XNode)
                 else NotImplemented)
