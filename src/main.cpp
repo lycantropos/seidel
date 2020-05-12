@@ -391,6 +391,17 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                     std::shared_ptr<NodeProxy>>(),
            py::arg("edge"), py::arg("above").none(false),
            py::arg("below").none(false))
+      .def(py::pickle(
+          [](const YNode& self) {  // __getstate__
+            return py::make_tuple(self.edge, self.above, self.below);
+          },
+          [](py::tuple tuple) {  // __setstate__
+            if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
+            return std::make_unique<YNode>(
+                tuple[0].cast<const EdgeProxy&>(),
+                tuple[1].cast<std::shared_ptr<NodeProxy>>(),
+                tuple[2].cast<std::shared_ptr<NodeProxy>>());
+          }))
       .def(py::self == py::self)
       .def("__repr__",
            [](const YNode& self) {
