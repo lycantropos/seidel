@@ -58,9 +58,8 @@ class Node {
   Node(const Node& other) = delete;
   Node& operator=(const Node& other) = delete;
 
- private:
   typedef enum { Type_XNode, Type_YNode, Type_TrapezoidNode } Type;
-  Type _type;
+  Type type;
 
   union {
     struct {
@@ -74,7 +73,7 @@ class Node {
       Node* above;       // Owned.
     } ynode;
     Trapezoid* trapezoid;  // Owned.
-  } _union;
+  } data;
 
   typedef std::list<Node*> Parents;
   Parents _parents;  // Not owned.

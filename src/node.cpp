@@ -6,46 +6,46 @@
 
 #include "trapezoid.h"
 
-Node::Node(const Point* point, Node* left, Node* right) : _type(Type_XNode) {
+Node::Node(const Point* point, Node* left, Node* right) : type(Type_XNode) {
   assert(point != nullptr && "Invalid point");
   assert(left != nullptr && "Invalid left node");
   assert(right != nullptr && "Invalid right node");
-  _union.xnode.point = point;
-  _union.xnode.left = left;
-  _union.xnode.right = right;
+  data.xnode.point = point;
+  data.xnode.left = left;
+  data.xnode.right = right;
   left->add_parent(this);
   right->add_parent(this);
 }
 
-Node::Node(const Edge* edge, Node* below, Node* above) : _type(Type_YNode) {
+Node::Node(const Edge* edge, Node* below, Node* above) : type(Type_YNode) {
   assert(edge != nullptr && "Invalid edge");
   assert(below != nullptr && "Invalid below node");
   assert(above != nullptr && "Invalid above node");
-  _union.ynode.edge = edge;
-  _union.ynode.below = below;
-  _union.ynode.above = above;
+  data.ynode.edge = edge;
+  data.ynode.below = below;
+  data.ynode.above = above;
   below->add_parent(this);
   above->add_parent(this);
 }
 
-Node::Node(Trapezoid* trapezoid) : _type(Type_TrapezoidNode) {
+Node::Node(Trapezoid* trapezoid) : type(Type_TrapezoidNode) {
   assert(trapezoid != nullptr && "Null Trapezoid");
-  _union.trapezoid = trapezoid;
+  data.trapezoid = trapezoid;
   trapezoid->trapezoid_node = this;
 }
 
 Node::~Node() {
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      if (_union.xnode.left->remove_parent(this)) delete _union.xnode.left;
-      if (_union.xnode.right->remove_parent(this)) delete _union.xnode.right;
+      if (data.xnode.left->remove_parent(this)) delete data.xnode.left;
+      if (data.xnode.right->remove_parent(this)) delete data.xnode.right;
       break;
     case Type_YNode:
-      if (_union.ynode.below->remove_parent(this)) delete _union.ynode.below;
-      if (_union.ynode.above->remove_parent(this)) delete _union.ynode.above;
+      if (data.ynode.below->remove_parent(this)) delete data.ynode.below;
+      if (data.ynode.above->remove_parent(this)) delete data.ynode.above;
       break;
     case Type_TrapezoidNode:
-      delete _union.trapezoid;
+      delete data.trapezoid;
       break;
   }
 }
@@ -68,28 +68,28 @@ void Node::assert_valid(bool tree_complete) const {
   }
 
   // Check children, and recurse.
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      assert(_union.xnode.left != nullptr && "Null left child");
-      assert(_union.xnode.left->has_parent(this) && "Incorrect parent");
-      assert(_union.xnode.right != nullptr && "Null right child");
-      assert(_union.xnode.right->has_parent(this) && "Incorrect parent");
-      _union.xnode.left->assert_valid(tree_complete);
-      _union.xnode.right->assert_valid(tree_complete);
+      assert(data.xnode.left != nullptr && "Null left child");
+      assert(data.xnode.left->has_parent(this) && "Incorrect parent");
+      assert(data.xnode.right != nullptr && "Null right child");
+      assert(data.xnode.right->has_parent(this) && "Incorrect parent");
+      data.xnode.left->assert_valid(tree_complete);
+      data.xnode.right->assert_valid(tree_complete);
       break;
     case Type_YNode:
-      assert(_union.ynode.below != nullptr && "Null below child");
-      assert(_union.ynode.below->has_parent(this) && "Incorrect parent");
-      assert(_union.ynode.above != nullptr && "Null above child");
-      assert(_union.ynode.above->has_parent(this) && "Incorrect parent");
-      _union.ynode.below->assert_valid(tree_complete);
-      _union.ynode.above->assert_valid(tree_complete);
+      assert(data.ynode.below != nullptr && "Null below child");
+      assert(data.ynode.below->has_parent(this) && "Incorrect parent");
+      assert(data.ynode.above != nullptr && "Null above child");
+      assert(data.ynode.above->has_parent(this) && "Incorrect parent");
+      data.ynode.below->assert_valid(tree_complete);
+      data.ynode.above->assert_valid(tree_complete);
       break;
     case Type_TrapezoidNode:
-      assert(_union.trapezoid != nullptr && "Null trapezoid");
-      assert(_union.trapezoid->trapezoid_node == this &&
+      assert(data.trapezoid != nullptr && "Null trapezoid");
+      assert(data.trapezoid->trapezoid_node == this &&
              "Incorrect trapezoid node");
-      _union.trapezoid->assert_valid(tree_complete);
+      data.trapezoid->assert_valid(tree_complete);
       break;
   }
 #endif
@@ -97,11 +97,11 @@ void Node::assert_valid(bool tree_complete) const {
 
 bool Node::has_child(const Node* child) const {
   assert(child != nullptr && "Null child node");
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      return (_union.xnode.left == child || _union.xnode.right == child);
+      return (data.xnode.left == child || data.xnode.right == child);
     case Type_YNode:
-      return (_union.ynode.below == child || _union.ynode.above == child);
+      return (data.ynode.below == child || data.ynode.above == child);
     default:  // Type_TrapezoidNode:
       return false;
   }
@@ -124,26 +124,24 @@ bool Node::remove_parent(Node* parent) {
 }
 
 void Node::replace_child(Node* old_child, Node* new_child) {
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      assert(
-          (_union.xnode.left == old_child || _union.xnode.right == old_child) &&
-          "Not a child Node");
+      assert((data.xnode.left == old_child || data.xnode.right == old_child) &&
+             "Not a child Node");
       assert(new_child != nullptr && "Null child node");
-      if (_union.xnode.left == old_child)
-        _union.xnode.left = new_child;
+      if (data.xnode.left == old_child)
+        data.xnode.left = new_child;
       else
-        _union.xnode.right = new_child;
+        data.xnode.right = new_child;
       break;
     case Type_YNode:
-      assert((_union.ynode.below == old_child ||
-              _union.ynode.above == old_child) &&
+      assert((data.ynode.below == old_child || data.ynode.above == old_child) &&
              "Not a child node");
       assert(new_child != nullptr && "Null child node");
-      if (_union.ynode.below == old_child)
-        _union.ynode.below = new_child;
+      if (data.ynode.below == old_child)
+        data.ynode.below = new_child;
       else
-        _union.ynode.above = new_child;
+        data.ynode.above = new_child;
       break;
     case Type_TrapezoidNode:
       assert(0 && "Invalid type for this operation");
@@ -161,22 +159,22 @@ void Node::replace_with(Node* new_node) {
 }
 
 const Node* Node::search(const Point& xy) {
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      if (xy == *_union.xnode.point)
+      if (xy == *data.xnode.point)
         return this;
-      else if (xy.is_right_of(*_union.xnode.point))
-        return _union.xnode.right->search(xy);
+      else if (xy.is_right_of(*data.xnode.point))
+        return data.xnode.right->search(xy);
       else
-        return _union.xnode.left->search(xy);
+        return data.xnode.left->search(xy);
     case Type_YNode: {
-      int orient = _union.ynode.edge->get_point_orientation(xy);
+      int orient = data.ynode.edge->get_point_orientation(xy);
       if (orient == 0)
         return this;
       else if (orient < 0)
-        return _union.ynode.above->search(xy);
+        return data.ynode.above->search(xy);
       else
-        return _union.ynode.below->search(xy);
+        return data.ynode.below->search(xy);
     }
     default:  // Type_TrapezoidNode:
       return this;
@@ -184,49 +182,49 @@ const Node* Node::search(const Point& xy) {
 }
 
 Trapezoid* Node::search(const Edge& edge) {
-  switch (_type) {
+  switch (type) {
     case Type_XNode:
-      if (edge.left == _union.xnode.point)
-        return _union.xnode.right->search(edge);
+      if (edge.left == data.xnode.point)
+        return data.xnode.right->search(edge);
       else {
-        if (edge.left->is_right_of(*_union.xnode.point))
-          return _union.xnode.right->search(edge);
+        if (edge.left->is_right_of(*data.xnode.point))
+          return data.xnode.right->search(edge);
         else
-          return _union.xnode.left->search(edge);
+          return data.xnode.left->search(edge);
       }
     case Type_YNode:
-      if (edge.left == _union.ynode.edge->left) {
+      if (edge.left == data.ynode.edge->left) {
         // Coinciding left edge points.
-        if (edge.get_slope() == _union.ynode.edge->get_slope()) {
+        if (edge.get_slope() == data.ynode.edge->get_slope()) {
           assert(0 && "Invalid triangulation, common left points");
           return 0;
         }
-        if (edge.get_slope() > _union.ynode.edge->get_slope())
-          return _union.ynode.above->search(edge);
+        if (edge.get_slope() > data.ynode.edge->get_slope())
+          return data.ynode.above->search(edge);
         else
-          return _union.ynode.below->search(edge);
-      } else if (edge.right == _union.ynode.edge->right) {
+          return data.ynode.below->search(edge);
+      } else if (edge.right == data.ynode.edge->right) {
         // Coinciding right edge points.
-        if (edge.get_slope() == _union.ynode.edge->get_slope()) {
+        if (edge.get_slope() == data.ynode.edge->get_slope()) {
           assert(0 && "Invalid triangulation, common right points");
           return 0;
         }
-        if (edge.get_slope() > _union.ynode.edge->get_slope())
-          return _union.ynode.below->search(edge);
+        if (edge.get_slope() > data.ynode.edge->get_slope())
+          return data.ynode.below->search(edge);
         else
-          return _union.ynode.above->search(edge);
+          return data.ynode.above->search(edge);
       } else {
-        int orient = _union.ynode.edge->get_point_orientation(*edge.left);
+        int orient = data.ynode.edge->get_point_orientation(*edge.left);
         if (orient == 0) {
           assert(0 && "Invalid triangulation, point on edge");
           return 0;
         }
         if (orient < 0)
-          return _union.ynode.above->search(edge);
+          return data.ynode.above->search(edge);
         else
-          return _union.ynode.below->search(edge);
+          return data.ynode.below->search(edge);
       }
     default:  // Type_TrapezoidNode:
-      return _union.trapezoid;
+      return data.trapezoid;
   }
 }

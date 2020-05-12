@@ -39,6 +39,27 @@ static bool are_trapezoids_equal(const Trapezoid& first,
          are_edges_equal(first.below, second.below);
 }
 
+static bool are_nodes_equal(const Node& first, const Node& second) {
+  if (first.type != second.type) return false;
+  switch (first.type) {
+    case Node::Type_XNode: {
+      return ((*first.data.xnode.point) == (*second.data.xnode.point)) &&
+             are_nodes_equal(*first.data.xnode.left, *second.data.xnode.left) &&
+             are_nodes_equal(*first.data.xnode.right, *second.data.xnode.right);
+    }
+    case Node::Type_YNode: {
+      return are_edges_equal(*first.data.ynode.edge, *second.data.ynode.edge) &&
+             are_nodes_equal(*first.data.ynode.above,
+                             *second.data.ynode.above) &&
+             are_nodes_equal(*first.data.ynode.below, *second.data.ynode.below);
+    }
+    case Node::Type_TrapezoidNode: {
+      return are_trapezoids_equal(*first.data.trapezoid,
+                                  *second.data.trapezoid);
+    }
+  }
+}
+
 class EdgeProxy {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
@@ -146,7 +167,14 @@ static std::string trapezoid_repr(const TrapezoidProxy& self) {
 class NodeProxy {
  public:
   virtual ~NodeProxy() {}
-  virtual Node* node() = 0;
+  virtual Node* node_copy() const = 0;
+  virtual Node& node() = 0;
+  virtual const Node& node() const = 0;
+
+  virtual bool operator==(const NodeProxy& other) const {
+    return are_nodes_equal(node(), other.node());
+  }
+
   virtual void print(std::ostream& stream) const = 0;
 };
 
@@ -157,15 +185,15 @@ class XNode : public NodeProxy {
       : point(point_),
         left(left_),
         right(right_),
-        _node(&point, left->node(), right->node()) {}
+        _node(&point, left->node_copy(), right->node_copy()) {}
 
-  bool operator==(const XNode& other) const {
-    return point == other.point && left == other.left && right == other.right;
+  Node* node_copy() const override {
+    return new Node(&point, left->node_copy(), right->node_copy());
   }
 
-  Node* node() override {
-    return new Node(&point, left->node(), right->node());
-  }
+  const Node& node() const override { return _node; }
+
+  Node& node() override { return _node; }
 
   void print(std::ostream& stream) const override {
     stream << C_STR(MODULE_NAME) "." X_NODE_NAME "(" << point_repr(point)
@@ -191,15 +219,15 @@ class YNode : public NodeProxy {
       : edge(edge_),
         above(above_),
         below(below_),
-        _node(&edge.edge(), below->node(), above->node()) {}
+        _node(&edge.edge(), below->node_copy(), above->node_copy()) {}
 
-  bool operator==(const YNode& other) const {
-    return edge == other.edge && above == other.above && below == other.below;
+  Node* node_copy() const override {
+    return new Node(&edge.edge(), below->node_copy(), above->node_copy());
   }
 
-  Node* node() override {
-    return new Node(&edge.edge(), below->node(), above->node());
-  }
+  const Node& node() const override { return _node; }
+
+  Node& node() override { return _node; }
 
   void print(std::ostream& stream) const override {
     stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "(" << edge_repr(edge) << ", ";
@@ -222,11 +250,11 @@ class Leaf : public NodeProxy {
   Leaf(const TrapezoidProxy& trapezoid_)
       : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
 
-  bool operator==(const Leaf& other) const {
-    return trapezoid == other.trapezoid;
-  }
+  Node* node_copy() const override { return new Node(trapezoid.trapezoid()); }
 
-  Node* node() override { return new Node(trapezoid.trapezoid()); }
+  const Node& node() const override { return _node; }
+
+  Node& node() override { return _node; }
 
   void print(std::ostream& stream) const override {
     stream << C_STR(MODULE_NAME) "." LEAF_NAME "(" << trapezoid_repr(trapezoid)
