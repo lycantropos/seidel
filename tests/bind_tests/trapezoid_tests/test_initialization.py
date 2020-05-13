@@ -10,13 +10,13 @@ from . import strategies
 
 @given(strategies.sorted_points_pairs, strategies.edges, strategies.edges)
 def test_basic(endpoints: Tuple[Point, Point],
-               above: Edge,
-               below: Edge) -> None:
+               below: Edge,
+               above: Edge) -> None:
     left, right = endpoints
 
-    result = Trapezoid(left, right, above, below)
+    result = Trapezoid(left, right, below, above)
 
     assert result.left == left
     assert result.right == right
-    assert result.above == above
     assert result.below == below
+    assert result.above == above
