@@ -1,3 +1,5 @@
+from copy import copy
+
 from reprit.base import generate_repr
 
 from .point import Point
@@ -19,3 +21,17 @@ class BoundingBox:
                  and self.upper == other.upper)
                 if isinstance(other, BoundingBox)
                 else NotImplemented)
+
+    def add(self, point: Point) -> None:
+        if self.empty:
+            self.empty = False
+            self.lower = self.upper = copy(Point)
+        else:
+            if point.x < self.lower.x:
+                self.lower.x = point.x
+            elif point.x > self.upper.x:
+                self.upper.x = point.x
+            if point.y < self.lower.y:
+                self.lower.y = point.y
+            elif point.y > self.upper.y:
+                self.upper.y = point.y
