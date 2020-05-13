@@ -135,8 +135,8 @@ def are_bound_ported_x_nodes_equal(bound: BoundXNode,
 def are_bound_ported_y_nodes_equal(bound: BoundYNode,
                                    ported: PortedYNode) -> bool:
     return (are_bound_ported_edges_equal(bound.edge, ported.edge)
-            and are_bound_ported_nodes_equal(bound.above, ported.above)
-            and are_bound_ported_nodes_equal(bound.below, ported.below))
+            and are_bound_ported_nodes_equal(bound.below, ported.below)
+            and are_bound_ported_nodes_equal(bound.above, ported.above))
 
 
 def point_to_coordinates(point: AnyPoint) -> Tuple[Coordinate, Coordinate]:

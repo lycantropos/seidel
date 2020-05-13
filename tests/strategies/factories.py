@@ -181,14 +181,14 @@ def to_bound_with_ported_x_nodes_pair(points: BoundPortedPointsPair,
 
 
 def to_bound_with_ported_y_nodes_pair(edges: BoundPortedEdgesPair,
-                                      left_nodes: BoundPortedNodesPair,
-                                      right_nodes: BoundPortedNodesPair
+                                      below_nodes: BoundPortedNodesPair,
+                                      above_nodes: BoundPortedNodesPair
                                       ) -> BoundPortedYNodesPair:
     bound_edge, ported_edge = edges
-    bound_left, ported_left = left_nodes
-    bound_right, ported_right = right_nodes
-    return (BoundYNode(bound_edge, bound_left, bound_right),
-            PortedYNode(ported_edge, ported_left, ported_right))
+    bound_below, ported_below = below_nodes
+    bound_above, ported_above = above_nodes
+    return (BoundYNode(bound_edge, bound_below, bound_above),
+            PortedYNode(ported_edge, ported_below, ported_above))
 
 
 recursive = partial(strategies.recursive,
