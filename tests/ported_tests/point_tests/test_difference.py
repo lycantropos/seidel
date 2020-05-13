@@ -3,6 +3,7 @@ from typing import Tuple
 from hypothesis import given
 
 from seidel.point import Point
+from tests.utils import equivalence
 from . import strategies
 
 
@@ -24,9 +25,7 @@ def test_right_neutral_element(point_with_origin: Tuple[Point, Point]) -> None:
 def test_self_inverse(point_with_origin: Tuple[Point, Point]) -> None:
     point, origin = point_with_origin
 
-    result = point - point
-
-    assert result == origin
+    assert point - point == origin
 
 
 @given(strategies.points_pairs_with_origins)
@@ -34,4 +33,4 @@ def test_equality_criteria(points_pair_with_origin: Tuple[Point, Point, Point]
                            ) -> None:
     left, right, origin = points_pair_with_origin
 
-    assert (left - right == origin) is (left == right)
+    assert equivalence(left - right == origin, left == right)
