@@ -16,6 +16,7 @@ class Node;  // Forward declaration.
 struct Trapezoid {
   Trapezoid(const Point* left_, const Point* right_, const Edge& below_,
             const Edge& above_);
+  virtual ~Trapezoid() = default;
 
   /* Assert that this Trapezoid is valid.  Reduces to a no-op if NDEBUG
    * is defined. */
