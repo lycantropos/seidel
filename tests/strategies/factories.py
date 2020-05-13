@@ -121,15 +121,17 @@ def coordinates_to_ported_points_with_nodes_pairs(
 
 
 def to_bound_with_ported_bounding_boxes_pair(empty: bool,
-                                             lower_x: float,
-                                             lower_y: float,
-                                             upper_x: float,
-                                             upper_y: float
+                                             first_x: float,
+                                             first_y: float,
+                                             second_x: float,
+                                             second_y: float
                                              ) -> BoundPortedBoundingBoxesPair:
-    return (BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
-                             BoundPoint(upper_x, upper_y)),
-            PortedBoundingBox(empty, PortedPoint(lower_x, lower_y),
-                              PortedPoint(upper_x, upper_y)))
+    left_x, right_x = sorted((first_x, second_x))
+    lower_y, upper_y = sorted((first_y, second_y))
+    return (BoundBoundingBox(empty, BoundPoint(left_x, lower_y),
+                             BoundPoint(right_x, upper_y)),
+            PortedBoundingBox(empty, PortedPoint(left_x, lower_y),
+                              PortedPoint(right_x, upper_y)))
 
 
 def to_bound_with_ported_edges_pair(left_points: BoundPortedPointsPair,
