@@ -17,3 +17,11 @@ class Edge:
         return (self.left == other.left and self.right == other.right
                 if isinstance(other, Edge)
                 else NotImplemented)
+
+    def get_point_orientation(self, point: Point) -> int:
+        cross_z = (point - self.left).cross_z(self.right - self.left)
+        return (1
+                if cross_z > 0
+                else (-1
+                      if cross_z < 0
+                      else 0))
