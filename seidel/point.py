@@ -12,6 +12,9 @@ class Point:
 
     __repr__ = generate_repr(__init__)
 
+    def __add__(self, other: 'Point') -> 'Point':
+        return Point(self.x + other.x, self.y + other.y)
+
     def __eq__(self, other: 'Point') -> bool:
         return (self.x == other.x and self.y == other.y
                 if isinstance(other, Point)
