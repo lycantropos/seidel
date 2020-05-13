@@ -1,5 +1,6 @@
 from reprit.base import generate_repr
 
+from .hints import Coordinate
 from .point import Point
 
 
@@ -25,3 +26,7 @@ class Edge:
                 else (-1
                       if cross_z < 0
                       else 0))
+
+    def get_slope(self) -> Coordinate:
+        difference = self.right - self.left
+        return difference.y / difference.x
