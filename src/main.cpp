@@ -291,6 +291,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
             return Point(tuple[0].cast<double>(), tuple[1].cast<double>());
           }))
       .def(py::self == py::self)
+      .def(py::self + py::self)
       .def("__repr__", repr<Point>)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y)
