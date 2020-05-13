@@ -60,8 +60,8 @@ static std::ostream& operator<<(std::ostream& stream, const Node& node) {
                     << ", " << *node.data.xnode.right << ")";
     case Node::Type_YNode:
       return stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "("
-                    << *node.data.ynode.edge << ", " << *node.data.ynode.above
-                    << ", " << *node.data.ynode.below << ")";
+                    << *node.data.ynode.edge << ", " << *node.data.ynode.below
+                    << ", " << *node.data.ynode.above << ")";
     case Node::Type_TrapezoidNode:
       return stream << C_STR(MODULE_NAME) "." LEAF_NAME "("
                     << *node.data.trapezoid << ")";
@@ -88,19 +88,18 @@ static bool operator==(const Trapezoid& first, const Trapezoid& second) {
          are_edges_equal(first.below, second.below);
 }
 
-static bool are_nodes_equal(const Node& first, const Node& second) {
+static bool operator==(const Node& first, const Node& second) {
   if (first.type != second.type) return false;
   switch (first.type) {
     case Node::Type_XNode: {
       return ((*first.data.xnode.point) == (*second.data.xnode.point)) &&
-             are_nodes_equal(*first.data.xnode.left, *second.data.xnode.left) &&
-             are_nodes_equal(*first.data.xnode.right, *second.data.xnode.right);
+             ((*first.data.xnode.left) == (*second.data.xnode.left)) &&
+             ((*first.data.xnode.right) == (*second.data.xnode.right));
     }
     case Node::Type_YNode: {
       return are_edges_equal(*first.data.ynode.edge, *second.data.ynode.edge) &&
-             are_nodes_equal(*first.data.ynode.above,
-                             *second.data.ynode.above) &&
-             are_nodes_equal(*first.data.ynode.below, *second.data.ynode.below);
+             ((*first.data.ynode.above) == (*second.data.ynode.above)) &&
+             ((*first.data.ynode.below) == (*second.data.ynode.below));
     }
     case Node::Type_TrapezoidNode: {
       return (*first.data.trapezoid) == (*second.data.trapezoid);
@@ -210,21 +209,23 @@ class TrapezoidProxy : public Trapezoid {
   EdgeProxy _above;
 };
 
-class NodeProxy {
+class NodeProxy : public Node {
  public:
-  virtual ~NodeProxy() {}
+  NodeProxy(const Point* point_, std::shared_ptr<NodeProxy> left_,
+            std::shared_ptr<NodeProxy> right_)
+      : Node(point_, left_->node_copy(), right_->node_copy()) {}
+
+  NodeProxy(const EdgeProxy* edge_, std::shared_ptr<NodeProxy> below_,
+            std::shared_ptr<NodeProxy> above_)
+      : Node(edge_, below_->node_copy(), above_->node_copy()) {}
+
+  NodeProxy(const TrapezoidProxy& trapezoid_)
+      : Node(new TrapezoidProxy(trapezoid_)) {}
+
+  virtual ~NodeProxy(){};
+
   virtual Node* node_copy() const = 0;
-  virtual Node& node() = 0;
-  virtual const Node& node() const = 0;
-
-  bool operator==(const NodeProxy& other) const {
-    return are_nodes_equal(node(), other.node());
-  }
 };
-
-static std::ostream& operator<<(std::ostream& stream, const NodeProxy& node) {
-  return stream << node.node();
-}
 
 class XNode : public NodeProxy {
  public:
@@ -233,66 +234,44 @@ class XNode : public NodeProxy {
       : point(point_),
         left(left_),
         right(right_),
-        _node(&point, left->node_copy(), right->node_copy()) {}
+        NodeProxy(&point, left_, right_) {}
 
   Node* node_copy() const override {
     return new Node(&point, left->node_copy(), right->node_copy());
   }
 
-  const Node& node() const override { return _node; }
-
-  Node& node() override { return _node; }
-
   Point point;
   std::shared_ptr<NodeProxy> left;
   std::shared_ptr<NodeProxy> right;
-
- private:
-  Node _node;
 };
 
 class YNode : public NodeProxy {
  public:
-  YNode(const EdgeProxy& edge_, std::shared_ptr<NodeProxy> above_,
-        std::shared_ptr<NodeProxy> below_)
+  YNode(const EdgeProxy& edge_, std::shared_ptr<NodeProxy> below_,
+        std::shared_ptr<NodeProxy> above_)
       : edge(edge_),
-        above(above_),
         below(below_),
-        _node(&edge, below->node_copy(), above->node_copy()) {}
+        above(above_),
+        NodeProxy(&edge, below_, above_) {}
 
   Node* node_copy() const override {
     return new Node(&edge, below->node_copy(), above->node_copy());
   }
 
-  const Node& node() const override { return _node; }
-
-  Node& node() override { return _node; }
-
   EdgeProxy edge;
-  std::shared_ptr<NodeProxy> above;
   std::shared_ptr<NodeProxy> below;
-
- private:
-  Node _node;
+  std::shared_ptr<NodeProxy> above;
 };
 
 class Leaf : public NodeProxy {
  public:
-  Leaf(const TrapezoidProxy& trapezoid_)
-      : _node(new TrapezoidProxy(trapezoid_)) {}
+  Leaf(const TrapezoidProxy& trapezoid_) : NodeProxy(trapezoid_) {}
 
   Node* node_copy() const override {
     return new Node(new TrapezoidProxy(trapezoid()));
   }
 
-  const Node& node() const override { return _node; }
-
-  Node& node() override { return _node; }
-
-  TrapezoidProxy trapezoid() const { return *_node.data.trapezoid; }
-
- private:
-  Node _node;
+  TrapezoidProxy trapezoid() const { return *data.trapezoid; }
 };
 
 static std::shared_ptr<NodeProxy> node_to_proxy(const Node& node) {
@@ -440,11 +419,11 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   py::class_<YNode, NodeProxy, std::shared_ptr<YNode>>(m, Y_NODE_NAME)
       .def(py::init<const EdgeProxy&, std::shared_ptr<NodeProxy>,
                     std::shared_ptr<NodeProxy>>(),
-           py::arg("edge"), py::arg("above").none(false),
-           py::arg("below").none(false))
+           py::arg("edge"), py::arg("below").none(false),
+           py::arg("above").none(false))
       .def(py::pickle(
           [](const YNode& self) {  // __getstate__
-            return py::make_tuple(self.edge, self.above, self.below);
+            return py::make_tuple(self.edge, self.below, self.above);
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
@@ -456,8 +435,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::self == py::self)
       .def("__repr__", repr<YNode>)
       .def_readonly("edge", &YNode::edge)
-      .def_readonly("above", &YNode::above)
-      .def_readonly("below", &YNode::below);
+      .def_readonly("below", &YNode::below)
+      .def_readonly("above", &YNode::above);
 
   py::class_<Leaf, NodeProxy, std::shared_ptr<Leaf>>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
