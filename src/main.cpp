@@ -81,8 +81,7 @@ static bool are_edges_equal(const Edge& first, const Edge& second) {
          ((*first.right) == (*second.right));
 }
 
-static bool are_trapezoids_equal(const Trapezoid& first,
-                                 const Trapezoid& second) {
+static bool operator==(const Trapezoid& first, const Trapezoid& second) {
   return ((*first.left) == (*second.left)) &&
          ((*first.right) == (*second.right)) &&
          are_edges_equal(first.above, second.above) &&
@@ -104,8 +103,7 @@ static bool are_nodes_equal(const Node& first, const Node& second) {
              are_nodes_equal(*first.data.ynode.below, *second.data.ynode.below);
     }
     case Node::Type_TrapezoidNode: {
-      return are_trapezoids_equal(*first.data.trapezoid,
-                                  *second.data.trapezoid);
+      return (*first.data.trapezoid) == (*second.data.trapezoid);
     }
   }
 }
@@ -203,10 +201,6 @@ class TrapezoidProxy : public Trapezoid {
 
   void set_upper_right(TrapezoidProxy* upper_right_) {
     Trapezoid::set_upper_right(upper_right_);
-  }
-
-  bool operator==(const TrapezoidProxy& other) const {
-    return are_trapezoids_equal(*this, other);
   }
 
  private:
