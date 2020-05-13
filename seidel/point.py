@@ -20,5 +20,8 @@ class Point:
                 if isinstance(other, Point)
                 else NotImplemented)
 
+    def cross_z(self, other: 'Point') -> Coordinate:
+        return self.x * other.y - self.y * other.x
+
     def is_right_of(self, other: 'Point') -> bool:
         return (self.x, self.y) > (other.x, other.y)
