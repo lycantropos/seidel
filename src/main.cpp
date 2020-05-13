@@ -47,8 +47,8 @@ static std::ostream& operator<<(std::ostream& stream, const Edge& edge) {
 static std::ostream& operator<<(std::ostream& stream,
                                 const Trapezoid& trapezoid) {
   return stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "(" << *trapezoid.left
-                << ", " << *trapezoid.right << ", " << trapezoid.below << ", "
-                << trapezoid.above << ")";
+                << ", " << *trapezoid.right << ", " << trapezoid.above << ", "
+                << trapezoid.below << ")";
 }
 
 static std::ostream& operator<<(std::ostream& stream, const Node& node) {
