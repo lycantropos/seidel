@@ -25,7 +25,7 @@ class BoundingBox:
     def add(self, point: Point) -> None:
         if self.empty:
             self.empty = False
-            self.lower = self.upper = copy(Point)
+            self.lower = self.upper = copy(point)
         else:
             if point.x < self.lower.x:
                 self.lower.x = point.x
