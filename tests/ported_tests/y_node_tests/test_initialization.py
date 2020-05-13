@@ -10,10 +10,10 @@ from . import strategies
 
 @given(strategies.edges_with_nodes_pairs)
 def test_basic(edge_with_nodes_pair: Tuple[Edge, Node, Node]) -> None:
-    point, above, below = edge_with_nodes_pair
+    point, below, above = edge_with_nodes_pair
 
-    result = YNode(point, above, below)
+    result = YNode(point, below, above)
 
     assert result.edge == point
-    assert result.above == above
     assert result.below == below
+    assert result.above == above
