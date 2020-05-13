@@ -297,6 +297,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("__repr__", repr<Point>)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y)
+      .def("cross_z", &Point::cross_z, py::arg("other"))
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
 
   py::class_<BoundingBox>(m, BOUNDING_BOX_NAME)
