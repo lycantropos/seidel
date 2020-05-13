@@ -126,10 +126,10 @@ def to_bound_with_ported_bounding_boxes_pair(empty: bool,
                                              upper_x: float,
                                              upper_y: float
                                              ) -> BoundPortedBoundingBoxesPair:
-    return (PortedBoundingBox(empty, PortedPoint(lower_x, lower_y),
-                              PortedPoint(upper_x, upper_y)),
-            BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
-                             BoundPoint(upper_x, upper_y)))
+    return (BoundBoundingBox(empty, BoundPoint(lower_x, lower_y),
+                             BoundPoint(upper_x, upper_y)),
+            PortedBoundingBox(empty, PortedPoint(lower_x, lower_y),
+                              PortedPoint(upper_x, upper_y)))
 
 
 def to_bound_with_ported_edges_pair(left_points: BoundPortedPointsPair,
