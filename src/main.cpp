@@ -285,17 +285,17 @@ class YNode : public NodeProxy {
 class Leaf : public NodeProxy {
  public:
   Leaf(const TrapezoidProxy& trapezoid_)
-      : trapezoid(trapezoid_), _node(new TrapezoidProxy(trapezoid)) {}
+      : _node(new TrapezoidProxy(trapezoid_)) {}
 
   Node* node_copy() const override {
-    return new Node(new TrapezoidProxy(trapezoid));
+    return new Node(new TrapezoidProxy(trapezoid()));
   }
 
   const Node& node() const override { return _node; }
 
   Node& node() override { return _node; }
 
-  TrapezoidProxy trapezoid;
+  TrapezoidProxy trapezoid() const { return *_node.data.trapezoid; }
 
  private:
   Node _node;
@@ -469,14 +469,14 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def(py::pickle(
           [](const Leaf& self) {  // __getstate__
-            return self.trapezoid;
+            return self.trapezoid();
           },
           [](const TrapezoidProxy& trapezoid) {  // __setstate__
             return std::make_unique<Leaf>(trapezoid);
           }))
       .def(py::self == py::self)
       .def("__repr__", repr<Leaf>)
-      .def_readonly("trapezoid", &Leaf::trapezoid);
+      .def_property_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;
