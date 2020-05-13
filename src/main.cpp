@@ -171,6 +171,42 @@ class TrapezoidProxy {
     return *this;
   }
 
+  std::unique_ptr<TrapezoidProxy> lower_left() const {
+    if (_trapezoid->lower_left == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*_trapezoid->lower_left);
+  }
+
+  void set_lower_left(const TrapezoidProxy& lower_left_) {
+    _trapezoid->set_lower_left(lower_left_._trapezoid.get());
+  }
+
+  std::unique_ptr<TrapezoidProxy> lower_right() const {
+    if (_trapezoid->lower_right == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*_trapezoid->lower_right);
+  }
+
+  void set_lower_right(const TrapezoidProxy& lower_right_) {
+    _trapezoid->set_lower_right(lower_right_._trapezoid.get());
+  }
+
+  std::unique_ptr<TrapezoidProxy> upper_left() const {
+    if (_trapezoid->upper_left == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*_trapezoid->upper_left);
+  }
+
+  void set_upper_left(const TrapezoidProxy& upper_left_) {
+    _trapezoid->set_upper_left(upper_left_._trapezoid.get());
+  }
+
+  std::unique_ptr<TrapezoidProxy> upper_right() const {
+    if (_trapezoid->upper_right == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*_trapezoid->upper_right);
+  }
+
+  void set_upper_right(const TrapezoidProxy& upper_right_) {
+    _trapezoid->set_upper_right(upper_right_._trapezoid.get());
+  }
+
   bool operator==(const TrapezoidProxy& other) const {
     return are_trapezoids_equal(*_trapezoid, *other._trapezoid);
   }
@@ -384,7 +420,15 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_readonly("left", &TrapezoidProxy::left)
       .def_readonly("right", &TrapezoidProxy::right)
       .def_readonly("above", &TrapezoidProxy::above)
-      .def_readonly("below", &TrapezoidProxy::below);
+      .def_readonly("below", &TrapezoidProxy::below)
+      .def_property("lower_left", &TrapezoidProxy::lower_left,
+                    &TrapezoidProxy::set_lower_left)
+      .def_property("lower_right", &TrapezoidProxy::lower_right,
+                    &TrapezoidProxy::set_lower_right)
+      .def_property("upper_left", &TrapezoidProxy::upper_left,
+                    &TrapezoidProxy::set_upper_left)
+      .def_property("upper_right", &TrapezoidProxy::upper_right,
+                    &TrapezoidProxy::set_upper_right);
 
   py::class_<NodeProxy, std::shared_ptr<NodeProxy>>(m, "Node");
 
