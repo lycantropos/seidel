@@ -50,6 +50,8 @@ class TrapezoidalMap {
    * for example, the triangulation is changed by setting the mask. */
   void build();
 
+  const Node& tree() const { return *_tree; }
+
  private:
   // Add the specified Edge to the search tree, returning true if successful.
   bool add_edge_to_tree(const Edge& edge);

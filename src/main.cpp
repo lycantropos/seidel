@@ -12,6 +12,7 @@
 #include "node.h"
 #include "point.h"
 #include "trapezoid.h"
+#include "trapezoidal_map.h"
 
 namespace py = pybind11;
 
@@ -275,10 +276,31 @@ class Leaf : public NodeProxy {
   Node _node;
 };
 
+static std::shared_ptr<NodeProxy> node_to_proxy(const Node& node) {
+  switch (node.type) {
+    case Node::Type_XNode:
+      return std::make_shared<XNode>(*node.data.xnode.point,
+                                     node_to_proxy(*node.data.xnode.left),
+                                     node_to_proxy(*node.data.xnode.right));
+    case Node::Type_YNode:
+      return std::make_shared<YNode>(*node.data.ynode.edge,
+                                     node_to_proxy(*node.data.ynode.above),
+                                     node_to_proxy(*node.data.ynode.below));
+    case Node::Type_TrapezoidNode:
+      return std::make_shared<Leaf>(*node.data.trapezoid);
+  }
+}
+
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
     )pbdoc";
+
+  m.def("build_graph", [](const std::vector<Point>& points) {
+    TrapezoidalMap map{points};
+    map.build();
+    return node_to_proxy(map.tree());
+  });
 
   py::class_<Point>(m, POINT_NAME)
       .def(py::init<double, double>(), py::arg("x") = 0., py::arg("y") = 0.)
