@@ -7,9 +7,9 @@ from . import strategies
 
 
 @given(strategies.edges, strategies.nodes, strategies.nodes)
-def test_basic(edge: Edge, above: Node, below: Node) -> None:
-    result = YNode(edge, above, below)
+def test_basic(edge: Edge, below: Node, above: Node) -> None:
+    result = YNode(edge, below, above)
 
     assert result.edge == edge
-    assert result.above == above
     assert result.below == below
+    assert result.above == above
