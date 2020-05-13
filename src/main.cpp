@@ -343,7 +343,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("__repr__", repr<BoundingBox>)
       .def_readwrite("empty", &BoundingBox::empty)
       .def_readwrite("lower", &BoundingBox::lower)
-      .def_readwrite("upper", &BoundingBox::upper);
+      .def_readwrite("upper", &BoundingBox::upper)
+      .def("add", &BoundingBox::add, py::arg("point"));
 
   py::class_<EdgeProxy>(m, EDGE_NAME)
       .def(py::init<const Point&, const Point&>(), py::arg("left"),
