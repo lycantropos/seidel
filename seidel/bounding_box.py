@@ -35,3 +35,8 @@ class BoundingBox:
                 self.lower.y = point.y
             elif point.y > self.upper.y:
                 self.upper.y = point.y
+
+    def expand(self, delta: Point) -> None:
+        if not self.empty:
+            self.lower -= delta
+            self.upper += delta
