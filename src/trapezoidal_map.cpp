@@ -267,7 +267,7 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
 bool TrapezoidalMap::find_trapezoids_intersecting_edge(
     const Edge& edge, std::vector<Trapezoid*>& trapezoids) {
   // This is the FollowSegment algorithm of de Berg et al, with some extra
-  // checks to deal with simple colinear (i.e. invalid) triangles.
+  // checks to deal with simple collinear (i.e. invalid) triangles.
   trapezoids.clear();
   Trapezoid* trapezoid = _tree->search(edge);
   if (trapezoid == nullptr) {
