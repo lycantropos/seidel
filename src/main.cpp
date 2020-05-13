@@ -110,37 +110,28 @@ static bool are_nodes_equal(const Node& first, const Node& second) {
   }
 }
 
-class EdgeProxy {
+class EdgeProxy : public Edge {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
-      : left(left_), right(right_), _edge(Edge(&left, &right)) {}
+      : _left(left_), _right(right_), Edge(&_left, &_right) {}
 
-  EdgeProxy(const EdgeProxy& edge) : EdgeProxy(edge.left, edge.right) {}
+  EdgeProxy(const EdgeProxy& edge) : EdgeProxy(edge._left, edge._right) {}
 
   EdgeProxy(const Edge& edge) : EdgeProxy(*edge.left, *edge.right) {}
 
   EdgeProxy& operator=(const EdgeProxy& edge) {
     left = edge.left;
     right = edge.right;
-    _edge = Edge(&left, &right);
     return *this;
   }
 
   bool operator==(const EdgeProxy& other) const {
-    return are_edges_equal(_edge, other._edge);
+    return are_edges_equal(*this, other);
   }
 
-  const Edge& edge() const { return _edge; }
-
-  Point left, right;
-
  private:
-  Edge _edge;
+  Point _left, _right;
 };
-
-static std::ostream& operator<<(std::ostream& stream, const EdgeProxy& edge) {
-  return stream << edge.edge();
-}
 
 class TrapezoidProxy {
  public:
@@ -150,8 +141,7 @@ class TrapezoidProxy {
         right(right_),
         above(above_),
         below(below_),
-        _trapezoid(std::make_unique<Trapezoid>(&left, &right, below.edge(),
-                                               above.edge())) {}
+        _trapezoid(std::make_unique<Trapezoid>(&left, &right, below, above)) {}
 
   TrapezoidProxy(const TrapezoidProxy& other)
       : TrapezoidProxy(other.left, other.right, other.above, other.below) {}
@@ -166,8 +156,7 @@ class TrapezoidProxy {
     right = other.right;
     above = other.above;
     below = other.below;
-    _trapezoid =
-        std::make_unique<Trapezoid>(&left, &right, below.edge(), above.edge());
+    _trapezoid = std::make_unique<Trapezoid>(&left, &right, below, above);
     return *this;
   }
 
@@ -212,7 +201,7 @@ class TrapezoidProxy {
   }
 
   Trapezoid* trapezoid() const {
-    return new Trapezoid(&left, &right, below.edge(), above.edge());
+    return new Trapezoid(&left, &right, below, above);
   }
 
   Point left;
@@ -277,10 +266,10 @@ class YNode : public NodeProxy {
       : edge(edge_),
         above(above_),
         below(below_),
-        _node(&edge.edge(), below->node_copy(), above->node_copy()) {}
+        _node(&edge, below->node_copy(), above->node_copy()) {}
 
   Node* node_copy() const override {
-    return new Node(&edge.edge(), below->node_copy(), above->node_copy());
+    return new Node(&edge, below->node_copy(), above->node_copy());
   }
 
   const Node& node() const override { return _node; }
