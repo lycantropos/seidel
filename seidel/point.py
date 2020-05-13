@@ -20,6 +20,9 @@ class Point:
                 if isinstance(other, Point)
                 else NotImplemented)
 
+    def __sub__(self, other: 'Point') -> 'Point':
+        return Point(self.x - other.x, self.y - other.y)
+
     def cross_z(self, other: 'Point') -> Coordinate:
         return self.x * other.y - self.y * other.x
 
