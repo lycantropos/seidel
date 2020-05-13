@@ -1,6 +1,7 @@
 from _seidel import Point
 from hypothesis import given
 
+from tests.utils import equivalence
 from . import strategies
 
 
@@ -21,4 +22,4 @@ def test_self_inverse(point: Point, origin: Point) -> None:
 
 @given(strategies.points, strategies.points, strategies.origins)
 def test_equality_criteria(left: Point, right: Point, origin: Point) -> None:
-    assert (left - right == origin) is (left == right)
+    assert equivalence(left - right == origin, left == right)
