@@ -282,8 +282,8 @@ static std::shared_ptr<NodeProxy> node_to_proxy(const Node& node) {
                                      node_to_proxy(*node.data.xnode.right));
     case Node::Type_YNode:
       return std::make_shared<YNode>(*node.data.ynode.edge,
-                                     node_to_proxy(*node.data.ynode.above),
-                                     node_to_proxy(*node.data.ynode.below));
+                                     node_to_proxy(*node.data.ynode.below),
+                                     node_to_proxy(*node.data.ynode.above));
     case Node::Type_TrapezoidNode:
       return std::make_shared<Leaf>(*node.data.trapezoid);
   }
