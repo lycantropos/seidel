@@ -75,9 +75,9 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
 
   const Point* p = edge.left;
   const Point* q = edge.right;
-  Trapezoid* left_old = 0;    // old trapezoid to the left.
-  Trapezoid* left_below = 0;  // below trapezoid to the left.
-  Trapezoid* left_above = 0;  // above trapezoid to the left.
+  Trapezoid* left_old = nullptr;    // old trapezoid to the left.
+  Trapezoid* left_below = nullptr;  // below trapezoid to the left.
+  Trapezoid* left_above = nullptr;  // above trapezoid to the left.
 
   // Iterate through trapezoids intersecting edge from left to right.
   // Replace each old trapezoid with 2+ new trapezoids, and replace its
