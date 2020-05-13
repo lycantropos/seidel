@@ -20,6 +20,9 @@ class Point:
                 if isinstance(other, Point)
                 else NotImplemented)
 
+    def __mul__(self, scale: Coordinate) -> 'Point':
+        return Point(self.x * scale, self.y * scale)
+
     def __sub__(self, other: 'Point') -> 'Point':
         return Point(self.x - other.x, self.y - other.y)
 
