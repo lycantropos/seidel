@@ -7,15 +7,15 @@ from .point import Point
 
 
 class Trapezoid:
-    __slots__ = ('left', 'right', 'above', 'below',
+    __slots__ = ('left', 'right', 'below', 'above',
                  '_lower_left', '_lower_right', '_upper_left', '_upper_right',
                  'trapezoid_node')
 
     def __init__(self,
                  left: Point,
                  right: Point,
-                 above: Edge,
-                 below: Edge) -> None:
+                 below: Edge,
+                 above: Edge) -> None:
         assert right.is_right_of(left), 'Incorrect endpoints order'
         self.left = left
         self.right = right
