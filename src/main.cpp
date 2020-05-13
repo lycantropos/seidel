@@ -293,6 +293,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::self == py::self)
       .def(py::self + py::self)
       .def(py::self - py::self)
+      .def(py::self * float())
       .def("__repr__", repr<Point>)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y)
