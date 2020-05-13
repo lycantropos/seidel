@@ -9,6 +9,7 @@ class Leaf(Node):
 
     def __init__(self, trapezoid: Trapezoid) -> None:
         self.trapezoid = trapezoid
+        trapezoid.trapezoid_node = self
 
     __repr__ = generate_repr(__init__)
 
