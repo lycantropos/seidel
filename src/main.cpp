@@ -26,6 +26,55 @@ namespace py = pybind11;
 #define X_NODE_NAME "XNode"
 #define Y_NODE_NAME "YNode"
 
+static std::string bool_repr(bool value) { return py::str(py::bool_(value)); }
+
+static std::ostream& operator<<(std::ostream& stream, const Point& point) {
+  return stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << point.x << ", "
+                << point.y << ")";
+}
+
+static std::ostream& operator<<(std::ostream& stream, const BoundingBox& box) {
+  return stream << C_STR(MODULE_NAME) "." BOUNDING_BOX_NAME "("
+                << bool_repr(box.empty) << ", " << box.lower << ", "
+                << box.upper << ")";
+}
+
+static std::ostream& operator<<(std::ostream& stream, const Edge& edge) {
+  return stream << C_STR(MODULE_NAME) "." EDGE_NAME "(" << *edge.left << ", "
+                << *edge.right << ")";
+}
+
+static std::ostream& operator<<(std::ostream& stream,
+                                const Trapezoid& trapezoid) {
+  return stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "(" << *trapezoid.left
+                << ", " << *trapezoid.right << ", " << trapezoid.below << ", "
+                << trapezoid.above << ")";
+}
+
+static std::ostream& operator<<(std::ostream& stream, const Node& node) {
+  switch (node.type) {
+    case Node::Type_XNode:
+      return stream << C_STR(MODULE_NAME) "." X_NODE_NAME "("
+                    << *node.data.xnode.point << ", " << *node.data.xnode.left
+                    << ", " << *node.data.xnode.right << ")";
+    case Node::Type_YNode:
+      return stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "("
+                    << *node.data.ynode.edge << ", " << *node.data.ynode.above
+                    << ", " << *node.data.ynode.below << ")";
+    case Node::Type_TrapezoidNode:
+      return stream << C_STR(MODULE_NAME) "." LEAF_NAME "("
+                    << *node.data.trapezoid << ")";
+  }
+}
+
+template <class Object>
+std::string repr(const Object& object) {
+  std::ostringstream stream;
+  stream.precision(std::numeric_limits<double>::digits10 + 2);
+  stream << object;
+  return stream.str();
+}
+
 static bool are_edges_equal(const Edge& first, const Edge& second) {
   return ((*first.left) == (*second.left)) &&
          ((*first.right) == (*second.right));
@@ -88,6 +137,10 @@ class EdgeProxy {
   Edge _edge;
 };
 
+static std::ostream& operator<<(std::ostream& stream, const EdgeProxy& edge) {
+  return stream << edge.edge();
+}
+
 class TrapezoidProxy {
  public:
   TrapezoidProxy(const Point& left_, const Point& right_,
@@ -134,34 +187,9 @@ class TrapezoidProxy {
   std::unique_ptr<Trapezoid> _trapezoid;
 };
 
-static std::ostringstream make_stream() {
-  std::ostringstream stream;
-  stream.precision(std::numeric_limits<double>::digits10 + 2);
-  return stream;
-}
-
-static std::string bool_repr(bool value) { return py::str(py::bool_(value)); }
-
-static std::string point_repr(const Point& self) {
-  auto stream = make_stream();
-  stream << C_STR(MODULE_NAME) "." POINT_NAME "(" << self.x << ", " << self.y
-         << ")";
-  return stream.str();
-}
-
-static std::string edge_repr(const EdgeProxy& self) {
-  auto stream = make_stream();
-  stream << C_STR(MODULE_NAME) "." EDGE_NAME "(" << point_repr(self.left)
-         << ", " << point_repr(self.right) << ")";
-  return stream.str();
-}
-
-static std::string trapezoid_repr(const TrapezoidProxy& self) {
-  auto stream = make_stream();
-  stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "(" << point_repr(self.left)
-         << ", " << point_repr(self.right) << ", " << edge_repr(self.above)
-         << ", " << edge_repr(self.below) << ")";
-  return stream.str();
+static std::ostream& operator<<(std::ostream& stream,
+                                const TrapezoidProxy& trapezoid) {
+  return stream << *trapezoid.trapezoid();
 }
 
 class NodeProxy {
@@ -174,9 +202,11 @@ class NodeProxy {
   bool operator==(const NodeProxy& other) const {
     return are_nodes_equal(node(), other.node());
   }
-
-  virtual void print(std::ostream& stream) const = 0;
 };
+
+static std::ostream& operator<<(std::ostream& stream, const NodeProxy& node) {
+  return stream << node.node();
+}
 
 class XNode : public NodeProxy {
  public:
@@ -194,15 +224,6 @@ class XNode : public NodeProxy {
   const Node& node() const override { return _node; }
 
   Node& node() override { return _node; }
-
-  void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." X_NODE_NAME "(" << point_repr(point)
-           << ", ";
-    left->print(stream);
-    stream << ", ";
-    right->print(stream);
-    stream << ")";
-  }
 
   Point point;
   std::shared_ptr<NodeProxy> left;
@@ -229,14 +250,6 @@ class YNode : public NodeProxy {
 
   Node& node() override { return _node; }
 
-  void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." Y_NODE_NAME "(" << edge_repr(edge) << ", ";
-    above->print(stream);
-    stream << ", ";
-    below->print(stream);
-    stream << ")";
-  }
-
   EdgeProxy edge;
   std::shared_ptr<NodeProxy> above;
   std::shared_ptr<NodeProxy> below;
@@ -255,11 +268,6 @@ class Leaf : public NodeProxy {
   const Node& node() const override { return _node; }
 
   Node& node() override { return _node; }
-
-  void print(std::ostream& stream) const override {
-    stream << C_STR(MODULE_NAME) "." LEAF_NAME "(" << trapezoid_repr(trapezoid)
-           << ")";
-  }
 
   TrapezoidProxy trapezoid;
 
@@ -283,7 +291,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
             return Point(tuple[0].cast<double>(), tuple[1].cast<double>());
           }))
       .def(py::self == py::self)
-      .def("__repr__", point_repr)
+      .def("__repr__", repr<Point>)
       .def_readwrite("x", &Point::x)
       .def_readwrite("y", &Point::y)
       .def("is_right_of", &Point::is_right_of, py::arg("other"));
@@ -306,14 +314,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
              return self.empty == other.empty && self.lower == other.lower &&
                     self.upper == other.upper;
            })
-      .def("__repr__",
-           [](const BoundingBox& self) -> std::string {
-             auto stream = make_stream();
-             stream << C_STR(MODULE_NAME) "." BOUNDING_BOX_NAME "("
-                    << bool_repr(self.empty) << ", " << point_repr(self.lower)
-                    << ", " << point_repr(self.upper) << ")";
-             return stream.str();
-           })
+      .def("__repr__", repr<BoundingBox>)
       .def_readwrite("empty", &BoundingBox::empty)
       .def_readwrite("lower", &BoundingBox::lower)
       .def_readwrite("upper", &BoundingBox::upper);
@@ -330,7 +331,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
             return EdgeProxy(tuple[0].cast<Point>(), tuple[1].cast<Point>());
           }))
       .def(py::self == py::self)
-      .def("__repr__", edge_repr)
+      .def("__repr__", repr<EdgeProxy>)
       .def_readonly("left", &EdgeProxy::left)
       .def_readonly("right", &EdgeProxy::right);
 
@@ -351,7 +352,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                 tuple[2].cast<EdgeProxy>(), tuple[3].cast<EdgeProxy>());
           }))
       .def(py::self == py::self)
-      .def("__repr__", trapezoid_repr)
+      .def("__repr__", repr<TrapezoidProxy>)
       .def_readonly("left", &TrapezoidProxy::left)
       .def_readonly("right", &TrapezoidProxy::right)
       .def_readonly("above", &TrapezoidProxy::above)
@@ -376,12 +377,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                 tuple[2].cast<std::shared_ptr<NodeProxy>>());
           }))
       .def(py::self == py::self)
-      .def("__repr__",
-           [](const XNode& self) {
-             auto stream = make_stream();
-             self.print(stream);
-             return stream.str();
-           })
+      .def("__repr__", repr<XNode>)
       .def_readonly("point", &XNode::point)
       .def_readonly("left", &XNode::left)
       .def_readonly("right", &XNode::right);
@@ -403,12 +399,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
                 tuple[2].cast<std::shared_ptr<NodeProxy>>());
           }))
       .def(py::self == py::self)
-      .def("__repr__",
-           [](const YNode& self) {
-             auto stream = make_stream();
-             self.print(stream);
-             return stream.str();
-           })
+      .def("__repr__", repr<YNode>)
       .def_readonly("edge", &YNode::edge)
       .def_readonly("above", &YNode::above)
       .def_readonly("below", &YNode::below);
@@ -423,12 +414,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
             return std::make_unique<Leaf>(trapezoid);
           }))
       .def(py::self == py::self)
-      .def("__repr__",
-           [](const Leaf& self) {
-             auto stream = make_stream();
-             self.print(stream);
-             return stream.str();
-           })
+      .def("__repr__", repr<Leaf>)
       .def_readonly("trapezoid", &Leaf::trapezoid);
 
 #ifdef VERSION_INFO
