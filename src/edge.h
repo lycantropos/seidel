@@ -10,6 +10,7 @@
  */
 struct Edge {
   Edge(const Point* left_, const Point* right_);
+  virtual ~Edge() = default;
 
   // Return -1 if point to left of edge, 0 if on edge, +1 if to right.
   int get_point_orientation(const Point& xy) const;
