@@ -48,8 +48,8 @@ static std::ostream& operator<<(std::ostream& stream, const Edge& edge) {
 static std::ostream& operator<<(std::ostream& stream,
                                 const Trapezoid& trapezoid) {
   return stream << C_STR(MODULE_NAME) "." TRAPEZOID_NAME "(" << *trapezoid.left
-                << ", " << *trapezoid.right << ", " << trapezoid.above << ", "
-                << trapezoid.below << ")";
+                << ", " << *trapezoid.right << ", " << trapezoid.below << ", "
+                << trapezoid.above << ")";
 }
 
 static std::ostream& operator<<(std::ostream& stream, const Node& node) {
@@ -120,8 +120,10 @@ class EdgeProxy : public Edge {
   EdgeProxy(const Edge& edge) : EdgeProxy(*edge.left, *edge.right) {}
 
   EdgeProxy& operator=(const EdgeProxy& edge) {
-    left = edge.left;
-    right = edge.right;
+    _left = edge._left;
+    _right = edge._right;
+    left = &_left;
+    right = &_right;
     return *this;
   }
 
@@ -133,90 +135,86 @@ class EdgeProxy : public Edge {
   Point _left, _right;
 };
 
-class TrapezoidProxy {
+class TrapezoidProxy : public Trapezoid {
  public:
   TrapezoidProxy(const Point& left_, const Point& right_,
-                 const EdgeProxy& above_, const EdgeProxy& below_)
-      : left(left_),
-        right(right_),
-        above(above_),
-        below(below_),
-        _trapezoid(std::make_unique<Trapezoid>(&left, &right, below, above)) {}
+                 const EdgeProxy& below_, const EdgeProxy& above_)
+      : _left(left_),
+        _right(right_),
+        _below(below_),
+        _above(above_),
+        Trapezoid(&_left, &_right, _below, _above) {}
 
   TrapezoidProxy(const TrapezoidProxy& other)
-      : TrapezoidProxy(other.left, other.right, other.above, other.below) {}
+      : TrapezoidProxy(other._left, other._right, other._below, other._above) {}
 
   TrapezoidProxy(const Trapezoid& trapezoid)
       : TrapezoidProxy(*trapezoid.left, *trapezoid.right,
-                       EdgeProxy(trapezoid.above), EdgeProxy(trapezoid.below)) {
+                       EdgeProxy(trapezoid.below), EdgeProxy(trapezoid.above)) {
   }
 
   TrapezoidProxy& operator=(const TrapezoidProxy& other) {
-    left = other.left;
-    right = other.right;
-    above = other.above;
-    below = other.below;
-    _trapezoid = std::make_unique<Trapezoid>(&left, &right, below, above);
+    _left = other._left;
+    _right = other._right;
+    _below = other._below;
+    _above = other._above;
     return *this;
   }
 
-  std::unique_ptr<TrapezoidProxy> lower_left() const {
-    if (_trapezoid->lower_left == nullptr) return nullptr;
-    return std::make_unique<TrapezoidProxy>(*_trapezoid->lower_left);
+  const Point& get_left() const { return _left; }
+
+  const Point& get_right() const { return _right; }
+
+  const EdgeProxy& get_above() const { return _above; }
+
+  const EdgeProxy& get_below() const { return _below; }
+
+  std::unique_ptr<TrapezoidProxy> get_lower_left() const {
+    if (lower_left == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*lower_left);
   }
 
-  void set_lower_left(const TrapezoidProxy& lower_left_) {
-    _trapezoid->set_lower_left(lower_left_._trapezoid.get());
+  void set_lower_left(TrapezoidProxy* lower_left_) {
+    Trapezoid::set_lower_left(lower_left_);
   }
 
-  std::unique_ptr<TrapezoidProxy> lower_right() const {
-    if (_trapezoid->lower_right == nullptr) return nullptr;
-    return std::make_unique<TrapezoidProxy>(*_trapezoid->lower_right);
+  std::unique_ptr<TrapezoidProxy> get_lower_right() const {
+    if (lower_right == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*lower_right);
   }
 
-  void set_lower_right(const TrapezoidProxy& lower_right_) {
-    _trapezoid->set_lower_right(lower_right_._trapezoid.get());
+  void set_lower_right(TrapezoidProxy* lower_right_) {
+    Trapezoid::set_lower_right(lower_right_);
   }
 
-  std::unique_ptr<TrapezoidProxy> upper_left() const {
-    if (_trapezoid->upper_left == nullptr) return nullptr;
-    return std::make_unique<TrapezoidProxy>(*_trapezoid->upper_left);
+  std::unique_ptr<TrapezoidProxy> get_upper_left() const {
+    if (upper_left == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*upper_left);
   }
 
-  void set_upper_left(const TrapezoidProxy& upper_left_) {
-    _trapezoid->set_upper_left(upper_left_._trapezoid.get());
+  void set_upper_left(TrapezoidProxy* upper_left_) {
+    Trapezoid::set_upper_left(upper_left_);
   }
 
-  std::unique_ptr<TrapezoidProxy> upper_right() const {
-    if (_trapezoid->upper_right == nullptr) return nullptr;
-    return std::make_unique<TrapezoidProxy>(*_trapezoid->upper_right);
+  std::unique_ptr<TrapezoidProxy> get_upper_right() const {
+    if (upper_right == nullptr) return nullptr;
+    return std::make_unique<TrapezoidProxy>(*upper_right);
   }
 
-  void set_upper_right(const TrapezoidProxy& upper_right_) {
-    _trapezoid->set_upper_right(upper_right_._trapezoid.get());
+  void set_upper_right(TrapezoidProxy* upper_right_) {
+    Trapezoid::set_upper_right(upper_right_);
   }
 
   bool operator==(const TrapezoidProxy& other) const {
-    return are_trapezoids_equal(*_trapezoid, *other._trapezoid);
+    return are_trapezoids_equal(*this, other);
   }
-
-  Trapezoid* trapezoid() const {
-    return new Trapezoid(&left, &right, below, above);
-  }
-
-  Point left;
-  Point right;
-  EdgeProxy above;
-  EdgeProxy below;
 
  private:
-  std::unique_ptr<Trapezoid> _trapezoid;
+  Point _left;
+  Point _right;
+  EdgeProxy _below;
+  EdgeProxy _above;
 };
-
-static std::ostream& operator<<(std::ostream& stream,
-                                const TrapezoidProxy& trapezoid) {
-  return stream << *trapezoid.trapezoid();
-}
 
 class NodeProxy {
  public:
@@ -287,9 +285,11 @@ class YNode : public NodeProxy {
 class Leaf : public NodeProxy {
  public:
   Leaf(const TrapezoidProxy& trapezoid_)
-      : trapezoid(trapezoid_), _node(trapezoid.trapezoid()) {}
+      : trapezoid(trapezoid_), _node(new TrapezoidProxy(trapezoid)) {}
 
-  Node* node_copy() const override { return new Node(trapezoid.trapezoid()); }
+  Node* node_copy() const override {
+    return new Node(new TrapezoidProxy(trapezoid));
+  }
 
   const Node& node() const override { return _node; }
 
@@ -395,8 +395,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
            py::arg("below"))
       .def(py::pickle(
           [](const TrapezoidProxy& self) {  // __getstate__
-            return py::make_tuple(self.left, self.right, self.above,
-                                  self.below);
+            return py::make_tuple(self.get_left(), self.get_right(),
+                                  self.get_below(), self.get_above());
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 4) throw std::runtime_error("Invalid state!");
@@ -406,17 +406,17 @@ PYBIND11_MODULE(MODULE_NAME, m) {
           }))
       .def(py::self == py::self)
       .def("__repr__", repr<TrapezoidProxy>)
-      .def_readonly("left", &TrapezoidProxy::left)
-      .def_readonly("right", &TrapezoidProxy::right)
-      .def_readonly("above", &TrapezoidProxy::above)
-      .def_readonly("below", &TrapezoidProxy::below)
-      .def_property("lower_left", &TrapezoidProxy::lower_left,
+      .def_property_readonly("left", &TrapezoidProxy::get_left)
+      .def_property_readonly("right", &TrapezoidProxy::get_right)
+      .def_property_readonly("below", &TrapezoidProxy::get_below)
+      .def_property_readonly("above", &TrapezoidProxy::get_above)
+      .def_property("lower_left", &TrapezoidProxy::get_lower_left,
                     &TrapezoidProxy::set_lower_left)
-      .def_property("lower_right", &TrapezoidProxy::lower_right,
+      .def_property("lower_right", &TrapezoidProxy::get_lower_right,
                     &TrapezoidProxy::set_lower_right)
-      .def_property("upper_left", &TrapezoidProxy::upper_left,
+      .def_property("upper_left", &TrapezoidProxy::get_upper_left,
                     &TrapezoidProxy::set_upper_left)
-      .def_property("upper_right", &TrapezoidProxy::upper_right,
+      .def_property("upper_right", &TrapezoidProxy::get_upper_right,
                     &TrapezoidProxy::set_upper_right);
 
   py::class_<NodeProxy, std::shared_ptr<NodeProxy>>(m, "Node");
