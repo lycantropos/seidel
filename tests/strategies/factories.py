@@ -156,17 +156,17 @@ def to_bound_with_ported_points_pair(x: float, y: float
 
 def to_bound_with_ported_trapezoids_pair(left_points: BoundPortedPointsPair,
                                          right_points: BoundPortedPointsPair,
-                                         above_edges: BoundPortedEdgesPair,
-                                         below_edges: BoundPortedEdgesPair
+                                         below_edges: BoundPortedEdgesPair,
+                                         above_edges: BoundPortedEdgesPair
                                          ) -> BoundPortedTrapezoidsPair:
     bound_left, ported_left = left_points
     bound_right, ported_right = right_points
-    bound_above, ported_above = above_edges
     bound_below, ported_below = below_edges
-    return (BoundTrapezoid(bound_left, bound_right, bound_above,
-                           bound_below),
-            PortedTrapezoid(ported_left, ported_right, ported_above,
-                            ported_below))
+    bound_above, ported_above = above_edges
+    return (BoundTrapezoid(bound_left, bound_right, bound_below,
+                           bound_above),
+            PortedTrapezoid(ported_left, ported_right, ported_below,
+                            ported_above))
 
 
 def to_bound_with_ported_x_nodes_pair(points: BoundPortedPointsPair,
