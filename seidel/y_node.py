@@ -39,17 +39,17 @@ class YNode(Node):
     def search_edge(self, edge: Edge) -> Optional[Trapezoid]:
         if edge.left == self.edge.left:
             # Coinciding left edge points.
-            if edge.get_slope() == self.edge.get_slope():
+            if edge.slope == self.edge.slope:
                 return None
-            if edge.get_slope() > self.edge.get_slope():
+            if edge.slope > self.edge.slope:
                 return self.above.search_edge(edge)
             else:
                 return self.below.search_edge(edge)
         elif edge.right == self.edge.right:
             # Coinciding right edge points.
-            if edge.get_slope() == self.edge.get_slope():
+            if edge.slope == self.edge.slope:
                 return None
-            elif edge.get_slope() > self.edge.get_slope():
+            elif edge.slope > self.edge.slope:
                 return self.below.search_edge(edge)
             else:
                 return self.above.search_edge(edge)

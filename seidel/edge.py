@@ -1,3 +1,5 @@
+import math
+
 from reprit.base import generate_repr
 
 from .hints import Coordinate
@@ -19,6 +21,14 @@ class Edge:
                 if isinstance(other, Edge)
                 else NotImplemented)
 
+    @property
+    def slope(self) -> Coordinate:
+        difference = self.right - self.left
+        try:
+            return difference.y / difference.x
+        except ZeroDivisionError:
+            return -math.inf if difference.y < 0 else math.inf
+
     def get_point_orientation(self, point: Point) -> int:
         cross_z = (point - self.left).cross_z(self.right - self.left)
         return (1
@@ -26,7 +36,3 @@ class Edge:
                 else (-1
                       if cross_z < 0
                       else 0))
-
-    def get_slope(self) -> Coordinate:
-        difference = self.right - self.left
-        return difference.y / difference.x
