@@ -106,8 +106,6 @@ bool Node::has_child(const Node* child) const {
   }
 }
 
-bool Node::has_no_parents() const { return parents.empty(); }
-
 bool Node::has_parent(const Node* parent) const {
   return (std::find(parents.begin(), parents.end(), parent) != parents.end());
 }

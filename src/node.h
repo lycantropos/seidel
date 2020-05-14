@@ -35,7 +35,6 @@ class Node {
   void assert_valid() const;
 
   bool has_child(const Node* child) const;
-  bool has_no_parents() const;
   bool has_parent(const Node* parent) const;
 
   /* Remove a parent from this Node.  Return true if no parents remain

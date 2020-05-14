@@ -281,7 +281,7 @@ bool TrapezoidalMap::add_edge(const Edge& edge) {
 
     // old_node has been removed from all of its parents and is no longer
     // needed.
-    assert(old_node->has_no_parents() && "Node should have no parents");
+    assert(old_node->parents.empty() && "Node should have no parents");
     delete old_node;
 
     // Clearing up.
