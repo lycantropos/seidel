@@ -366,7 +366,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def(py::self == py::self)
       .def("__repr__", repr<EdgeProxy>)
       .def_readonly("left", &EdgeProxy::left)
-      .def_readonly("right", &EdgeProxy::right);
+      .def_readonly("right", &EdgeProxy::right)
+      .def_property_readonly("slope", &EdgeProxy::get_slope);
 
   py::class_<TrapezoidProxy>(m, TRAPEZOID_NAME)
       .def(py::init<const Point&, const Point&, const EdgeProxy&,
