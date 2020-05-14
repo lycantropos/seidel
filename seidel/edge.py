@@ -27,7 +27,7 @@ class Edge:
         try:
             return difference.y / difference.x
         except ZeroDivisionError:
-            return -math.inf if difference.y < 0 else math.inf
+            return math.copysign(math.inf, difference.x * difference.y)
 
     def orientation_with(self, point: Point) -> int:
         cross_z = (point - self.left).cross_z(self.right - self.left)
