@@ -211,12 +211,10 @@ class TrapezoidProxy : public Trapezoid {
 
 class NodeProxy : public Node {
  public:
-  NodeProxy(const Point* point_, std::shared_ptr<NodeProxy> left_,
-            std::shared_ptr<NodeProxy> right_)
+  NodeProxy(const Point* point_, NodeProxy* left_, NodeProxy* right_)
       : Node(point_, left_->node_copy(), right_->node_copy()) {}
 
-  NodeProxy(const EdgeProxy* edge_, std::shared_ptr<NodeProxy> below_,
-            std::shared_ptr<NodeProxy> above_)
+  NodeProxy(const EdgeProxy* edge_, NodeProxy* below_, NodeProxy* above_)
       : Node(edge_, below_->node_copy(), above_->node_copy()) {}
 
   NodeProxy(const TrapezoidProxy& trapezoid_)
@@ -227,40 +225,38 @@ class NodeProxy : public Node {
   virtual Node* node_copy() const = 0;
 };
 
+static NodeProxy* node_to_proxy(const Node& node);
+
 class XNode : public NodeProxy {
  public:
-  XNode(const Point& point_, std::shared_ptr<NodeProxy> left_,
-        std::shared_ptr<NodeProxy> right_)
-      : point(point_),
-        left(left_),
-        right(right_),
-        NodeProxy(&point, left_, right_) {}
+  XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
+      : point(point_), NodeProxy(&point, left_, right_) {}
 
   Node* node_copy() const override {
-    return new Node(&point, left->node_copy(), right->node_copy());
+    return new Node(&point, left()->node_copy(), right()->node_copy());
   }
 
   Point point;
-  std::shared_ptr<NodeProxy> left;
-  std::shared_ptr<NodeProxy> right;
+
+  NodeProxy* left() const { return node_to_proxy(*data.xnode.left); }
+
+  NodeProxy* right() const { return node_to_proxy(*data.xnode.right); }
 };
 
 class YNode : public NodeProxy {
  public:
-  YNode(const EdgeProxy& edge_, std::shared_ptr<NodeProxy> below_,
-        std::shared_ptr<NodeProxy> above_)
-      : edge(edge_),
-        below(below_),
-        above(above_),
-        NodeProxy(&edge, below_, above_) {}
+  YNode(const EdgeProxy& edge_, NodeProxy* below_, NodeProxy* above_)
+      : edge(edge_), NodeProxy(&edge, below_, above_) {}
 
   Node* node_copy() const override {
-    return new Node(&edge, below->node_copy(), above->node_copy());
+    return new Node(&edge, below()->node_copy(), above()->node_copy());
   }
 
   EdgeProxy edge;
-  std::shared_ptr<NodeProxy> below;
-  std::shared_ptr<NodeProxy> above;
+
+  NodeProxy* below() const { return node_to_proxy(*data.ynode.below); }
+
+  NodeProxy* above() const { return node_to_proxy(*data.ynode.above); }
 };
 
 class Leaf : public NodeProxy {
@@ -274,18 +270,18 @@ class Leaf : public NodeProxy {
   TrapezoidProxy trapezoid() const { return *data.trapezoid; }
 };
 
-static std::shared_ptr<NodeProxy> node_to_proxy(const Node& node) {
+static NodeProxy* node_to_proxy(const Node& node) {
   switch (node.type) {
     case Node::Type_XNode:
-      return std::make_shared<XNode>(*node.data.xnode.point,
-                                     node_to_proxy(*node.data.xnode.left),
-                                     node_to_proxy(*node.data.xnode.right));
+      return new XNode(*node.data.xnode.point,
+                       node_to_proxy(*node.data.xnode.left),
+                       node_to_proxy(*node.data.xnode.right));
     case Node::Type_YNode:
-      return std::make_shared<YNode>(*node.data.ynode.edge,
-                                     node_to_proxy(*node.data.ynode.below),
-                                     node_to_proxy(*node.data.ynode.above));
+      return new YNode(*node.data.ynode.edge,
+                       node_to_proxy(*node.data.ynode.below),
+                       node_to_proxy(*node.data.ynode.above));
     case Node::Type_TrapezoidNode:
-      return std::make_shared<Leaf>(*node.data.trapezoid);
+      return new Leaf(*node.data.trapezoid);
   }
 }
 
@@ -392,60 +388,57 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_property("upper_right", &TrapezoidProxy::get_upper_right,
                     &TrapezoidProxy::set_upper_right);
 
-  py::class_<NodeProxy, std::shared_ptr<NodeProxy>>(m, "Node");
+  py::class_<NodeProxy>(m, "Node");
 
-  py::class_<XNode, NodeProxy, std::shared_ptr<XNode>>(m, X_NODE_NAME)
-      .def(py::init<const Point&, std::shared_ptr<NodeProxy>,
-                    std::shared_ptr<NodeProxy>>(),
-           py::arg("point"), py::arg("left").none(false),
-           py::arg("right").none(false))
+  py::class_<XNode, NodeProxy, std::unique_ptr<XNode, py::nodelete>>(
+      m, X_NODE_NAME)
+      .def(py::init<const Point&, NodeProxy*, NodeProxy*>(), py::arg("point"),
+           py::arg("left").none(false), py::arg("right").none(false))
       .def(py::pickle(
           [](const XNode& self) {  // __getstate__
-            return py::make_tuple(self.point, self.left, self.right);
+            return py::make_tuple(self.point, self.left(), self.right());
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
-            return std::make_unique<XNode>(
-                tuple[0].cast<const Point&>(),
-                tuple[1].cast<std::shared_ptr<NodeProxy>>(),
-                tuple[2].cast<std::shared_ptr<NodeProxy>>());
+            return new XNode(tuple[0].cast<const Point&>(),
+                             tuple[1].cast<NodeProxy*>(),
+                             tuple[2].cast<NodeProxy*>());
           }))
       .def(py::self == py::self)
       .def("__repr__", repr<XNode>)
       .def_readonly("point", &XNode::point)
-      .def_readonly("left", &XNode::left)
-      .def_readonly("right", &XNode::right);
+      .def_property_readonly("left", &XNode::left)
+      .def_property_readonly("right", &XNode::right);
 
-  py::class_<YNode, NodeProxy, std::shared_ptr<YNode>>(m, Y_NODE_NAME)
-      .def(py::init<const EdgeProxy&, std::shared_ptr<NodeProxy>,
-                    std::shared_ptr<NodeProxy>>(),
+  py::class_<YNode, NodeProxy, std::unique_ptr<YNode, py::nodelete>>(
+      m, Y_NODE_NAME)
+      .def(py::init<const EdgeProxy&, NodeProxy*, NodeProxy*>(),
            py::arg("edge"), py::arg("below").none(false),
            py::arg("above").none(false))
       .def(py::pickle(
           [](const YNode& self) {  // __getstate__
-            return py::make_tuple(self.edge, self.below, self.above);
+            return py::make_tuple(self.edge, self.below(), self.above());
           },
           [](py::tuple tuple) {  // __setstate__
             if (tuple.size() != 3) throw std::runtime_error("Invalid state!");
-            return std::make_unique<YNode>(
-                tuple[0].cast<const EdgeProxy&>(),
-                tuple[1].cast<std::shared_ptr<NodeProxy>>(),
-                tuple[2].cast<std::shared_ptr<NodeProxy>>());
+            return new YNode(tuple[0].cast<const EdgeProxy&>(),
+                             tuple[1].cast<NodeProxy*>(),
+                             tuple[2].cast<NodeProxy*>());
           }))
       .def(py::self == py::self)
       .def("__repr__", repr<YNode>)
       .def_readonly("edge", &YNode::edge)
-      .def_readonly("below", &YNode::below)
-      .def_readonly("above", &YNode::above);
+      .def_property_readonly("below", &YNode::below)
+      .def_property_readonly("above", &YNode::above);
 
-  py::class_<Leaf, NodeProxy, std::shared_ptr<Leaf>>(m, LEAF_NAME)
+  py::class_<Leaf, NodeProxy, std::unique_ptr<Leaf, py::nodelete>>(m, LEAF_NAME)
       .def(py::init<const TrapezoidProxy&>(), py::arg("trapezoid"))
       .def(py::pickle(
           [](const Leaf& self) {  // __getstate__
             return self.trapezoid();
           },
           [](const TrapezoidProxy& trapezoid) {  // __setstate__
-            return std::make_unique<Leaf>(trapezoid);
+            return new Leaf(trapezoid);
           }))
       .def(py::self == py::self)
       .def("__repr__", repr<Leaf>)
