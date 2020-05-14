@@ -257,24 +257,18 @@ class Leaf : public NodeProxy {
 };
 
 static NodeProxy* node_to_proxy(const Node& node) {
-  NodeProxy* result;
   switch (node.type) {
     case Node::Type_XNode:
-      result = new XNode(*node.data.xnode.point,
-                         node_to_proxy(*node.data.xnode.left),
-                         node_to_proxy(*node.data.xnode.right));
-      break;
+      return new XNode(*node.data.xnode.point,
+                       node_to_proxy(*node.data.xnode.left),
+                       node_to_proxy(*node.data.xnode.right));
     case Node::Type_YNode:
-      result = new YNode(*node.data.ynode.edge,
-                         node_to_proxy(*node.data.ynode.below),
-                         node_to_proxy(*node.data.ynode.above));
-      break;
+      return new YNode(*node.data.ynode.edge,
+                       node_to_proxy(*node.data.ynode.below),
+                       node_to_proxy(*node.data.ynode.above));
     case Node::Type_TrapezoidNode:
-      result = new Leaf(*node.data.trapezoid);
-      break;
+      return new Leaf(*node.data.trapezoid);
   }
-  result->parents = node.parents;
-  return result;
 }
 
 PYBIND11_MODULE(MODULE_NAME, m) {
