@@ -1,4 +1,5 @@
 from operator import add
+from typing import Tuple
 
 from hypothesis import strategies
 
@@ -16,6 +17,7 @@ from tests.utils import (BoundPortedNodesPair,
                          BoundPortedYNodesPair,
                          Strategy,
                          are_endpoints_non_degenerate,
+                         node_to_children,
                          pack,
                          sort_endpoints)
 
@@ -33,8 +35,8 @@ trapezoids_pairs = (strategies.tuples(sorted_points_pairs_pairs,
 leaves_pairs = trapezoids_pairs.map(pack(to_bound_with_ported_leaves_pair))
 
 
-def to_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
-                   ) -> Strategy[BoundPortedXNodesPair]:
+def to_nested_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
+                          ) -> Strategy[BoundPortedNodesPair]:
     return to_x_nodes_pairs(nodes_pairs) | to_y_nodes_pairs(nodes_pairs)
 
 
@@ -50,4 +52,19 @@ def to_y_nodes_pairs(nodes_pairs: Strategy[BoundPortedNodesPair]
                              edges_pairs, nodes_pairs, nodes_pairs)
 
 
-nodes_pairs = recursive(leaves_pairs, to_nodes_pairs)
+nodes_pairs = recursive(leaves_pairs, to_nested_nodes_pairs)
+nested_nodes_pairs = to_nested_nodes_pairs(nodes_pairs)
+
+
+def to_nested_nodes_with_children_pairs(
+        nodes_pair: BoundPortedNodesPair
+) -> Strategy[Tuple[BoundPortedNodesPair, BoundPortedNodesPair]]:
+    bound, ported = nodes_pair
+    nodes_children_pairs = tuple(zip(node_to_children(bound),
+                                     node_to_children(ported)))
+    return strategies.tuples(strategies.just(nodes_pair),
+                             strategies.sampled_from(nodes_children_pairs))
+
+
+nested_nodes_with_children_pairs = nested_nodes_pairs.flatmap(
+        to_nested_nodes_with_children_pairs)
