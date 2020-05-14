@@ -20,7 +20,7 @@ struct Trapezoid {
 
   /* Assert that this Trapezoid is valid.  Reduces to a no-op if NDEBUG
    * is defined. */
-  void assert_valid(bool tree_complete) const;
+  void assert_valid() const;
 
   /* Return one of the 4 corner points of this Trapezoid.  Only used for
    * debugging purposes. */

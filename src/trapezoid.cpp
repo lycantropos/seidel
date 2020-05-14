@@ -21,7 +21,7 @@ Trapezoid::Trapezoid(const Point* left_, const Point* right_,
   assert(right->is_right_of(*left) && "Incorrect endpoints order");
 }
 
-void Trapezoid::assert_valid(bool tree_complete) const {
+void Trapezoid::assert_valid() const {
 #ifndef NDEBUG
   assert(left != nullptr && "Null left endpoint");
   assert(right != nullptr && "Null right endpoint");

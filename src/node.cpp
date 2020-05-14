@@ -88,7 +88,7 @@ void Node::assert_valid(bool tree_complete) const {
       assert(data.trapezoid != nullptr && "Null trapezoid");
       assert(data.trapezoid->trapezoid_node == this &&
              "Incorrect trapezoid node");
-      data.trapezoid->assert_valid(tree_complete);
+      data.trapezoid->assert_valid();
       break;
   }
 #endif
