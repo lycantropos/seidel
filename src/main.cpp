@@ -241,11 +241,10 @@ class YNode : public NodeProxy {
   YNode(const EdgeProxy& edge_, NodeProxy* below_, NodeProxy* above_)
       : edge(edge_), NodeProxy(&edge, below_, above_) {}
 
+  NodeProxy* below() const;
+  NodeProxy* above() const;
+
   EdgeProxy edge;
-
-  NodeProxy* below() const { return node_to_proxy(*data.ynode.below); }
-
-  NodeProxy* above() const { return node_to_proxy(*data.ynode.above); }
 };
 
 class Leaf : public NodeProxy {
@@ -272,6 +271,14 @@ NodeProxy* XNode::left() const {
 
 NodeProxy* XNode::right() const {
   return cast_node_to_proxy(data.xnode.right);
+}
+
+NodeProxy* YNode::below() const {
+  return cast_node_to_proxy(data.ynode.below);
+}
+
+NodeProxy* YNode::above() const {
+  return cast_node_to_proxy(data.ynode.above);
 }
 
 static NodeProxy* node_to_proxy(const Node& node) {
