@@ -230,11 +230,10 @@ class XNode : public NodeProxy {
   XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
       : point(point_), NodeProxy(&point, left_, right_) {}
 
+  NodeProxy* left() const;
+  NodeProxy* right() const;
+
   Point point;
-
-  NodeProxy* left() const { return node_to_proxy(*data.xnode.left); }
-
-  NodeProxy* right() const { return node_to_proxy(*data.xnode.right); }
 };
 
 class YNode : public NodeProxy {
@@ -255,6 +254,25 @@ class Leaf : public NodeProxy {
 
   TrapezoidProxy trapezoid() const { return *data.trapezoid; }
 };
+
+static NodeProxy* cast_node_to_proxy(Node* node) {
+  switch (node->type) {
+    case Node::Type_XNode:
+      return dynamic_cast<XNode*>(node);
+    case Node::Type_YNode:
+      return dynamic_cast<YNode*>(node);
+    case Node::Type_TrapezoidNode:
+      return dynamic_cast<Leaf*>(node);
+  }
+}
+
+NodeProxy* XNode::left() const {
+  return cast_node_to_proxy(data.xnode.left);
+}
+
+NodeProxy* XNode::right() const {
+  return cast_node_to_proxy(data.xnode.right);
+}
 
 static NodeProxy* node_to_proxy(const Node& node) {
   switch (node.type) {
