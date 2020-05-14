@@ -7,8 +7,8 @@ from . import strategies
 
 
 @given(strategies.nodes_pairs, strategies.edges_pairs)
-def test_round_trip(nodes_pair: BoundPortedNodesPair,
-                    edges_pair: BoundPortedEdgesPair) -> None:
+def test_basic(nodes_pair: BoundPortedNodesPair,
+               edges_pair: BoundPortedEdgesPair) -> None:
     bound, ported = nodes_pair
     bound_edge, ported_edge = edges_pair
 
