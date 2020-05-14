@@ -54,13 +54,13 @@ void Node::add_parent(Node* parent) {
   assert(parent != nullptr && "Null parent");
   assert(parent != this && "Cannot be parent of self");
   assert(!has_parent(parent) && "Parent already in collection");
-  _parents.push_back(parent);
+  parents.push_back(parent);
 }
 
 void Node::assert_valid(bool tree_complete) const {
 #ifndef NDEBUG
   // Check parents.
-  for (Parents::const_iterator it = _parents.begin(); it != _parents.end();
+  for (Parents::const_iterator it = parents.begin(); it != parents.end();
        ++it) {
     Node* parent = *it;
     assert(parent != this && "Cannot be parent of self");
@@ -107,20 +107,19 @@ bool Node::has_child(const Node* child) const {
   }
 }
 
-bool Node::has_no_parents() const { return _parents.empty(); }
+bool Node::has_no_parents() const { return parents.empty(); }
 
 bool Node::has_parent(const Node* parent) const {
-  return (std::find(_parents.begin(), _parents.end(), parent) !=
-          _parents.end());
+  return (std::find(parents.begin(), parents.end(), parent) != parents.end());
 }
 
 bool Node::remove_parent(Node* parent) {
   assert(parent != nullptr && "Null parent");
   assert(parent != this && "Cannot be parent of self");
-  Parents::iterator it = std::find(_parents.begin(), _parents.end(), parent);
-  assert(it != _parents.end() && "Parent not in collection");
-  _parents.erase(it);
-  return _parents.empty();
+  Parents::iterator it = std::find(parents.begin(), parents.end(), parent);
+  assert(it != parents.end() && "Parent not in collection");
+  parents.erase(it);
+  return parents.empty();
 }
 
 void Node::replace_child(Node* old_child, Node* new_child) {
@@ -154,8 +153,8 @@ void Node::replace_child(Node* old_child, Node* new_child) {
 void Node::replace_with(Node* new_node) {
   assert(new_node != nullptr && "Null replacement node");
   // Replace child of each parent with new_node.  As each has parent has its
-  // child replaced it is removed from the _parents collection.
-  while (!_parents.empty()) _parents.front()->replace_child(this, new_node);
+  // child replaced it is removed from the parents collection.
+  while (!parents.empty()) parents.front()->replace_child(this, new_node);
 }
 
 const Node* Node::search(const Point& xy) {

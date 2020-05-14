@@ -76,7 +76,7 @@ class Node {
   } data;
 
   typedef std::list<Node*> Parents;
-  Parents _parents;  // Not owned.
+  Parents parents;  // Not owned.
 };
 
 #endif
