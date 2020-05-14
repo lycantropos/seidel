@@ -3,6 +3,7 @@ import sys
 from functools import partial
 from typing import (Callable,
                     Iterable,
+                    List,
                     Sequence,
                     Tuple,
                     TypeVar)
@@ -53,6 +54,7 @@ BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
 BoundPortedLeavesPair = Tuple[BoundLeaf, PortedLeaf]
 BoundPortedNodesPair = Tuple[BoundNode, PortedNode]
 BoundPortedPointsPair = Tuple[BoundPoint, PortedPoint]
+BoundPortedPointsListsPair = Tuple[List[BoundPoint], List[PortedPoint]]
 BoundPortedTrapezoidsPair = Tuple[BoundTrapezoid, PortedTrapezoid]
 BoundPortedXNodesPair = Tuple[BoundXNode, PortedXNode]
 BoundPortedYNodesPair = Tuple[BoundYNode, PortedYNode]
