@@ -29,7 +29,7 @@ class Edge:
         except ZeroDivisionError:
             return -math.inf if difference.y < 0 else math.inf
 
-    def get_point_orientation(self, point: Point) -> int:
+    def orientation_with(self, point: Point) -> int:
         cross_z = (point - self.left).cross_z(self.right - self.left)
         return (1
                 if cross_z > 0

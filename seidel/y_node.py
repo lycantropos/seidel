@@ -54,7 +54,7 @@ class YNode(Node):
             else:
                 return self.above.search_edge(edge)
         else:
-            orientation = self.edge.get_point_orientation(edge.left)
+            orientation = self.edge.orientation_with(edge.left)
             if orientation < 0:
                 return self.above.search_edge(edge)
             elif orientation > 0:
