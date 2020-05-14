@@ -1,6 +1,7 @@
 from abc import (ABC,
                  abstractmethod)
-from typing import Sequence
+from typing import (Optional,
+                    Sequence)
 
 from .edge import Edge
 from .trapezoid import Trapezoid
@@ -17,7 +18,7 @@ class Node(ABC):
         return self._parents
 
     @abstractmethod
-    def search_edge(self, edge: Edge) -> Trapezoid:
+    def search_edge(self, edge: Edge) -> Optional[Trapezoid]:
         """
         Recursive search for the trapezoid
         which contains the left endpoint of the given edge.
