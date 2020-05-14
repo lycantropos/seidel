@@ -247,7 +247,9 @@ class XNode : public NodeProxy {
 class YNode : public NodeProxy {
  public:
   YNode(const EdgeProxy& edge_, NodeProxy* below_, NodeProxy* above_)
-      : edge(edge_), NodeProxy(&edge, below_, above_) {}
+      : NodeProxy(&edge_, below_, above_), edge(edge_) {
+    data.ynode.edge = &edge;
+  }
 
   NodeProxy* below() const;
   NodeProxy* above() const;
