@@ -31,7 +31,7 @@ class Node {
 
   /* Recurse through the search tree and assert that everything is valid.
    * Reduces to a no-op if NDEBUG is defined. */
-  void assert_valid(bool tree_complete) const;
+  void assert_valid() const;
 
   bool has_child(const Node* child) const;
   bool has_no_parents() const;

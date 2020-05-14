@@ -56,7 +56,7 @@ void Node::add_parent(Node* parent) {
   parents.push_back(parent);
 }
 
-void Node::assert_valid(bool tree_complete) const {
+void Node::assert_valid() const {
 #ifndef NDEBUG
   // Check parents.
   for (Parents::const_iterator it = parents.begin(); it != parents.end();
@@ -73,16 +73,16 @@ void Node::assert_valid(bool tree_complete) const {
       assert(data.xnode.left->has_parent(this) && "Incorrect parent");
       assert(data.xnode.right != nullptr && "Null right child");
       assert(data.xnode.right->has_parent(this) && "Incorrect parent");
-      data.xnode.left->assert_valid(tree_complete);
-      data.xnode.right->assert_valid(tree_complete);
+      data.xnode.left->assert_valid();
+      data.xnode.right->assert_valid();
       break;
     case Type_YNode:
       assert(data.ynode.below != nullptr && "Null below child");
       assert(data.ynode.below->has_parent(this) && "Incorrect parent");
       assert(data.ynode.above != nullptr && "Null above child");
       assert(data.ynode.above->has_parent(this) && "Incorrect parent");
-      data.ynode.below->assert_valid(tree_complete);
-      data.ynode.above->assert_valid(tree_complete);
+      data.ynode.below->assert_valid();
+      data.ynode.above->assert_valid();
       break;
     case Type_TrapezoidNode:
       assert(data.trapezoid != nullptr && "Null trapezoid");
