@@ -103,14 +103,14 @@ def are_bound_ported_leaves_equal(bound: BoundLeaf,
 def are_bound_ported_nodes_equal(bound: BoundNode,
                                  ported: PortedNode) -> bool:
     if isinstance(bound, BoundLeaf):
-        assert isinstance(ported, PortedLeaf)
-        return are_bound_ported_leaves_equal(bound, ported)
+        return (isinstance(ported, PortedLeaf)
+                and are_bound_ported_leaves_equal(bound, ported))
     elif isinstance(bound, BoundXNode):
-        assert isinstance(ported, PortedXNode)
-        return are_bound_ported_x_nodes_equal(bound, ported)
+        return (isinstance(ported, PortedXNode)
+                and are_bound_ported_x_nodes_equal(bound, ported))
     else:
-        assert isinstance(ported, PortedYNode)
-        return are_bound_ported_y_nodes_equal(bound, ported)
+        return (isinstance(ported, PortedYNode)
+                and are_bound_ported_y_nodes_equal(bound, ported))
 
 
 def are_bound_ported_points_equal(bound: BoundPoint,
