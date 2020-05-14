@@ -24,9 +24,6 @@ class Node(ABC):
         which contains the left endpoint of the given edge.
         """
 
-    def has_parent(self, parent: 'Node') -> bool:
-        return parent in self._parents
-
     @abstractmethod
     def replace_child(self, old_child: 'Node', new_child: 'Node') -> None:
         """
@@ -43,7 +40,7 @@ class Node(ABC):
     def _add_parent(self, parent: 'Node') -> None:
         assert parent is not None, 'Null parent'
         assert parent is not self, 'Cannot be parent of self'
-        assert not self.has_parent(parent), 'Parent already in collection'
+        assert parent not in self._parents, 'Parent already in collection'
         self._parents.append(parent)
 
     def _remove_parent(self, parent: 'Node') -> None:
