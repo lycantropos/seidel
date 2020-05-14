@@ -24,9 +24,6 @@ class Node(ABC):
         which contains the left endpoint of the given edge.
         """
 
-    def has_no_parents(self) -> bool:
-        return not self._parents
-
     def has_parent(self, parent: 'Node') -> bool:
         return parent in self._parents
 
