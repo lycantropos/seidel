@@ -395,7 +395,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<NodeProxy>(m, "Node")
       .def_readonly("parents", &NodeProxy::parents)
-      .def("replace_with", &NodeProxy::replace_with)
+      .def("replace_with",
+           [](NodeProxy& self, NodeProxy* other) { self.replace_with(other); })
       .def("search_edge",
            [](const NodeProxy* self,
               const EdgeProxy& edge) -> std::unique_ptr<TrapezoidProxy> {
