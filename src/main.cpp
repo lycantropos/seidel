@@ -265,21 +265,13 @@ static NodeProxy* cast_node_to_proxy(Node* node) {
   }
 }
 
-NodeProxy* XNode::left() const {
-  return cast_node_to_proxy(data.xnode.left);
-}
+NodeProxy* XNode::left() const { return cast_node_to_proxy(data.xnode.left); }
 
-NodeProxy* XNode::right() const {
-  return cast_node_to_proxy(data.xnode.right);
-}
+NodeProxy* XNode::right() const { return cast_node_to_proxy(data.xnode.right); }
 
-NodeProxy* YNode::below() const {
-  return cast_node_to_proxy(data.ynode.below);
-}
+NodeProxy* YNode::below() const { return cast_node_to_proxy(data.ynode.below); }
 
-NodeProxy* YNode::above() const {
-  return cast_node_to_proxy(data.ynode.above);
-}
+NodeProxy* YNode::above() const { return cast_node_to_proxy(data.ynode.above); }
 
 static NodeProxy* node_to_proxy(const Node& node) {
   switch (node.type) {
