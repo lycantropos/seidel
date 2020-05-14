@@ -34,7 +34,7 @@ class XNode(Node):
             self.left = new_child
         else:
             self.right = new_child
-        old_child.remove_parent(self)
+        old_child._remove_parent(self)
         new_child._add_parent(self)
 
     def search_edge(self, edge: Edge) -> Trapezoid:
