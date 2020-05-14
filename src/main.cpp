@@ -110,7 +110,10 @@ static bool operator==(const Node& first, const Node& second) {
 class EdgeProxy : public Edge {
  public:
   EdgeProxy(const Point& left_, const Point& right_)
-      : _left(left_), _right(right_), Edge(&_left, &_right) {}
+      : Edge(&left_, &right_), _left(left_), _right(right_) {
+    left = &_left;
+    right = &_right;
+  }
 
   EdgeProxy(const EdgeProxy& edge) : EdgeProxy(edge._left, edge._right) {}
 
