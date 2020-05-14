@@ -212,17 +212,15 @@ class TrapezoidProxy : public Trapezoid {
 class NodeProxy : public Node {
  public:
   NodeProxy(const Point* point_, NodeProxy* left_, NodeProxy* right_)
-      : Node(point_, left_->node_copy(), right_->node_copy()) {}
+      : Node(point_, left_, right_) {}
 
   NodeProxy(const EdgeProxy* edge_, NodeProxy* below_, NodeProxy* above_)
-      : Node(edge_, below_->node_copy(), above_->node_copy()) {}
+      : Node(edge_, below_, above_) {}
 
   NodeProxy(const TrapezoidProxy& trapezoid_)
       : Node(new TrapezoidProxy(trapezoid_)) {}
 
   virtual ~NodeProxy(){};
-
-  virtual Node* node_copy() const = 0;
 };
 
 static NodeProxy* node_to_proxy(const Node& node);
@@ -231,10 +229,6 @@ class XNode : public NodeProxy {
  public:
   XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
       : point(point_), NodeProxy(&point, left_, right_) {}
-
-  Node* node_copy() const override {
-    return new Node(&point, left()->node_copy(), right()->node_copy());
-  }
 
   Point point;
 
@@ -248,10 +242,6 @@ class YNode : public NodeProxy {
   YNode(const EdgeProxy& edge_, NodeProxy* below_, NodeProxy* above_)
       : edge(edge_), NodeProxy(&edge, below_, above_) {}
 
-  Node* node_copy() const override {
-    return new Node(&edge, below()->node_copy(), above()->node_copy());
-  }
-
   EdgeProxy edge;
 
   NodeProxy* below() const { return node_to_proxy(*data.ynode.below); }
@@ -262,10 +252,6 @@ class YNode : public NodeProxy {
 class Leaf : public NodeProxy {
  public:
   Leaf(const TrapezoidProxy& trapezoid_) : NodeProxy(trapezoid_) {}
-
-  Node* node_copy() const override {
-    return new Node(new TrapezoidProxy(trapezoid()));
-  }
 
   TrapezoidProxy trapezoid() const { return *data.trapezoid; }
 };
