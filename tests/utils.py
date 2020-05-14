@@ -48,6 +48,7 @@ PortedTrapezoid = PortedTrapezoid
 PortedXNode = PortedXNode
 PortedYNode = PortedYNode
 AnyEdge = TypeVar('AnyEdge', BoundEdge, PortedEdge)
+AnyNode = TypeVar('AnyNode', BoundNode, PortedNode)
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
@@ -184,3 +185,10 @@ def is_edge_horizontal(edge: AnyEdge) -> bool:
 
 def is_edge_vertical(edge: AnyEdge) -> bool:
     return edge.left.x == edge.right.x
+
+
+def node_to_children(node: AnyNode) -> Tuple[AnyNode, AnyNode]:
+    if isinstance(node, (BoundXNode, PortedXNode)):
+        return node.left, node.right
+    else:
+        return node.below, node.above
