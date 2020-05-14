@@ -81,7 +81,7 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
 
   // Iterate through trapezoids intersecting edge from left to right.
   // Replace each old trapezoid with 2+ new trapezoids, and replace its
-  // corresponding nodes in the search tree with new nodes.
+  // corresponding nodes in the search graph with new nodes.
   std::size_t ntraps = trapezoids.size();
   for (std::size_t i = 0; i < ntraps; ++i) {
     Trapezoid* old = trapezoids[i];  // old trapezoid to replace.
@@ -232,7 +232,7 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
       above->set_upper_right(old->upper_right);
     }
 
-    // Create new nodes to add to search tree.  Below and above trapezoids
+    // Create new nodes to add to search graph.  Below and above trapezoids
     // may already have owning trapezoid nodes, in which case reuse them.
     Node* new_top_node = new Node(
         &edge, below == left_below ? below->trapezoid_node : new Node(below),
@@ -240,7 +240,7 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
     if (have_right) new_top_node = new Node(q, new_top_node, new Node(right));
     if (have_left) new_top_node = new Node(p, new Node(left), new_top_node);
 
-    // Insert new_top_node in correct position or positions in search tree.
+    // Insert new_top_node in correct position or positions in search graph.
     Node* old_node = old->trapezoid_node;
     if (old_node == _tree)
       _tree = new_top_node;
@@ -322,7 +322,7 @@ void TrapezoidalMap::build() {
   RandomNumberGenerator rng(1234);
   std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
 
-  // Add edges, one at a time, to tree.
+  // Add edges, one at a time, to graph.
   std::size_t nedges = _edges.size();
   for (std::size_t index = 2; index < nedges; ++index) {
     if (!add_edge_to_tree(_edges[index]))

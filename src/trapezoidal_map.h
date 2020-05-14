@@ -18,16 +18,16 @@
  * above by edges of the triangulation.  Each triangle is represented by 1 or
  * more of these trapezoids.  Edges are inserted one a time in a random order.
  *
- * As the trapezoid map is created, a search tree is also created which allows
+ * As the trapezoid map is created, a search graph is also created which allows
  * fast lookup O(log N) of the trapezoid containing the point of interest.
- * There are 3 types of node in the search tree: all leaf nodes represent
+ * There are 3 types of node in the search graph: all leaf nodes represent
  * trapezoids and all branch nodes have 2 child nodes and are either x-nodes or
  * y-nodes.  X-nodes represent points in the triangulation, and their 2 children
- * refer to those parts of the search tree to the left and right of the point.
+ * refer to those parts of the search graph to the left and right of the point.
  * Y-nodes represent edges in the triangulation, and their 2 children refer to
- * those parts of the search tree below and above the edge.
+ * those parts of the search graph below and above the edge.
  *
- * Nodes can be repeated throughout the search tree, and each is reference
+ * Nodes can be repeated throughout the search graph, and each is reference
  * counted through the multiple parent nodes it is a child of.
  *
  * The algorithm is only intended to work with valid decompositions, i.e. it
@@ -53,7 +53,7 @@ class TrapezoidalMap {
   const Node& tree() const { return *_tree; }
 
  private:
-  // Add the specified Edge to the search tree, returning true if successful.
+  // Add the specified Edge to the search graph, returning true if successful.
   bool add_edge_to_tree(const Edge& edge);
 
   /* Determine the trapezoids that the specified Edge intersects, returning
@@ -66,7 +66,7 @@ class TrapezoidalMap {
   std::vector<Point> _points;
   // All edges plus bottom and top edges of enclosing rectangle.
   Edges _edges;
-  // Root node of the trapezoid map search tree, owned.
+  // Root node of the trapezoid map search graph, owned.
   Node* _tree;
 };
 

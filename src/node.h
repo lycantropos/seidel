@@ -9,15 +9,16 @@
 
 struct Trapezoid;  // Forward declaration.
 
-/* Node of the trapezoid map search tree.  There are 3 possible types:
- * Type_XNode, Type_YNode and Type_TrapezoidNode.  Data members are
- * represented using a union: an XNode has a Point and 2 child nodes
- * (left and right of the point), a YNode has an Edge and 2 child nodes
- * (below and above the edge), and a TrapezoidNode has a Trapezoid.
- * Each Node has multiple parents so it can appear in the search tree
+/* Node of the trapezoid map search graph.
+ * There are 3 possible types: Type_XNode, Type_YNode and Type_TrapezoidNode.
+ * Data members are represented using a union:
+ * XNode has a Point and 2 child nodes (left and right of the point),
+ * YNode has an Edge and 2 child nodes (below and above the edge)
+ * and TrapezoidNode has a Trapezoid.
+ * Each Node has multiple parents so it can appear in the search graph
  * multiple times without having to create duplicate identical Nodes.
  * The parent collection acts as a reference count to the number of times
- * a Node occurs in the search tree.  When the parent count is reduced to
+ * a Node occurs in the search graph. When the parent count is reduced to
  * zero a Node can be safely deleted. */
 class Node {
  public:
@@ -29,7 +30,7 @@ class Node {
 
   void add_parent(Node* parent);
 
-  /* Recurse through the search tree and assert that everything is valid.
+  /* Recurse through the search graph and assert that everything is valid.
    * Reduces to a no-op if NDEBUG is defined. */
   void assert_valid() const;
 
@@ -46,11 +47,11 @@ class Node {
   // Replace this node with the specified new_node in all parents.
   void replace_with(Node* new_node);
 
-  /* Recursive search through the tree to find the Node containing the
+  /* Recursive search through the graph to find the Node containing the
    * specified Point point. */
   const Node* search(const Point& xy) const;
 
-  /* Recursive search through the tree to find the Trapezoid containing
+  /* Recursive search through the graph to find the Trapezoid containing
    * the left endpoint of the specified Edge.  Return 0 if fails, which
    * can only happen if the triangulation is invalid. */
   Trapezoid* search(const Edge& edge) const;
