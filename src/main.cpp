@@ -395,6 +395,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
 
   py::class_<NodeProxy>(m, "Node")
       .def_readonly("parents", &NodeProxy::parents)
+      .def("replace_child",
+           [](NodeProxy& self, NodeProxy* current, NodeProxy* replacement) {
+             self.replace_child(current, replacement);
+           })
       .def("replace_with",
            [](NodeProxy& self, NodeProxy* other) { self.replace_with(other); })
       .def("search_edge",
