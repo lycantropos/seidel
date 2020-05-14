@@ -45,6 +45,7 @@ PortedPoint = PortedPoint
 PortedTrapezoid = PortedTrapezoid
 PortedXNode = PortedXNode
 PortedYNode = PortedYNode
+AnyEdge = TypeVar('AnyEdge', BoundEdge, PortedEdge)
 AnyPoint = TypeVar('AnyPoint', BoundPoint, PortedPoint)
 BoundPortedBoundingBoxesPair = Tuple[BoundBoundingBox, PortedBoundingBox]
 BoundPortedEdgesPair = Tuple[BoundEdge, PortedEdge]
@@ -165,3 +166,11 @@ def sort_endpoints(endpoints: Tuple[BoundPortedPointsPair,
     return (endpoints
             if second_bound.is_right_of(first_bound)
             else endpoints[::-1])
+
+
+def is_edge_horizontal(edge: AnyEdge) -> bool:
+    return edge.left.y == edge.right.y
+
+
+def is_edge_vertical(edge: AnyEdge) -> bool:
+    return edge.left.x == edge.right.x
