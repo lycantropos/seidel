@@ -303,10 +303,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
     )pbdoc";
 
-  m.def("build_graph", [](const std::vector<Point>& points) {
-    TrapezoidalMap map{points};
-    map.build();
-    return node_to_proxy(map.root());
+  m.def("build_graph", [](const std::vector<Point>& points, bool shuffle) {
+    return node_to_proxy(TrapezoidalMap{points, shuffle}.root());
   });
 
   py::class_<Point>(m, POINT_NAME)

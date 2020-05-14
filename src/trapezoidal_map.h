@@ -39,16 +39,9 @@
  */
 class TrapezoidalMap {
  public:
-  /* Constructor.  A separate call to initialize() is required to initialize
-   * the object before use.
-   */
-  TrapezoidalMap(const std::vector<Point>&);
+  TrapezoidalMap(const std::vector<Point>&, bool shuffle);
 
   ~TrapezoidalMap();
-
-  /* Initialize this object before use.  May be called multiple times, if,
-   * for example, the triangulation is changed by setting the mask. */
-  void build();
 
   const Node& root() const { return *_root; }
 

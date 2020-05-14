@@ -33,7 +33,7 @@ class RandomNumberGenerator {
   unsigned long _seed;
 };
 
-TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
+TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
     : npoints(points.size()), _points(points), _root(nullptr) {
   // Set up points array, which contains all of the points in the
   // triangulation plus the 4 corners of the enclosing rectangle.
@@ -59,6 +59,38 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
   _points.push_back(Point(bbox.upper.x, bbox.lower.y));  // SE point.
   _points.push_back(Point(bbox.lower.x, bbox.upper.y));  // NW point.
   _points.push_back(Point(bbox.upper));                  // NE point.
+
+  // Set up edges array.
+  // First the bottom and top edges of the enclosing rectangle.
+  _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));
+  _edges.push_back(Edge(&_points[npoints + 2], &_points[npoints + 3]));
+
+  for (std::size_t index = 0; index < npoints; ++index) {
+    Point* start = &_points[index];
+    Point* end = &_points[(index + 1) % npoints];
+    if (end->is_right_of(*start))
+      _edges.push_back(Edge(start, end));
+    else
+      _edges.push_back(Edge(end, start));
+  }
+
+  // Initial trapezoid is enclosing rectangle.
+  _root = new Node(new Trapezoid(&_points[npoints], &_points[npoints + 1],
+                                 _edges[0], _edges[1]));
+  _root->assert_valid();
+
+  // Randomly shuffle all edges other than first 2.
+  if (shuffle) {
+      RandomNumberGenerator rng(1234);
+      std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
+  }
+  // Add edges, one at a time, to graph.
+  std::size_t nedges = _edges.size();
+  for (std::size_t index = 2; index < nedges; ++index) {
+    if (!add_edge(_edges[index]))
+      throw std::runtime_error("Triangulation is invalid");
+    _root->assert_valid();
+  }
 }
 
 TrapezoidalMap::~TrapezoidalMap() {
@@ -296,37 +328,4 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
   }
 
   return true;
-}
-
-void TrapezoidalMap::build() {
-  // Set up edges array.
-  // First the bottom and top edges of the enclosing rectangle.
-  _edges.push_back(Edge(&_points[npoints], &_points[npoints + 1]));
-  _edges.push_back(Edge(&_points[npoints + 2], &_points[npoints + 3]));
-
-  for (std::size_t index = 0; index < npoints; ++index) {
-    Point* start = &_points[index];
-    Point* end = &_points[(index + 1) % npoints];
-    if (end->is_right_of(*start))
-      _edges.push_back(Edge(start, end));
-    else
-      _edges.push_back(Edge(end, start));
-  }
-
-  // Initial trapezoid is enclosing rectangle.
-  _root = new Node(new Trapezoid(&_points[npoints], &_points[npoints + 1],
-                                 _edges[0], _edges[1]));
-  _root->assert_valid();
-
-  // Randomly shuffle all edges other than first 2.
-  RandomNumberGenerator rng(1234);
-  std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
-
-  // Add edges, one at a time, to graph.
-  std::size_t nedges = _edges.size();
-  for (std::size_t index = 2; index < nedges; ++index) {
-    if (!add_edge(_edges[index]))
-      throw std::runtime_error("Triangulation is invalid");
-    _root->assert_valid();
-  }
 }
