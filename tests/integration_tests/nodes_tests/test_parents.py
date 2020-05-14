@@ -6,8 +6,8 @@ from . import strategies
 
 
 @given(strategies.nodes_pairs)
-def test_round_trip(x_nodes_pair: BoundPortedNodesPair) -> None:
-    bound, ported = x_nodes_pair
+def test_round_trip(nodes_pair: BoundPortedNodesPair) -> None:
+    bound, ported = nodes_pair
 
     assert are_bound_ported_nodes_sequences_equal(bound.parents,
                                                   ported.parents)
