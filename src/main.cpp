@@ -380,7 +380,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_property("upper_right", &TrapezoidProxy::get_upper_right,
                     &TrapezoidProxy::set_upper_right);
 
-  py::class_<NodeProxy>(m, "Node");
+  py::class_<NodeProxy>(m, "Node").def_readonly("parents", &NodeProxy::parents);
 
   py::class_<XNode, NodeProxy, std::unique_ptr<XNode, py::nodelete>>(
       m, X_NODE_NAME)
