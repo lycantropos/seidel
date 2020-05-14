@@ -15,6 +15,8 @@ class YNode(Node):
         self.edge = edge
         self.below = below
         self.above = above
+        self.below._add_parent(self)
+        self.above._add_parent(self)
 
     __repr__ = generate_repr(__init__)
 
@@ -34,7 +36,7 @@ class YNode(Node):
         else:
             self.above = new_child
         old_child.remove_parent(self)
-        new_child.add_parent(self)
+        new_child._add_parent(self)
 
     def search_edge(self, edge: Edge) -> Optional[Trapezoid]:
         if edge.left is self.edge.left:

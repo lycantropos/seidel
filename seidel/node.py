@@ -24,7 +24,7 @@ class Node(ABC):
         which contains the left endpoint of the given edge.
         """
 
-    def add_parent(self, parent: 'Node') -> None:
+    def _add_parent(self, parent: 'Node') -> None:
         assert parent is not None, 'Null parent'
         assert parent is not self, 'Cannot be parent of self'
         assert not self.has_parent(parent), 'Parent already in collection'

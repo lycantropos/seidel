@@ -14,6 +14,8 @@ class XNode(Node):
         self.point = point
         self.left = left
         self.right = right
+        self.left._add_parent(self)
+        self.right._add_parent(self)
 
     __repr__ = generate_repr(__init__)
 
@@ -33,7 +35,7 @@ class XNode(Node):
         else:
             self.right = new_child
         old_child.remove_parent(self)
-        new_child.add_parent(self)
+        new_child._add_parent(self)
 
     def search_edge(self, edge: Edge) -> Trapezoid:
         if edge.left is self.point:
