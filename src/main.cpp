@@ -234,7 +234,9 @@ static NodeProxy* node_to_proxy(const Node& node);
 class XNode : public NodeProxy {
  public:
   XNode(const Point& point_, NodeProxy* left_, NodeProxy* right_)
-      : point(point_), NodeProxy(&point, left_, right_) {}
+      : NodeProxy(&point_, left_, right_), point(point_) {
+    data.xnode.point = &point;
+  }
 
   NodeProxy* left() const;
   NodeProxy* right() const;
