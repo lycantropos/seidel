@@ -393,7 +393,15 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_property("upper_right", &TrapezoidProxy::get_upper_right,
                     &TrapezoidProxy::set_upper_right);
 
-  py::class_<NodeProxy>(m, "Node").def_readonly("parents", &NodeProxy::parents);
+  py::class_<NodeProxy>(m, "Node")
+      .def_readonly("parents", &NodeProxy::parents)
+      .def("search_edge",
+           [](const NodeProxy* self,
+              const EdgeProxy& edge) -> std::unique_ptr<TrapezoidProxy> {
+             Trapezoid* result = self->search(edge);
+             if (result == nullptr) return nullptr;
+             return std::make_unique<TrapezoidProxy>(*result);
+           });
 
   py::class_<XNode, NodeProxy, std::unique_ptr<XNode, py::nodelete>>(
       m, X_NODE_NAME)
