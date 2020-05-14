@@ -103,5 +103,6 @@ setup(name=seidel.__name__,
                              glob('src/*.cpp'),
                              include_dirs=[pybind11.get_include(),
                                            pybind11.get_include(True)],
-                             language='c++')],
+                             language='c++',
+                             undef_macros=['NDEBUG'])],
       zip_safe=False)
