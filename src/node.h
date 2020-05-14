@@ -48,7 +48,7 @@ class Node {
 
   /* Recursive search through the tree to find the Node containing the
    * specified Point point. */
-  const Node* search(const Point& xy);
+  const Node* search(const Point& xy) const;
 
   /* Recursive search through the tree to find the Trapezoid containing
    * the left endpoint of the specified Edge.  Return 0 if fails, which

@@ -157,7 +157,7 @@ void Node::replace_with(Node* new_node) {
   while (!parents.empty()) parents.front()->replace_child(this, new_node);
 }
 
-const Node* Node::search(const Point& xy) {
+const Node* Node::search(const Point& xy) const {
   switch (type) {
     case Type_XNode:
       if (xy == *data.xnode.point)
