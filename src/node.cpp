@@ -179,7 +179,7 @@ const Node* Node::search(const Point& xy) const {
   }
 }
 
-Trapezoid* Node::search(const Edge& edge) {
+Trapezoid* Node::search(const Edge& edge) const {
   switch (type) {
     case Type_XNode:
       if (edge.left == data.xnode.point)

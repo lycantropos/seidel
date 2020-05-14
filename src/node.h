@@ -53,7 +53,7 @@ class Node {
   /* Recursive search through the tree to find the Trapezoid containing
    * the left endpoint of the specified Edge.  Return 0 if fails, which
    * can only happen if the triangulation is invalid. */
-  Trapezoid* search(const Edge& edge);
+  Trapezoid* search(const Edge& edge) const;
 
   Node(const Node& other) = delete;
   Node& operator=(const Node& other) = delete;
