@@ -34,7 +34,7 @@ class RandomNumberGenerator {
 };
 
 TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
-    : npoints(points.size()), _points(points), _tree(nullptr) {
+    : npoints(points.size()), _points(points), _root(nullptr) {
   // Set up points array, which contains all of the points in the
   // triangulation plus the 4 corners of the enclosing rectangle.
   BoundingBox bbox;
@@ -64,11 +64,11 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points)
 TrapezoidalMap::~TrapezoidalMap() {
   _edges.clear();
 
-  delete _tree;
-  _tree = nullptr;
+  delete _root;
+  _root = nullptr;
 }
 
-bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
+bool TrapezoidalMap::add_edge(const Edge& edge) {
   std::vector<Trapezoid*> trapezoids;
   if (!find_trapezoids_intersecting_edge(edge, trapezoids)) return false;
   assert(!trapezoids.empty() && "No trapezoids intersect edge");
@@ -242,8 +242,8 @@ bool TrapezoidalMap::add_edge_to_tree(const Edge& edge) {
 
     // Insert new_top_node in correct position or positions in search graph.
     Node* old_node = old->trapezoid_node;
-    if (old_node == _tree)
-      _tree = new_top_node;
+    if (old_node == _root)
+      _root = new_top_node;
     else
       old_node->replace_with(new_top_node);
 
@@ -269,7 +269,7 @@ bool TrapezoidalMap::find_trapezoids_intersecting_edge(
   // This is the FollowSegment algorithm of de Berg et al, with some extra
   // checks to deal with simple collinear (i.e. invalid) triangles.
   trapezoids.clear();
-  Trapezoid* trapezoid = _tree->search(edge);
+  Trapezoid* trapezoid = _root->search(edge);
   if (trapezoid == nullptr) {
     assert(trapezoid != nullptr && "search(edge) returns null trapezoid");
     return false;
@@ -314,9 +314,9 @@ void TrapezoidalMap::build() {
   }
 
   // Initial trapezoid is enclosing rectangle.
-  _tree = new Node(new Trapezoid(&_points[npoints], &_points[npoints + 1],
+  _root = new Node(new Trapezoid(&_points[npoints], &_points[npoints + 1],
                                  _edges[0], _edges[1]));
-  _tree->assert_valid();
+  _root->assert_valid();
 
   // Randomly shuffle all edges other than first 2.
   RandomNumberGenerator rng(1234);
@@ -325,8 +325,8 @@ void TrapezoidalMap::build() {
   // Add edges, one at a time, to graph.
   std::size_t nedges = _edges.size();
   for (std::size_t index = 2; index < nedges; ++index) {
-    if (!add_edge_to_tree(_edges[index]))
+    if (!add_edge(_edges[index]))
       throw std::runtime_error("Triangulation is invalid");
-    _tree->assert_valid();
+    _root->assert_valid();
   }
 }

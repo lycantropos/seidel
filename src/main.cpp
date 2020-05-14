@@ -306,7 +306,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
   m.def("build_graph", [](const std::vector<Point>& points) {
     TrapezoidalMap map{points};
     map.build();
-    return node_to_proxy(map.tree());
+    return node_to_proxy(map.root());
   });
 
   py::class_<Point>(m, POINT_NAME)

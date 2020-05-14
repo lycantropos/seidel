@@ -50,11 +50,11 @@ class TrapezoidalMap {
    * for example, the triangulation is changed by setting the mask. */
   void build();
 
-  const Node& tree() const { return *_tree; }
+  const Node& root() const { return *_root; }
 
  private:
   // Add the specified Edge to the search graph, returning true if successful.
-  bool add_edge_to_tree(const Edge& edge);
+  bool add_edge(const Edge& edge);
 
   /* Determine the trapezoids that the specified Edge intersects, returning
    * true if successful. */
@@ -67,7 +67,7 @@ class TrapezoidalMap {
   // All edges plus bottom and top edges of enclosing rectangle.
   Edges _edges;
   // Root node of the trapezoid map search graph, owned.
-  Node* _tree;
+  Node* _root;
 };
 
 #endif
