@@ -139,11 +139,14 @@ class TrapezoidProxy : public Trapezoid {
  public:
   TrapezoidProxy(const Point& left_, const Point& right_,
                  const EdgeProxy& below_, const EdgeProxy& above_)
-      : _left(left_),
+      : Trapezoid(&left_, &right_, _below, _above),
+        _left(left_),
         _right(right_),
         _below(below_),
-        _above(above_),
-        Trapezoid(&_left, &_right, _below, _above) {}
+        _above(above_) {
+    left = &_left;
+    right = &_right;
+  }
 
   TrapezoidProxy(const TrapezoidProxy& other)
       : TrapezoidProxy(other._left, other._right, other._below, other._above) {}
