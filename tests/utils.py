@@ -3,6 +3,7 @@ import sys
 from functools import partial
 from typing import (Callable,
                     Iterable,
+                    Sequence,
                     Tuple,
                     TypeVar)
 
@@ -98,6 +99,13 @@ def are_bound_ported_edges_equal(bound: BoundEdge, ported: PortedEdge) -> bool:
 def are_bound_ported_leaves_equal(bound: BoundLeaf,
                                   ported: PortedLeaf) -> bool:
     return are_bound_ported_trapezoids_equal(bound.trapezoid, ported.trapezoid)
+
+
+def are_bound_ported_nodes_sequences_equal(bound: Sequence[BoundNode],
+                                           ported: Sequence[PortedNode]
+                                           ) -> bool:
+    return (len(bound) == len(ported)
+            and all(map(are_bound_ported_nodes_equal, bound, ported)))
 
 
 def are_bound_ported_nodes_equal(bound: BoundNode,
