@@ -25,7 +25,7 @@ class Node {
   Node(const Edge* edge, Node* below, Node* above);   // Type_YNode.
   Node(Trapezoid* trapezoid);                         // Type_TrapezoidNode.
 
-  ~Node();
+  virtual ~Node();
 
   void add_parent(Node* parent);
 
