@@ -45,9 +45,9 @@ class Node(ABC):
         Replaces child node with given one.
         """
 
-    def replace_with(self, new_node: 'Node') -> None:
+    def replace_with(self, other: 'Node') -> None:
         """
         Replaces the node with given one in all parents.
         """
         while self._parents:
-            self._parents[0].replace_child(self, new_node)
+            self._parents[0].replace_child(self, other)
