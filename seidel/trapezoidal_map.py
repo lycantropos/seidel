@@ -43,12 +43,10 @@ def build_graph(points: Sequence[Point], shuffle: bool) -> Node:
     edges = [Edge(points[points_count], points[points_count + 1]),
              Edge(points[points_count + 2], points[points_count + 3])]
     for index in range(points_count):
-        start = points[index]
-        end = points[(index + 1) % points_count]
-        if end.is_right_of(start):
-            edges.append(Edge(start, end))
-        else:
-            edges.append(Edge(end, start))
+        start, end = points[index], points[(index + 1) % points_count]
+        edges.append(Edge(start, end)
+                     if end.is_right_of(start)
+                     else Edge(end, start))
     if shuffle:
         random.shuffle(edges)
     result = Leaf(Trapezoid(points[points_count], points[points_count + 1],
