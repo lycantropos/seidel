@@ -410,8 +410,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def("replace_with",
            [](NodeProxy& self, NodeProxy* other) { self.replace_with(other); })
       .def("search_point",
-           [](const NodeProxy* self,
-              const Point& point) {
+           [](const NodeProxy* self, const Point& point) {
              return self->search(point);
            })
       .def("search_edge",

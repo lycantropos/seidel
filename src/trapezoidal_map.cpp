@@ -34,7 +34,7 @@ class RandomNumberGenerator {
 };
 
 TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
-    :_points(points), _root(nullptr) {
+    : _points(points), _root(nullptr) {
   // Set up points array, which contains all of the points in the
   // triangulation plus the 4 corners of the enclosing rectangle.
   BoundingBox bbox;
@@ -84,8 +84,8 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
 
   // Randomly shuffle all edges other than first 2.
   if (shuffle) {
-      RandomNumberGenerator rng(1234);
-      std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
+    RandomNumberGenerator rng(1234);
+    std::random_shuffle(_edges.begin() + 2, _edges.end(), rng);
   }
   // Add edges, one at a time, to graph.
   std::size_t nedges = _edges.size();
