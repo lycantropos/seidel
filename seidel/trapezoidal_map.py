@@ -141,20 +141,18 @@ def add_edge_to_graph(graph: Node, edge: Edge) -> Node:
                 below.lower_right = old.lower_right
                 above.upper_right = old.upper_right
 
-            # Connect to new trapezoids replacing prevOld.
+            # Connect to new trapezoids replacing old.
             if below != left_below:
                 below.upper_left = left_below
-                if old.lower_left == left_old:
-                    below.lower_left = left_below
-                else:
-                    below.lower_left = old.lower_left
+                below.lower_left = (left_below
+                                    if old.lower_left is left_old
+                                    else old.lower_left)
 
             if above != left_above:
                 above.lower_left = left_above
-                if old.upper_left == left_old:
-                    above.upper_left = left_above
-                else:
-                    above.upper_left = old.upper_left
+                above.upper_left = (left_above
+                                    if old.upper_left is left_old
+                                    else old.upper_left)
         else:
             # Middle trapezoid.
             # Old trapezoid is neither the first nor last of the 3+ trapezoids
@@ -174,17 +172,15 @@ def add_edge_to_graph(graph: Node, edge: Edge) -> Node:
             # Connect to new trapezoids replacing prevOld.
             if below != left_below:  # below is new.
                 below.upper_left = left_below
-                if old.lower_left == left_old:
-                    below.lower_left = left_below
-                else:
-                    below.lower_left = old.lower_left
+                below.lower_left = (left_below
+                                    if old.lower_left is left_old
+                                    else old.lower_left)
 
             if above != left_above:  # above is new.
                 above.lower_left = left_above
-                if old.upper_left == left_old:
-                    above.upper_left = left_above
-                else:
-                    above.upper_left = old.upper_left
+                above.upper_left = (left_above
+                                    if old.upper_left is left_old
+                                    else old.upper_left)
             below.lower_right = old.lower_right
             above.upper_right = old.upper_right
         new_top_node = YNode(edge,
@@ -199,7 +195,7 @@ def add_edge_to_graph(graph: Node, edge: Edge) -> Node:
         if have_left:
             new_top_node = XNode(p, Leaf(left), new_top_node)
         old_node = old.trapezoid_node
-        if old_node == graph:
+        if old_node is graph:
             graph = new_top_node
         else:
             old_node.replace_with(new_top_node)
