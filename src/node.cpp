@@ -192,7 +192,6 @@ Trapezoid* Node::search(const Edge& edge) const {
       if (edge.left == data.ynode.edge->left) {
         // Coinciding left edge points.
         if (edge.get_slope() == data.ynode.edge->get_slope()) {
-          assert(0 && "Invalid triangulation, common left points");
           return nullptr;
         }
         if (edge.get_slope() > data.ynode.edge->get_slope())
@@ -202,7 +201,6 @@ Trapezoid* Node::search(const Edge& edge) const {
       } else if (edge.right == data.ynode.edge->right) {
         // Coinciding right edge points.
         if (edge.get_slope() == data.ynode.edge->get_slope()) {
-          assert(0 && "Invalid triangulation, common right points");
           return nullptr;
         }
         if (edge.get_slope() > data.ynode.edge->get_slope())
@@ -212,7 +210,6 @@ Trapezoid* Node::search(const Edge& edge) const {
       } else {
         int orient = data.ynode.edge->get_point_orientation(*edge.left);
         if (orient == 0) {
-          assert(0 && "Invalid triangulation, point on edge");
           return nullptr;
         }
         if (orient < 0)
