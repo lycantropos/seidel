@@ -31,17 +31,7 @@ def build_graph(points: Sequence[Point], shuffle: bool) -> Node:
     else:
         small = 0.1  # Any value > 0.
         bounding_box.expand((bounding_box.upper - bounding_box.lower) * small)
-    # SW point.
-    points.append(bounding_box.lower)
-    # SE point.
-    points.append(Point(bounding_box.upper.x, bounding_box.lower.y))
-    # NW point.
-    points.append(Point(bounding_box.lower.x, bounding_box.upper.y))
-    # NE point.
-    points.append(bounding_box.upper)
-
-    edges = [Edge(points[points_count], points[points_count + 1]),
-             Edge(points[points_count + 2], points[points_count + 3])]
+    edges = []
     for index in range(points_count):
         start, end = points[index], points[(index + 1) % points_count]
         edges.append(Edge(start, end)
@@ -49,11 +39,16 @@ def build_graph(points: Sequence[Point], shuffle: bool) -> Node:
                      else Edge(end, start))
     if shuffle:
         random.shuffle(edges)
-    result = Leaf(Trapezoid(points[points_count], points[points_count + 1],
-                            edges[0], edges[1]))
-    for index in range(2, len(edges)):
-        result = add_edge_to_graph(result, edges[index])
+    result = Leaf(bounding_box_to_trapezoid(bounding_box))
+    for edge in edges:
+        result = add_edge_to_graph(result, edge)
     return result
+
+
+def bounding_box_to_trapezoid(box: BoundingBox) -> Trapezoid:
+    return Trapezoid(box.lower, Point(box.upper.x, box.lower.y),
+                     Edge(box.lower, Point(box.upper.x, box.lower.y)),
+                     Edge(Point(box.lower.x, box.upper.y), box.upper))
 
 
 def add_edge_to_graph(graph: Node, edge: Edge) -> Node:
