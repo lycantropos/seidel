@@ -135,6 +135,8 @@ class EdgeProxy : public Edge {
   Point _left, _right;
 };
 
+class NodeProxy;
+
 class TrapezoidProxy : public Trapezoid {
  public:
   TrapezoidProxy(const Point& left_, const Point& right_,
@@ -149,11 +151,14 @@ class TrapezoidProxy : public Trapezoid {
   }
 
   TrapezoidProxy(const TrapezoidProxy& other)
-      : TrapezoidProxy(other._left, other._right, other._below, other._above) {}
+      : TrapezoidProxy(other._left, other._right, other._below, other._above) {
+    trapezoid_node = other.trapezoid_node;
+  }
 
   TrapezoidProxy(const Trapezoid& trapezoid)
       : TrapezoidProxy(*trapezoid.left, *trapezoid.right,
                        EdgeProxy(trapezoid.below), EdgeProxy(trapezoid.above)) {
+    trapezoid_node = trapezoid.trapezoid_node;
   }
 
   TrapezoidProxy& operator=(const TrapezoidProxy& other) {
@@ -171,6 +176,8 @@ class TrapezoidProxy : public Trapezoid {
   const EdgeProxy& get_above() const { return _above; }
 
   const EdgeProxy& get_below() const { return _below; }
+
+  NodeProxy* get_trapezoid_node() const;
 
   std::unique_ptr<TrapezoidProxy> get_lower_left() const {
     if (lower_left == nullptr) return nullptr;
@@ -298,6 +305,11 @@ static NodeProxy* node_to_proxy(const Node& node) {
   }
 }
 
+NodeProxy* TrapezoidProxy::get_trapezoid_node() const {
+  if (trapezoid_node == nullptr) return nullptr;
+  return node_to_proxy(*trapezoid_node);
+}
+
 PYBIND11_MODULE(MODULE_NAME, m) {
   m.doc() = R"pbdoc(
         Python binding of randomized algorithm for trapezoidal decomposition by R. Seidel.
@@ -395,6 +407,8 @@ PYBIND11_MODULE(MODULE_NAME, m) {
       .def_property_readonly("right", &TrapezoidProxy::get_right)
       .def_property_readonly("below", &TrapezoidProxy::get_below)
       .def_property_readonly("above", &TrapezoidProxy::get_above)
+      .def_property_readonly("trapezoid_node",
+                             &TrapezoidProxy::get_trapezoid_node)
       .def_property("lower_left", &TrapezoidProxy::get_lower_left,
                     &TrapezoidProxy::set_lower_left)
       .def_property("lower_right", &TrapezoidProxy::get_lower_right,
