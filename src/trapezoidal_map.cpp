@@ -34,7 +34,7 @@ class RandomNumberGenerator {
 };
 
 TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
-    : npoints(points.size()), _points(points), _root(nullptr) {
+    :_points(points), _root(nullptr) {
   // Set up points array, which contains all of the points in the
   // triangulation plus the 4 corners of the enclosing rectangle.
   BoundingBox bbox;
@@ -55,6 +55,9 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
     const double small = 0.1;  // Any value > 0.
     bbox.expand((bbox.upper - bbox.lower) * small);
   }
+
+  std::size_t npoints = points.size();
+
   _points.push_back(Point(bbox.lower));                  // SW point.
   _points.push_back(Point(bbox.upper.x, bbox.lower.y));  // SE point.
   _points.push_back(Point(bbox.lower.x, bbox.upper.y));  // NW point.
