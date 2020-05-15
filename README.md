@@ -43,6 +43,26 @@ Install:
 python setup.py install
 ```
 
+Usage
+-----
+```python
+>>> from seidel.point import Point
+>>> square = [Point(0, 0), Point(2, 0), Point(2, 2), Point(0, 2)]
+>>> from seidel.trapezoidal_map import build_graph
+>>> graph = build_graph(square, shuffle=True)
+>>> node = graph.search_point(Point(1, 1))
+>>> from seidel.leaf import Leaf
+>>> isinstance(node, Leaf)
+True
+>>> trapezoid = node.trapezoid
+>>> [trapezoid.below.left, trapezoid.below.right,
+...  trapezoid.above.right, trapezoid.above.left] == square
+True
+
+```
+
+original C++ implementation can be invoked by importing from `_seidel` module instead.
+
 Development
 -----------
 
