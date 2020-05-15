@@ -12,5 +12,8 @@ def test_basic(nodes_pair: BoundPortedNodesPair,
     bound, ported = nodes_pair
     bound_edge, ported_edge = edges_pair
 
-    assert are_bound_ported_trapezoids_equal(bound.search_edge(bound_edge),
-                                             ported.search_edge(ported_edge))
+    bound_result = bound.search_edge(bound_edge)
+    ported_result = ported.search_edge(ported_edge)
+
+    assert (bound_result is ported_result is None
+            or are_bound_ported_trapezoids_equal(bound_result, ported_result))
