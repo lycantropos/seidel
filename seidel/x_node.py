@@ -26,16 +26,16 @@ class XNode(Node):
                 if isinstance(other, XNode)
                 else NotImplemented)
 
-    def replace_child(self, old_child: Node, new_child: Node) -> None:
-        assert (self.left is old_child
-                or self.right is old_child), 'Not a child Node'
-        assert new_child is not None, 'Null child node'
-        if self.left is old_child:
-            self.left = new_child
+    def replace_child(self, current: Node, replacement: Node) -> None:
+        assert (self.left is current
+                or self.right is current), 'Not a child Node'
+        assert replacement is not None, 'Null child node'
+        if self.left is current:
+            self.left = replacement
         else:
-            self.right = new_child
-        old_child._remove_parent(self)
-        new_child._add_parent(self)
+            self.right = replacement
+        current._remove_parent(self)
+        replacement._add_parent(self)
 
     def search_edge(self, edge: Edge) -> Trapezoid:
         if edge.left is self.point:
