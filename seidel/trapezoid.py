@@ -25,7 +25,7 @@ class Trapezoid:
         self._lower_right = None  # type: Optional['Trapezoid']
         self._upper_left = None  # type: Optional['Trapezoid']
         self._upper_right = None  # type: Optional['Trapezoid']
-        self.trapezoid_node = None  # type: 'Node'
+        self.trapezoid_node = None  # type: Optional['Node']
 
     __repr__ = generate_repr(__init__)
 
