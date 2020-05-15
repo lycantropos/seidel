@@ -2,6 +2,7 @@ from reprit.base import generate_repr
 
 from .edge import Edge
 from .node import Node
+from .point import Point
 from .trapezoid import Trapezoid
 
 
@@ -25,3 +26,6 @@ class Leaf(Node):
 
     def search_edge(self, edge: Edge) -> Trapezoid:
         return self.trapezoid
+
+    def search_point(self, point: Point) -> 'Node':
+        return self

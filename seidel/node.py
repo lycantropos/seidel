@@ -4,6 +4,7 @@ from typing import (Optional,
                     Sequence)
 
 from .edge import Edge
+from .point import Point
 from .trapezoid import Trapezoid
 
 
@@ -22,6 +23,12 @@ class Node(ABC):
         """
         Recursive search for the trapezoid
         which contains the left endpoint of the given edge.
+        """
+
+    @abstractmethod
+    def search_point(self, point: Point) -> 'Node':
+        """
+        Recursive search for the node which contains the given point.
         """
 
     @abstractmethod

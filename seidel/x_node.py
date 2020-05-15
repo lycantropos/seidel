@@ -44,3 +44,11 @@ class XNode(Node):
             return self.right.search_edge(edge)
         else:
             return self.left.search_edge(edge)
+
+    def search_point(self, point: Point) -> 'Node':
+        if point is self.point:
+            return self
+        elif point.is_right_of(self.point):
+            return self.right.search_point(point)
+        else:
+            return self.left.search_point(point)

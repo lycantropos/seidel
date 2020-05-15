@@ -4,6 +4,7 @@ from reprit.base import generate_repr
 
 from .edge import Edge
 from .node import Node
+from .point import Point
 from .trapezoid import Trapezoid
 
 
@@ -63,3 +64,12 @@ class YNode(Node):
                 return self.below.search_edge(edge)
             else:
                 return None
+
+    def search_point(self, point: Point) -> 'Node':
+        orient = self.edge.orientation_with(point)
+        if not orient:
+            return self
+        elif orient < 0:
+            return self.above.search_point(point)
+        else:
+            return self.below.search_point(point)
