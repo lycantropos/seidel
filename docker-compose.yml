@@ -7,7 +7,7 @@ services:
       args:
         - IMAGE_NAME=${IMAGE_NAME}
         - IMAGE_VERSION=${IMAGE_VERSION}
-    image: lycantropos/seidel:0.0.2-alpha
+    image: lycantropos/seidel:0.0.2
     volumes:
       - ./seidel/:/opt/seidel/seidel/
       - ./src/:/opt/seidel/src/
