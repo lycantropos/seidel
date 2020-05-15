@@ -97,10 +97,7 @@ TrapezoidalMap::TrapezoidalMap(const std::vector<Point>& points, bool shuffle)
 }
 
 TrapezoidalMap::~TrapezoidalMap() {
-  _edges.clear();
-
   delete _root;
-  _root = nullptr;
 }
 
 bool TrapezoidalMap::add_edge(const Edge& edge) {
