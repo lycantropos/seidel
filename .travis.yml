@@ -1,6 +1,7 @@
-dist: xenial
+dist: bionic
 
 language: python
+
 services:
   - docker
 
@@ -13,29 +14,28 @@ matrix:
 
 env:
   global:
-    - CPPFLAGS=--coverage
+    - CPPFLAGS="-O0 --coverage"
     - TWINE_USERNAME=__token__
     - secure: XCsSfrBi5xJNJJpSxP8w9InJW513zoLNqNa+B2CtFpF2f1rkyFg5J3u2R3rdQm/gkCGSNaMLcIGX96P+5vtLxTfe6sy2ERdxdazp9+0K2hfd5Mqhfz99iZB8Pz+GAPBwd055msqLr7gAknN2NFhBC0bPMvNIEWe+lk99TocWO4XyImk3aNYP0NlQzqXUFXfhOod7iH7qM63hppLaAoZOKy34gq02XIb88EZLIiunt56oRJI4nhXbFsz3Esrtjdr9PilYfQVaz8cZZopQJJ1Tgvr2QXppv0ta+X0ULwTtdkpjGsXMjdWmecyeXJW7uZ3RpMtXhoHz37+94sQeEfopp47/jTabyK/TCnfjL6EOuZUqETbaD+wAFX1LMsgAtWtP6EfRQN8dA1J+dzgDdBE2YlINLWRO1iZDdxPJl/rR7fXgy+nCRA5NCEK/bRf2J9BaKLrSAXO331zP3dQYJERMIJBz6TkN6CCKMe07wKbuzt2OIZ8y0aTfFChtmEPfrgNYDwJegD9+nYPlE1HFefX/sH0e8/JcfxwapwjBJjQKsPYFHuFdVzozmkOf5Jb7MuMW7zvCJ8NydX2mBtlqV/gqvV0CJEa1a2CWWt/t8KEoLNg0C4IQjYNv0Um8NbgtinxI7Ql4OcAh2quhDAy9hkBUePVqF+SbrCetcQEQ7UhrT60=
 
 install:
   - python -m pip install --upgrade pip setuptools
-  - python -m pip install --upgrade codecov
-  - python -m pip install --upgrade gcovr
+  - python -m pip install --upgrade gcovr codecov
   - python -m pip install --force-reinstall -r requirements.txt
   - python -m pip install --force-reinstall -r requirements-tests.txt
-  - python -m pip install -e .
-  - rm -rf build
+  - python setup.py develop
 
 script:
-  - pytest
   - python -m doctest README.md
+  - pytest
 
 after_success:
-  - gcovr --filter src/ --xml -o coverage_cpp.xml
+  - gcovr --filter src/ --xml -o coverage_cpp.xml -v
   - python -m codecov -f coverage.xml -X gcov
   - python -m codecov -f coverage_cpp.xml -X gcov
 
 before_deploy:
+  - rm -rf build
   - rm *.so
   - python setup.py sdist
   - python -m pip install --upgrade cibuildwheel
@@ -49,4 +49,4 @@ deploy:
   script: twine upload --skip-existing dist/*
   skip_cleanup: true
   on:
-    branch: master
+    tags: true
